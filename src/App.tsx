@@ -33,9 +33,10 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
       <div className="card">
+        <p>Visit backend swagger: <a href='/swagger'>here</a></p>
         <b>Books List:</b>
         {
-          loading ? 'loading...' : data?.data.data?.map((book) => {
+          loading ? <div>'loading...'</div> : data?.data.data?.map((book) => {
             return <div key={book.id}>{book.title}</div>
           })
         }
