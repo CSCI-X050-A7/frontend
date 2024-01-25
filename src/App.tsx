@@ -1,11 +1,15 @@
 import { useState } from 'react'
+import { useRequest } from 'ahooks';
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { Api } from './client'
 
 function App() {
   const [count, setCount] = useState(0)
-
+  const { data, loading } = useRequest(
+    async () => { return new Api().book.v1BooksList() }
+  );
   return (
     <>
       <div>
@@ -28,6 +32,14 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      <div className="card">
+        <b>Books List:</b>
+        {
+          loading ? 'loading...' : data?.data.data?.map((book) => {
+            return <div key={book.id}>{book.title}</div>
+          })
+        }
+      </div>
     </>
   )
 }
