@@ -3,11 +3,12 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { initTheme, toggleTheme } from 'utils/theme'
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 initTheme()
 
 const Index: React.FC = () => {
+  const location = useLocation()
   return (
     <header className="border-bottom">
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -26,7 +27,7 @@ const Index: React.FC = () => {
               <Button className="me-2" variant="outline-secondary" onClick={() => toggleTheme()}>
                 Toggle Theme
               </Button>
-              <Link to="/login">
+              <Link to={`/login?from=${location.pathname}`}>
                 <Button type="button" className="btn me-2">Login</Button>
               </Link>
               <Link to="/signup">
