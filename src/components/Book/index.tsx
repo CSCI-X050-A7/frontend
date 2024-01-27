@@ -1,11 +1,11 @@
 import { useRequest } from 'ahooks'
-import { Api } from 'client'
 import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
+import Backend from 'utils/service'
 
 const Index: React.FC = () => {
   const { data, loading } = useRequest(
-    async () => { return await new Api().book.v1BooksList() }
+    async () => { return await Backend.book.v1BooksList() }
   )
   return (
     <>

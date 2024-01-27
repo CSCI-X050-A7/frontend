@@ -1,12 +1,12 @@
-import Header from 'components/Header'
 import Book from 'components/Book'
+import PageContainer from 'components/PageContainer'
+
 
 const Index: React.FC = () => {
   return (
-    <>
-      <Header />
+    <PageContainer>
       <Book />
-    </>
+    </PageContainer>
   )
 }
 

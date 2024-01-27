@@ -10,7 +10,9 @@
  */
 
 export interface SchemaAuth {
+  /** @default "123456" */
   password?: string;
+  /** @default "demo" */
   username?: string;
 }
 
@@ -82,6 +84,7 @@ export interface SchemaMeta {
 export interface SchemaTokenResponse {
   access_token?: string;
   msg?: string;
+  redirect_url?: string;
 }
 
 export interface SchemaUpdateUser {
@@ -331,6 +334,71 @@ export class HttpClient<SecurityDataType = unknown> {
  * Fiber go web framework based REST API boilerplate
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  auth = {
+    /**
+     * @description Get current JWT.
+     *
+     * @tags Auth
+     * @name V1AuthJwtCreate
+     * @summary JWT
+     * @request POST:/api/v1/auth/jwt
+     * @secure
+     */
+    v1AuthJwtCreate: (params: RequestParams = {}) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/auth/jwt`,
+        method: "POST",
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Set new access token to cookies and redirect. Demo username: demo, password: 123456
+     *
+     * @tags Auth
+     * @name V1AuthLoginCreate
+     * @summary login
+     * @request POST:/api/v1/auth/login
+     */
+    v1AuthLoginCreate: (
+      login: SchemaAuth,
+      query?: {
+        /** Redirect url after login */
+        redirect_url?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SchemaTokenResponse, SchemaErrorResponse>({
+        path: `/api/v1/auth/login`,
+        method: "POST",
+        query: query,
+        body: login,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Clean cookies
+     *
+     * @tags Auth
+     * @name V1AuthLogoutCreate
+     * @summary Logout
+     * @request POST:/api/v1/auth/logout
+     * @secure
+     */
+    v1AuthLogoutCreate: (params: RequestParams = {}) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/auth/logout`,
+        method: "POST",
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   book = {
     /**
      * @description Get all books.
@@ -429,25 +497,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/api/v1/books/${id}`,
         method: "DELETE",
         secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
-  token = {
-    /**
-     * @description Create a new access token.
-     *
-     * @tags Token
-     * @name V1TokenNewCreate
-     * @summary create a new access token
-     * @request POST:/api/v1/token/new
-     */
-    v1TokenNewCreate: (login: SchemaAuth, params: RequestParams = {}) =>
-      this.request<SchemaTokenResponse, SchemaErrorResponse>({
-        path: `/api/v1/token/new`,
-        method: "POST",
-        body: login,
         type: ContentType.Json,
         format: "json",
         ...params,
