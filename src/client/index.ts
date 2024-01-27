@@ -71,6 +71,12 @@ export interface SchemaErrorResponse {
   msg?: string;
 }
 
+export interface SchemaJWT {
+  admin?: boolean;
+  exp?: number;
+  user_id?: string;
+}
+
 export interface SchemaMeta {
   description?: string;
   picture?: string;
@@ -334,6 +340,113 @@ export class HttpClient<SecurityDataType = unknown> {
  * Fiber go web framework based REST API boilerplate
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  admin = {
+    /**
+     * @description Get all users.
+     *
+     * @tags Admin
+     * @name V1AdminUsersList
+     * @summary get all users
+     * @request GET:/api/v1/admin/users
+     * @secure
+     */
+    v1AdminUsersList: (
+      query?: {
+        /** offset */
+        offset?: number;
+        /** limit */
+        limit?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<SchemaUserListResponse[], SchemaErrorResponse>({
+        path: `/api/v1/admin/users`,
+        method: "GET",
+        query: query,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description Create a new user.
+     *
+     * @tags Admin
+     * @name V1AdminUsersCreate
+     * @summary create a new user
+     * @request POST:/api/v1/admin/users
+     * @secure
+     */
+    v1AdminUsersCreate: (createuser: SchemaCreateUser, params: RequestParams = {}) =>
+      this.request<SchemaUser, SchemaErrorResponse>({
+        path: `/api/v1/admin/users`,
+        method: "POST",
+        body: createuser,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description a user.
+     *
+     * @tags Admin
+     * @name V1AdminUsersDetail
+     * @summary get a user
+     * @request GET:/api/v1/admin/users/{id}
+     * @secure
+     */
+    v1AdminUsersDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaUser, SchemaErrorResponse>({
+        path: `/api/v1/admin/users/${id}`,
+        method: "GET",
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description first_name, last_name, is_active, is_admin only
+     *
+     * @tags Admin
+     * @name V1AdminUsersUpdate
+     * @summary update a user
+     * @request PUT:/api/v1/admin/users/{id}
+     * @secure
+     */
+    v1AdminUsersUpdate: (id: string, updateuser: SchemaUpdateUser, params: RequestParams = {}) =>
+      this.request<SchemaUser, SchemaErrorResponse>({
+        path: `/api/v1/admin/users/${id}`,
+        method: "PUT",
+        body: updateuser,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * @description delete user
+     *
+     * @tags Admin
+     * @name V1AdminUsersDelete
+     * @summary delete a user
+     * @request DELETE:/api/v1/admin/users/{id}
+     * @secure
+     */
+    v1AdminUsersDelete: (id: string, params: RequestParams = {}) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/admin/users/${id}`,
+        method: "DELETE",
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
   auth = {
     /**
      * @description Get current JWT.
@@ -345,7 +458,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     v1AuthJwtCreate: (params: RequestParams = {}) =>
-      this.request<object, SchemaErrorResponse>({
+      this.request<SchemaJWT, SchemaErrorResponse>({
         path: `/api/v1/auth/jwt`,
         method: "POST",
         secure: true,
@@ -504,105 +617,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   };
   user = {
     /**
-     * @description Get all users.
+     * @description a user me.
      *
      * @tags User
-     * @name V1UsersList
-     * @summary get all users
-     * @request GET:/api/v1/users
+     * @name V1UsersMeList
+     * @summary get a user me
+     * @request GET:/api/v1/users/me
      * @secure
      */
-    v1UsersList: (
-      query?: {
-        /** offset */
-        offset?: number;
-        /** limit */
-        limit?: number;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<SchemaUserListResponse[], SchemaErrorResponse>({
-        path: `/api/v1/users`,
+    v1UsersMeList: (params: RequestParams = {}) =>
+      this.request<SchemaUser, SchemaErrorResponse>({
+        path: `/api/v1/users/me`,
         method: "GET",
-        query: query,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description Create a new user.
-     *
-     * @tags User
-     * @name V1UsersCreate
-     * @summary create a new user
-     * @request POST:/api/v1/users
-     * @secure
-     */
-    v1UsersCreate: (createuser: SchemaCreateUser, params: RequestParams = {}) =>
-      this.request<SchemaUser, SchemaErrorResponse>({
-        path: `/api/v1/users`,
-        method: "POST",
-        body: createuser,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description a user.
-     *
-     * @tags User
-     * @name V1UsersDetail
-     * @summary get a user
-     * @request GET:/api/v1/users/{id}
-     * @secure
-     */
-    v1UsersDetail: (id: string, params: RequestParams = {}) =>
-      this.request<SchemaUser, SchemaErrorResponse>({
-        path: `/api/v1/users/${id}`,
-        method: "GET",
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description first_name, last_name, is_active, is_admin only
-     *
-     * @tags User
-     * @name V1UsersUpdate
-     * @summary update a user
-     * @request PUT:/api/v1/users/{id}
-     * @secure
-     */
-    v1UsersUpdate: (id: string, updateuser: SchemaUpdateUser, params: RequestParams = {}) =>
-      this.request<SchemaUser, SchemaErrorResponse>({
-        path: `/api/v1/users/${id}`,
-        method: "PUT",
-        body: updateuser,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * @description delete user
-     *
-     * @tags User
-     * @name V1UsersDelete
-     * @summary delete a user
-     * @request DELETE:/api/v1/users/{id}
-     * @secure
-     */
-    v1UsersDelete: (id: string, params: RequestParams = {}) =>
-      this.request<object, SchemaErrorResponse>({
-        path: `/api/v1/users/${id}`,
-        method: "DELETE",
         secure: true,
         type: ContentType.Json,
         format: "json",
