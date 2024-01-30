@@ -16,11 +16,10 @@ const Index: React.FC = () => {
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
         <Card style={{ width: '18rem' }}>
           <Card.Body>
-            <Card.Title><b>Books</b></Card.Title>
+            <Card.Title><b>{loading ? `loading...` : `Books`}</b></Card.Title>
           </Card.Body>
-          {loading
-            ? <div>loading...</div>
-            : (
+          {!loading &&
+            (
               <ListGroup variant="flush">
                 {
                   data?.data.data?.map((book) => {

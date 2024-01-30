@@ -1,12 +1,17 @@
 import { useRequest } from 'ahooks';
+import { useAuth } from 'hooks/useAuth';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import { DOMAIN_HOST } from 'utils/constants';
 import Backend from 'utils/service';
 
 const Index: React.FC = () => {
+  const { user } = useAuth();
+  if (user) {
+    return <Navigate to="/" />;
+  }
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('demo');
   const [password, setPassword] = useState('123456');
