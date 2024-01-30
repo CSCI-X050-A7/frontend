@@ -22,7 +22,6 @@
                     cache: pnpm
                 - run: pnpm install
                 - run: pnpm --version
-                - run: pnpm gen:api
                 - run: pnpm build
         remote-ssh-command:
             if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
