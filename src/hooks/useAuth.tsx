@@ -2,16 +2,15 @@
 // we use HttpOnly cookies from backend, not localStorage for security
 
 import { useRequest } from "ahooks";
-import type { AxiosResponse } from 'axios'
-import { SchemaUser } from "client";
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { HttpResponse, SchemaUser } from "client";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import Backend from "utils/service";
 
 export interface AuthContextValue {
   user: SchemaUser | undefined
   loading: boolean
   refresh: () => void
-  refreshAsync?: () => Promise<AxiosResponse<SchemaUser>>
+  refreshAsync?: () => Promise<HttpResponse<SchemaUser>>
 }
 const AuthContext = createContext<AuthContextValue>({
   user: undefined,
