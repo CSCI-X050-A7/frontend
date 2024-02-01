@@ -6,11 +6,10 @@ export const THEME = {
 
 const IS_SERVER = typeof window === 'undefined'
 
-const getDefaultTheme = () => (
+const getDefaultTheme = () =>
   window.matchMedia('(prefers-color-scheme: dark)').matches
     ? THEME.DARK
     : THEME.LIGHT
-)
 
 const getPreferredTheme = () => {
   const storedTheme = localStorage.getItem('theme')
@@ -22,18 +21,18 @@ const getPreferredTheme = () => {
   return defaultTheme
 }
 
-export function setTheme (theme: string) {
+export function setTheme(theme: string) {
   if (IS_SERVER) return
   document.documentElement.dataset.bsTheme = theme
   localStorage.setItem('theme', theme)
 }
 
-export function resetTheme () {
+export function resetTheme() {
   if (IS_SERVER) return
   setTheme(getDefaultTheme())
 }
 
-export function toggleTheme () {
+export function toggleTheme() {
   if (IS_SERVER) return
   const nextTheme =
     document.documentElement.dataset.bsTheme === THEME.DARK
@@ -42,7 +41,7 @@ export function toggleTheme () {
   setTheme(nextTheme)
 }
 
-export function initTheme () {
+export function initTheme() {
   if (IS_SERVER) return
   setTheme(getPreferredTheme())
 }

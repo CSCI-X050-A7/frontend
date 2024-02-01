@@ -15,11 +15,15 @@ const Index: React.FC = () => {
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
-      return Backend.auth.v1AuthLoginCreate({
-        username, password
-      }, {
-        redirect_url: `${DOMAIN_HOST}${from}`
-      })
+      return Backend.auth.v1AuthLoginCreate(
+        {
+          username,
+          password
+        },
+        {
+          redirect_url: `${DOMAIN_HOST}${from}`
+        }
+      )
     },
     {
       manual: true,
@@ -30,22 +34,42 @@ const Index: React.FC = () => {
       }
     }
   )
-  return user ? <Navigate to="/" /> : (
+  return user ? (
+    <Navigate to='/' />
+  ) : (
     <>
-      <div style={{ textAlign: 'center' }}>
+      <div className='text-center'>
         <h1>Login</h1>
       </div>
       <Form>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Group className='mb-3' controlId='formBasicEmail'>
           <Form.Label>Username</Form.Label>
-          <Form.Control type="text" placeholder="Username" defaultValue={username} onChange={e => { setUsername(e.target.value) }} />
+          <Form.Control
+            type='text'
+            placeholder='Username'
+            defaultValue={username}
+            onChange={e => {
+              setUsername(e.target.value)
+            }}
+          />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group className='mb-3' controlId='formBasicPassword'>
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Password" defaultValue={username} onChange={e => { setPassword(e.target.value) }} />
+          <Form.Control
+            type='password'
+            placeholder='Password'
+            defaultValue={username}
+            onChange={e => {
+              setPassword(e.target.value)
+            }}
+          />
         </Form.Group>
-        <Button variant="primary" type="button"
-          onClick={(): void => { login() }}
+        <Button
+          variant='primary'
+          type='button'
+          onClick={(): void => {
+            login()
+          }}
         >
           Submit
         </Button>

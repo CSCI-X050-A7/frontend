@@ -1,6 +1,6 @@
 import eslintPlugin from '@nabla/vite-plugin-eslint'
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vitejs.dev/config/
@@ -9,13 +9,13 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:5000',
-        changeOrigin: true,
+        changeOrigin: true
       },
       '/swagger': {
         target: 'http://127.0.0.1:5000',
-        changeOrigin: true,
+        changeOrigin: true
       }
     }
   },
-  plugins: [tsconfigPaths(), react(), eslintPlugin()],
+  plugins: [tsconfigPaths(), react(), eslintPlugin()]
 })

@@ -11,231 +11,254 @@
 
 export interface SchemaAuth {
   /** @default "123456" */
-  password?: string;
+  password?: string
   /** @default "demo" */
-  username?: string;
+  username?: string
 }
 
 export interface SchemaBook {
   /** @maxLength 255 */
-  author: string;
-  created_at?: string;
-  id?: string;
-  meta: SchemaMeta;
-  status: number;
+  author: string
+  created_at?: string
+  id?: string
+  meta: SchemaMeta
+  status: number
   /** @maxLength 255 */
-  title: string;
-  updated_at?: string;
-  user_id: string;
+  title: string
+  updated_at?: string
+  user_id: string
 }
 
 export interface SchemaBookListResponse {
-  count?: number;
-  data?: SchemaBook[];
-  limit?: number;
-  offset?: number;
+  count?: number
+  data?: SchemaBook[]
+  limit?: number
+  offset?: number
 }
 
 export interface SchemaCreateBook {
   /** @maxLength 255 */
-  author: string;
-  meta: SchemaMeta;
-  status: number;
+  author: string
+  meta: SchemaMeta
+  status: number
   /** @maxLength 255 */
-  title: string;
-  user_id: string;
+  title: string
+  user_id: string
 }
 
 export interface SchemaCreateUser {
   /** @maxLength 150 */
-  email: string;
+  email: string
   /** @maxLength 100 */
-  first_name: string;
-  is_active?: boolean;
-  is_admin?: boolean;
+  first_name: string
+  is_active?: boolean
+  is_admin?: boolean
   /** @maxLength 100 */
-  last_name: string;
+  last_name: string
   /**
    * @minLength 10
    * @maxLength 100
    */
-  password: string;
+  password: string
   /**
    * @minLength 5
    * @maxLength 50
    */
-  username: string;
+  username: string
 }
 
 export interface SchemaErrorResponse {
-  msg?: string;
+  msg?: string
 }
 
 export interface SchemaJWT {
-  admin?: boolean;
-  exp?: number;
-  user_id?: string;
+  admin?: boolean
+  exp?: number
+  user_id?: string
 }
 
 export interface SchemaMeta {
-  description?: string;
-  picture?: string;
+  description?: string
+  picture?: string
   /**
    * @min 1
    * @max 10
    */
-  rating?: number;
+  rating?: number
 }
 
 export interface SchemaTokenResponse {
-  access_token?: string;
-  msg?: string;
-  redirect_url?: string;
+  access_token?: string
+  msg?: string
+  redirect_url?: string
 }
 
 export interface SchemaUpdateUser {
   /** @maxLength 100 */
-  first_name: string;
-  is_active?: boolean;
-  is_admin?: boolean;
+  first_name: string
+  is_active?: boolean
+  is_admin?: boolean
   /** @maxLength 100 */
-  last_name: string;
+  last_name: string
 }
 
 export interface SchemaUser {
-  created_at?: string;
-  email?: string;
-  first_name?: string;
-  id?: string;
-  is_active?: boolean;
-  is_admin?: boolean;
-  last_name?: string;
-  updated_at?: string;
-  username?: string;
+  created_at?: string
+  email?: string
+  first_name?: string
+  id?: string
+  is_active?: boolean
+  is_admin?: boolean
+  last_name?: string
+  updated_at?: string
+  username?: string
 }
 
 export interface SchemaUserListResponse {
-  count?: number;
-  data?: SchemaUser[];
-  limit?: number;
-  offset?: number;
+  count?: number
+  data?: SchemaUser[]
+  limit?: number
+  offset?: number
 }
 
-export type QueryParamsType = Record<string | number, any>;
-export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
+export type QueryParamsType = Record<string | number, any>
+export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>
 
-export interface FullRequestParams extends Omit<RequestInit, "body"> {
+export interface FullRequestParams extends Omit<RequestInit, 'body'> {
   /** set parameter to `true` for call `securityWorker` for this request */
-  secure?: boolean;
+  secure?: boolean
   /** request path */
-  path: string;
+  path: string
   /** content type of request body */
-  type?: ContentType;
+  type?: ContentType
   /** query params */
-  query?: QueryParamsType;
+  query?: QueryParamsType
   /** format of response (i.e. response.json() -> format: "json") */
-  format?: ResponseFormat;
+  format?: ResponseFormat
   /** request body */
-  body?: unknown;
+  body?: unknown
   /** base url */
-  baseUrl?: string;
+  baseUrl?: string
   /** request cancellation token */
-  cancelToken?: CancelToken;
+  cancelToken?: CancelToken
 }
 
-export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
+export type RequestParams = Omit<
+  FullRequestParams,
+  'body' | 'method' | 'query' | 'path'
+>
 
 export interface ApiConfig<SecurityDataType = unknown> {
-  baseUrl?: string;
-  baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
-  securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
-  customFetch?: typeof fetch;
+  baseUrl?: string
+  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>
+  securityWorker?: (
+    securityData: SecurityDataType | null
+  ) => Promise<RequestParams | void> | RequestParams | void
+  customFetch?: typeof fetch
 }
 
-export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
-  data: D;
-  error: E;
+export interface HttpResponse<D extends unknown, E extends unknown = unknown>
+  extends Response {
+  data: D
+  error: E
 }
 
-type CancelToken = Symbol | string | number;
+type CancelToken = Symbol | string | number
 
 export enum ContentType {
-  Json = "application/json",
-  FormData = "multipart/form-data",
-  UrlEncoded = "application/x-www-form-urlencoded",
-  Text = "text/plain",
+  Json = 'application/json',
+  FormData = 'multipart/form-data',
+  UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain'
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "";
-  private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
-  private abortControllers = new Map<CancelToken, AbortController>();
-  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
+  public baseUrl: string = ''
+  private securityData: SecurityDataType | null = null
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker']
+  private abortControllers = new Map<CancelToken, AbortController>()
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
+    fetch(...fetchParams)
 
   private baseApiParams: RequestParams = {
-    credentials: "same-origin",
+    credentials: 'same-origin',
     headers: {},
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
-  };
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer'
+  }
 
   constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
-    Object.assign(this, apiConfig);
+    Object.assign(this, apiConfig)
   }
 
   public setSecurityData = (data: SecurityDataType | null) => {
-    this.securityData = data;
-  };
+    this.securityData = data
+  }
 
   protected encodeQueryParam(key: string, value: any) {
-    const encodedKey = encodeURIComponent(key);
-    return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
+    const encodedKey = encodeURIComponent(key)
+    return `${encodedKey}=${encodeURIComponent(
+      typeof value === 'number' ? value : `${value}`
+    )}`
   }
 
   protected addQueryParam(query: QueryParamsType, key: string) {
-    return this.encodeQueryParam(key, query[key]);
+    return this.encodeQueryParam(key, query[key])
   }
 
   protected addArrayQueryParam(query: QueryParamsType, key: string) {
-    const value = query[key];
-    return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
+    const value = query[key]
+    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&')
   }
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
-    const query = rawQuery || {};
-    const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
+    const query = rawQuery || {}
+    const keys = Object.keys(query).filter(
+      key => 'undefined' !== typeof query[key]
+    )
     return keys
-      .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
-      .join("&");
+      .map(key =>
+        Array.isArray(query[key])
+          ? this.addArrayQueryParam(query, key)
+          : this.addQueryParam(query, key)
+      )
+      .join('&')
   }
 
   protected addQueryParams(rawQuery?: QueryParamsType): string {
-    const queryString = this.toQueryString(rawQuery);
-    return queryString ? `?${queryString}` : "";
+    const queryString = this.toQueryString(rawQuery)
+    return queryString ? `?${queryString}` : ''
   }
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
-    [ContentType.Text]: (input: any) => (input !== null && typeof input !== "string" ? JSON.stringify(input) : input),
+      input !== null && (typeof input === 'object' || typeof input === 'string')
+        ? JSON.stringify(input)
+        : input,
+    [ContentType.Text]: (input: any) =>
+      input !== null && typeof input !== 'string'
+        ? JSON.stringify(input)
+        : input,
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
-        const property = input[key];
+        const property = input[key]
         formData.append(
           key,
           property instanceof Blob
             ? property
-            : typeof property === "object" && property !== null
+            : typeof property === 'object' && property !== null
             ? JSON.stringify(property)
-            : `${property}`,
-        );
-        return formData;
+            : `${property}`
+        )
+        return formData
       }, new FormData()),
-    [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
-  };
+    [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input)
+  }
 
-  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
+  protected mergeRequestParams(
+    params1: RequestParams,
+    params2?: RequestParams
+  ): RequestParams {
     return {
       ...this.baseApiParams,
       ...params1,
@@ -243,33 +266,35 @@ export class HttpClient<SecurityDataType = unknown> {
       headers: {
         ...(this.baseApiParams.headers || {}),
         ...(params1.headers || {}),
-        ...((params2 && params2.headers) || {}),
-      },
-    };
+        ...((params2 && params2.headers) || {})
+      }
+    }
   }
 
-  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
+  protected createAbortSignal = (
+    cancelToken: CancelToken
+  ): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
-      const abortController = this.abortControllers.get(cancelToken);
+      const abortController = this.abortControllers.get(cancelToken)
       if (abortController) {
-        return abortController.signal;
+        return abortController.signal
       }
-      return void 0;
+      return void 0
     }
 
-    const abortController = new AbortController();
-    this.abortControllers.set(cancelToken, abortController);
-    return abortController.signal;
-  };
+    const abortController = new AbortController()
+    this.abortControllers.set(cancelToken, abortController)
+    return abortController.signal
+  }
 
   public abortRequest = (cancelToken: CancelToken) => {
-    const abortController = this.abortControllers.get(cancelToken);
+    const abortController = this.abortControllers.get(cancelToken)
 
     if (abortController) {
-      abortController.abort();
-      this.abortControllers.delete(cancelToken);
+      abortController.abort()
+      this.abortControllers.delete(cancelToken)
     }
-  };
+  }
 
   public request = async <T = any, E = any>({
     body,
@@ -283,52 +308,65 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<HttpResponse<T, E>> => {
     const secureParams =
-      ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
+      ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
-      {};
-    const requestParams = this.mergeRequestParams(params, secureParams);
-    const queryString = query && this.toQueryString(query);
-    const payloadFormatter = this.contentFormatters[type || ContentType.Json];
-    const responseFormat = format || requestParams.format;
+      {}
+    const requestParams = this.mergeRequestParams(params, secureParams)
+    const queryString = query && this.toQueryString(query)
+    const payloadFormatter = this.contentFormatters[type || ContentType.Json]
+    const responseFormat = format || requestParams.format
 
-    return this.customFetch(`${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`, {
-      ...requestParams,
-      headers: {
-        ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
-      },
-      signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
-      body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
-    }).then(async (response) => {
-      const r = response as HttpResponse<T, E>;
-      r.data = null as unknown as T;
-      r.error = null as unknown as E;
+    return this.customFetch(
+      `${baseUrl || this.baseUrl || ''}${path}${
+        queryString ? `?${queryString}` : ''
+      }`,
+      {
+        ...requestParams,
+        headers: {
+          ...(requestParams.headers || {}),
+          ...(type && type !== ContentType.FormData
+            ? { 'Content-Type': type }
+            : {})
+        },
+        signal:
+          (cancelToken
+            ? this.createAbortSignal(cancelToken)
+            : requestParams.signal) || null,
+        body:
+          typeof body === 'undefined' || body === null
+            ? null
+            : payloadFormatter(body)
+      }
+    ).then(async response => {
+      const r = response as HttpResponse<T, E>
+      r.data = null as unknown as T
+      r.error = null as unknown as E
 
       const data = !responseFormat
         ? r
         : await response[responseFormat]()
-            .then((data) => {
+            .then(data => {
               if (r.ok) {
-                r.data = data;
+                r.data = data
               } else {
-                r.error = data;
+                r.error = data
               }
-              return r;
+              return r
             })
-            .catch((e) => {
-              r.error = e;
-              return r;
-            });
+            .catch(e => {
+              r.error = e
+              return r
+            })
 
       if (cancelToken) {
-        this.abortControllers.delete(cancelToken);
+        this.abortControllers.delete(cancelToken)
       }
 
-      if (!response.ok) throw data;
-      return data;
-    });
-  };
+      if (!response.ok) throw data
+      return data
+    })
+  }
 }
 
 /**
@@ -339,7 +377,9 @@ export class HttpClient<SecurityDataType = unknown> {
  *
  * Fiber go web framework based REST API boilerplate
  */
-export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+export class Api<
+  SecurityDataType extends unknown
+> extends HttpClient<SecurityDataType> {
   admin = {
     /**
      * @description Get all users.
@@ -353,20 +393,20 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1AdminUsersList: (
       query?: {
         /** offset */
-        offset?: number;
+        offset?: number
         /** limit */
-        limit?: number;
+        limit?: number
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<SchemaUserListResponse[], SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
-        method: "GET",
+        method: 'GET',
         query: query,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -378,15 +418,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/v1/admin/users
      * @secure
      */
-    v1AdminUsersCreate: (createuser: SchemaCreateUser, params: RequestParams = {}) =>
+    v1AdminUsersCreate: (
+      createuser: SchemaCreateUser,
+      params: RequestParams = {}
+    ) =>
       this.request<SchemaUser, SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
-        method: "POST",
+        method: 'POST',
         body: createuser,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -401,11 +444,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1AdminUsersDetail: (id: string, params: RequestParams = {}) =>
       this.request<SchemaUser, SchemaErrorResponse>({
         path: `/api/v1/admin/users/${id}`,
-        method: "GET",
+        method: 'GET',
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -417,15 +460,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/v1/admin/users/{id}
      * @secure
      */
-    v1AdminUsersUpdate: (id: string, updateuser: SchemaUpdateUser, params: RequestParams = {}) =>
+    v1AdminUsersUpdate: (
+      id: string,
+      updateuser: SchemaUpdateUser,
+      params: RequestParams = {}
+    ) =>
       this.request<SchemaUser, SchemaErrorResponse>({
         path: `/api/v1/admin/users/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body: updateuser,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -440,13 +487,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1AdminUsersDelete: (id: string, params: RequestParams = {}) =>
       this.request<object, SchemaErrorResponse>({
         path: `/api/v1/admin/users/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
+        format: 'json',
+        ...params
+      })
+  }
   auth = {
     /**
      * @description Get current JWT.
@@ -460,11 +507,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1AuthJwtCreate: (params: RequestParams = {}) =>
       this.request<SchemaJWT, SchemaErrorResponse>({
         path: `/api/v1/auth/jwt`,
-        method: "POST",
+        method: 'POST',
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -479,18 +526,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       login: SchemaAuth,
       query?: {
         /** Redirect url after login */
-        redirect_url?: string;
+        redirect_url?: string
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<SchemaTokenResponse, SchemaErrorResponse>({
         path: `/api/v1/auth/login`,
-        method: "POST",
+        method: 'POST',
         query: query,
         body: login,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -505,13 +552,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1AuthLogoutCreate: (params: RequestParams = {}) =>
       this.request<object, SchemaErrorResponse>({
         path: `/api/v1/auth/logout`,
-        method: "POST",
+        method: 'POST',
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
+        format: 'json',
+        ...params
+      })
+  }
   book = {
     /**
      * @description Get all books.
@@ -524,19 +571,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1BooksList: (
       query?: {
         /** offset */
-        offset?: number;
+        offset?: number
         /** limit */
-        limit?: number;
+        limit?: number
       },
-      params: RequestParams = {},
+      params: RequestParams = {}
     ) =>
       this.request<SchemaBookListResponse, SchemaErrorResponse>({
         path: `/api/v1/books`,
-        method: "GET",
+        method: 'GET',
         query: query,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -551,12 +598,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1BooksCreate: (createbook: SchemaCreateBook, params: RequestParams = {}) =>
       this.request<SchemaBook, SchemaErrorResponse>({
         path: `/api/v1/books`,
-        method: "POST",
+        method: 'POST',
         body: createbook,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -570,10 +617,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1BooksDetail: (id: string, params: RequestParams = {}) =>
       this.request<SchemaBook, SchemaErrorResponse>({
         path: `/api/v1/books/${id}`,
-        method: "GET",
+        method: 'GET',
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -585,15 +632,19 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/api/v1/books/{id}
      * @secure
      */
-    v1BooksUpdate: (id: string, updatebook: SchemaBook, params: RequestParams = {}) =>
+    v1BooksUpdate: (
+      id: string,
+      updatebook: SchemaBook,
+      params: RequestParams = {}
+    ) =>
       this.request<SchemaBook, SchemaErrorResponse>({
         path: `/api/v1/books/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body: updatebook,
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
+        format: 'json',
+        ...params
       }),
 
     /**
@@ -608,13 +659,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1BooksDelete: (id: string, params: RequestParams = {}) =>
       this.request<object, SchemaErrorResponse>({
         path: `/api/v1/books/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
+        format: 'json',
+        ...params
+      })
+  }
   user = {
     /**
      * @description a user me.
@@ -628,11 +679,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     v1UsersMeList: (params: RequestParams = {}) =>
       this.request<SchemaUser, SchemaErrorResponse>({
         path: `/api/v1/users/me`,
-        method: "GET",
+        method: 'GET',
         secure: true,
         type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-  };
+        format: 'json',
+        ...params
+      })
+  }
 }

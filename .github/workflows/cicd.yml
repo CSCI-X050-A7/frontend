@@ -1,40 +1,39 @@
 ---
+name: cicd
 
-    name: cicd
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-    on:
-        push:
-            branches: [main]
-        pull_request:
-            branches: [main]
-
-    jobs:
-        build:
-            runs-on: ubuntu-latest
-            steps:
-                - uses: actions/checkout@v3
-                - uses: pnpm/action-setup@v2.2.1
-                  with:
-                    version: latest
-                - name: Use Node.js LTS
-                  uses: actions/setup-node@v3
-                  with:
-                    cache: pnpm
-                - run: pnpm install
-                - run: pnpm --version
-                - run: pnpm build
-        remote-ssh-command:
-            if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
-            needs: [build]
-            runs-on: ubuntu-latest
-            steps:
-                - name: executing remote ssh commands using ssh key
-                  uses: appleboy/ssh-action@master
-                  with:
-                      host: ${{ secrets.HOST }}
-                      username: ${{ secrets.USERNAME }}
-                      key: ${{ secrets.KEY }}
-                      port: ${{ secrets.PORT }}
-                      script: |
-                          cd ~/frontend
-                          git fetch --all && git reset --hard origin/main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2.2.1
+        with:
+          version: latest
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm --version
+      - run: pnpm build
+  remote-ssh-command:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ~/frontend
+            git fetch --all && git reset --hard origin/main

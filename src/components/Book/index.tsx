@@ -1,31 +1,40 @@
 import { useRequest } from 'ahooks'
+import type React from 'react'
 import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Backend from 'utils/service'
-import type React from 'react'
 
 const Index: React.FC = () => {
-  const { data, loading } = useRequest(
-    async () => Backend.book.v1BooksList()
-  )
+  const { data, loading } = useRequest(async () => Backend.book.v1BooksList())
   return (
     <>
-      <div style={{ textAlign: 'center' }}>
+      <div className='text-center'>
         <h1>Vite + React + React-Bootstrap</h1>
-        <p>Visit backend swagger: <a href='/swagger'>here</a></p>
+        <p>
+          Visit backend swagger: <a href='/swagger'>here</a>
+        </p>
       </div>
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignContent: 'center'
+        }}
+      >
         <Card style={{ width: '18rem' }}>
           <Card.Body>
-            <Card.Title><b>{loading ? 'loading...' : 'Books'}</b></Card.Title>
+            <Card.Title>
+              <b>{loading ? 'loading...' : 'Books'}</b>
+            </Card.Title>
           </Card.Body>
-          {!loading &&
-            (
-              <ListGroup variant="flush">
-                {
-                  data?.data.data?.map((book) => <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>)
-                }
-              </ListGroup>)}
+          {!loading && (
+            <ListGroup variant='flush'>
+              {data?.data.data?.map(book => (
+                <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>
+              ))}
+            </ListGroup>
+          )}
         </Card>
       </div>
     </>

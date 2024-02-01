@@ -185,8 +185,5 @@
       }
     }
   ],
-  "ignorePatterns":[
-    "client/",
-    "vite.config.ts"
-  ]
+  "ignorePatterns": ["client/", "vite.config.ts"]
 }

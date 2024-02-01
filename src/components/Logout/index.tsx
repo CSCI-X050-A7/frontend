@@ -21,18 +21,11 @@ const Index: React.FC = () => {
           navigate('/login', { replace: true })
         })
       },
-      onError: () => {
-      }
+      onError: () => {}
     }
   )
 
-  return user
-    ? (
-      <div>Logging out</div>
-    )
-    : (
-      <Navigate to='/login' replace />
-    )
+  return user ? <div>Logging out</div> : <Navigate to='/login' replace />
 }
 
 export default Index

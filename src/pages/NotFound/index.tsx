@@ -1,9 +1,8 @@
-import Book from 'components/Book'
 import PageContainer from 'components/PageContainer'
 
 const Index: React.FC = () => (
   <PageContainer>
-    <Book />
+    <h1 className='text-center'>Oops... Page not found!</h1>
   </PageContainer>
 )
 
