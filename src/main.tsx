@@ -15,7 +15,9 @@ import BookCreate from 'pages/BookCreate'
 
 import './index.css'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = ReactDOM.createRoot(document.querySelector('#root')!)
+root.render(
   <React.StrictMode>
     <AuthProvider>
       <BrowserRouter>

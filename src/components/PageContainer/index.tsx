@@ -1,10 +1,9 @@
-import React from 'react';
+import type React from 'react'
 import Header from 'components/Header'
 import Footer from 'components/Footer'
-import Container from 'react-bootstrap/Container';
+import Container from 'react-bootstrap/Container'
 
-const PageContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
+const PageContainer: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     <div className='d-flex flex-column h-100'>
       <Header />
       <Container className="my-3">
@@ -12,6 +11,5 @@ const PageContainer: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       </Container>
       <Footer />
     </div>
-  );
-};
-export default PageContainer;
+  )
+export default PageContainer

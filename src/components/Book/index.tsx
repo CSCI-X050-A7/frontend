@@ -2,10 +2,11 @@ import { useRequest } from 'ahooks'
 import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Backend from 'utils/service'
+import type React from 'react'
 
 const Index: React.FC = () => {
   const { data, loading } = useRequest(
-    async () => { return await Backend.book.v1BooksList() }
+    async () => Backend.book.v1BooksList()
   )
   return (
     <>
@@ -16,15 +17,13 @@ const Index: React.FC = () => {
       <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
         <Card style={{ width: '18rem' }}>
           <Card.Body>
-            <Card.Title><b>{loading ? `loading...` : `Books`}</b></Card.Title>
+            <Card.Title><b>{loading ? 'loading...' : 'Books'}</b></Card.Title>
           </Card.Body>
           {!loading &&
             (
               <ListGroup variant="flush">
                 {
-                  data?.data.data?.map((book) => {
-                    return <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>
-                  })
+                  data?.data.data?.map((book) => <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>)
                 }
               </ListGroup>)}
         </Card>

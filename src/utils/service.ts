@@ -1,4 +1,4 @@
-import { Api } from "client"
+import { Api } from 'client'
 
 export const Backend = new Api()
 
