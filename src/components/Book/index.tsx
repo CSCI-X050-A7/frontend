@@ -9,7 +9,7 @@ const Index: React.FC = () => {
   return (
     <>
       <div className='text-center'>
-        <h1>Vite + React + React-Bootstrap haha</h1>
+        <h1>Vite + React + React-Bootstrap Boilerplate</h1>
         <p>
           Visit backend swagger: <a href='/swagger'>here</a>
         </p>
