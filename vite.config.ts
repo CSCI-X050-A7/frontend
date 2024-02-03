@@ -1,5 +1,5 @@
 import eslintPlugin from '@nabla/vite-plugin-eslint'
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 

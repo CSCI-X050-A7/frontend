@@ -3,18 +3,13 @@
 ## Quick Start
 
 - Install `Mode.js` and `pnpm`
-- Run `pnpm install` to install dependencies
+- Run `pnpm install` to install dependencies (only need to do this once)
 - Run `pnpm dev` to start the development server
 - Visit `http://localhost:5173` to see the app
 - The app will automatically reload if you change any of the source files
 - When you have changed the API in the backend and started the backend server, run `pnpm gen:api` to regenerate the API client
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 ## Expanding the ESLint configuration
 
