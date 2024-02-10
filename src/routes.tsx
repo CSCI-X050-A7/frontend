@@ -4,7 +4,7 @@ import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
 import NotFound from 'pages/NotFound'
-import SignUp from 'pages/SignUp'
+import Register from 'pages/Register'
 import type { RouteObject } from 'react-router-dom'
 
 const children: RouteObject[] = [
@@ -17,8 +17,8 @@ const children: RouteObject[] = [
     element: <Logout />
   },
   {
-    path: '/signup',
-    element: <SignUp />
+    path: '/register',
+    element: <Register />
   },
   {
     path: '/',

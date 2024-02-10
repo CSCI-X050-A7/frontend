@@ -4,11 +4,13 @@ import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { Link, useLocation } from 'react-router-dom'
 import { initTheme, toggleTheme } from 'utils/theme'
+import { useAuth } from 'hooks/useAuth'
 
 initTheme()
 
 const Index: React.FC = () => {
   const location = useLocation()
+  const { user } = useAuth()
   return (
     <header className='border-bottom'>
       <Navbar expand='lg' className='bg-body-tertiary'>
@@ -38,25 +40,27 @@ const Index: React.FC = () => {
               >
                 Toggle Theme
               </Button>
-              <Link to={`/login?from=${location.pathname}`}>
-                <Button type='button' className='btn my-2 my-sm-0 mx-1'>
-                  Login
-                </Button>
-              </Link>
-              <Link to='/logout'>
-                <Button
-                  type='button'
-                  className='btn btn-danger my-2 my-sm-0 mx-1'
-                >
-                  Logout
-                </Button>
-              </Link>
-              <Link to='/signup'>
+              {user ? (
+                <Link to='/logout'>
+                  <Button
+                    type='button'
+                    className='btn btn-danger my-2 my-sm-0 mx-1'
+                  >
+                    Logout
+                  </Button>
+                </Link>)
+                : (
+                  <Link to={`/login?from=${location.pathname}`}>
+                    <Button type='button' className='btn my-2 my-sm-0 mx-1'>
+                      Login
+                    </Button>
+                  </Link>)}
+              <Link to='/register'>
                 <Button
                   type='button'
                   className='btn btn-warning my-2 my-sm-0 mx-1'
                 >
-                  Sign-up
+                  Register
                 </Button>
               </Link>
             </Nav>

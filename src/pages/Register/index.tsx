@@ -1,9 +1,8 @@
 import PageContainer from 'components/PageContainer'
-import SignUp from 'components/SignUp'
 
 const Index: React.FC = () => (
   <PageContainer>
-    <SignUp />
+    <div>Register Page</div>
   </PageContainer>
 )
 
