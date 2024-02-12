@@ -1,10 +1,10 @@
+import { useAuth } from 'hooks/useAuth'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { Link, useLocation } from 'react-router-dom'
 import { initTheme, toggleTheme } from 'utils/theme'
-import { useAuth } from 'hooks/useAuth'
 
 initTheme()
 
@@ -48,13 +48,14 @@ const Index: React.FC = () => {
                   >
                     Logout
                   </Button>
-                </Link>)
-                : (
-                  <Link to={`/login?from=${location.pathname}`}>
-                    <Button type='button' className='btn my-2 my-sm-0 mx-1'>
-                      Login
-                    </Button>
-                  </Link>)}
+                </Link>
+              ) : (
+                <Link to={`/login?from=${location.pathname}`}>
+                  <Button type='button' className='btn my-2 my-sm-0 mx-1'>
+                    Login
+                  </Button>
+                </Link>
+              )}
               <Link to='/register'>
                 <Button
                   type='button'

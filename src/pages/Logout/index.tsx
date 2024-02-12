@@ -1,6 +1,5 @@
-import PageContainer from 'components/PageContainer'
-
 import { useRequest } from 'ahooks'
+import PageContainer from 'components/PageContainer'
 import { useAuth } from 'hooks/useAuth'
 import type React from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -29,7 +28,6 @@ const Logout: React.FC = () => {
 
   return user ? <div>Logging out</div> : <Navigate to='/login' replace />
 }
-
 
 const Index: React.FC = () => (
   <PageContainer>
