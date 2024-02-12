@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "gen:api": "npx swagger-typescript-api -p http://localhost:5000/swagger/doc.json -o ./src/client -n index.ts --module-name-first-tag",
+    "gen:api": "swagger-typescript-api -p http://localhost:5000/swagger/doc.json -o ./src/client -n index.ts --module-name-first-tag",
     "preview": "vite preview",
     "format": "prettier -uw --ignore-path .gitignore .",
     "run-tsc": "tsc",
