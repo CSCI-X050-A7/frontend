@@ -7,9 +7,13 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "gen:api": "npx swagger-typescript-api -p http://localhost:5000/swagger/doc.json -o ./src/client -n index.ts --module-name-first-tag",
-    "lint": "eslint . --color --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "format": "prettier -uw --ignore-path .gitignore ."
+    "format": "prettier -uw --ignore-path .gitignore .",
+    "run-tsc": "tsc",
+    "run-eslint": "eslint --cache --fix --ignore-path .gitignore --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0 src",
+    "run-stylelint": "stylelint --cache --fix --ignore-path .gitignore '**/*.{css,less}'",
+    "lint": "run-p run-tsc run-eslint run-stylelint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "ahooks": "^3.7.8",
@@ -43,9 +47,23 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "eslint-plugin-testing-library": "^6.2.0",
     "eslint-plugin-unicorn": "^50.0.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.2",
+    "npm-run-all": "^4.1.5",
+    "stylelint": "14.5.3",
+    "stylelint-config-prettier": "9.0.3",
+    "stylelint-config-standard": "25.0.0",
     "swagger-typescript-api": "^13.0.3",
     "typescript": "^5.3.3",
     "vite": "^5.0.8",
     "vite-tsconfig-paths": "^4.3.1"
+  },
+  "lint-staged": {
+    "*": "prettier -uw",
+    "*.css": "stylelint --cache --fix",
+    "*.{ts,tsx}": [
+      "eslint --cache --fix",
+      "vitest related --run --coverage=false"
+    ]
   }
 }
