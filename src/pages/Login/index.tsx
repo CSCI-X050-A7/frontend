@@ -70,7 +70,7 @@ const LoginForm: React.FC = () => {
                 required
                 type='password'
                 placeholder='Password'
-                defaultValue={username}
+                defaultValue={password}
                 onChange={e => {
                   setPassword(e.target.value)
                 }}

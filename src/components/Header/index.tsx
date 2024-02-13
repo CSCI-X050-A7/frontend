@@ -32,7 +32,8 @@ const Index: React.FC = () => {
             </Nav>
             <Nav>
               <Button
-                className='my-2 my-sm-0 mx-1'
+                type='button'
+                className='btn my-2 my-sm-0 mx-1'
                 variant='outline-secondary'
                 onClick={() => {
                   toggleTheme()
