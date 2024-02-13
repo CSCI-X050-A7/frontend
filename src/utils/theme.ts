@@ -34,6 +34,7 @@ export function toggleTheme() {
       ? THEME.LIGHT
       : THEME.DARK
   setTheme(nextTheme)
+  return nextTheme
 }
 
 export function initTheme() {

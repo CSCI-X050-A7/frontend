@@ -1,16 +1,17 @@
+import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuth } from 'hooks/useAuth'
+import useTheme from 'hooks/useTheme'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import { Link, useLocation } from 'react-router-dom'
-import { initTheme, toggleTheme } from 'utils/theme'
-
-initTheme()
 
 const Index: React.FC = () => {
   const location = useLocation()
   const { user } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   return (
     <header className='border-bottom'>
       <Navbar expand='lg' className='bg-body-tertiary'>
@@ -31,28 +32,31 @@ const Index: React.FC = () => {
               </Link>
             </Nav>
             <Nav>
-              <Button
-                type='button'
-                className='btn my-2 my-sm-0 mx-1'
-                variant='outline-secondary'
-                onClick={() => {
-                  toggleTheme()
-                }}
-              >
-                Toggle Theme
-              </Button>
+              <span className='my-1 mx-0'>
+                <Button
+                  title='toggle theme'
+                  style={{ color: 'inherit' }}
+                  variant='link'
+                  onClick={toggleTheme}
+                >
+                  <FontAwesomeIcon
+                    size='lg'
+                    icon={theme === 'dark' ? faSun : faMoon}
+                  />
+                </Button>
+              </span>
               {user ? (
                 <Link to='/logout'>
                   <Button
                     type='button'
-                    className='btn btn-danger my-2 my-sm-0 mx-1'
+                    className='btn btn-danger my-1 mx-0 mx-lg-1'
                   >
                     Logout
                   </Button>
                 </Link>
               ) : (
                 <Link to={`/login?from=${location.pathname}`}>
-                  <Button type='button' className='btn my-2 my-sm-0 mx-1'>
+                  <Button type='button' className='btn my-1 mx-0 mx-lg-1'>
                     Login
                   </Button>
                 </Link>
@@ -60,7 +64,7 @@ const Index: React.FC = () => {
               <Link to='/register'>
                 <Button
                   type='button'
-                  className='btn btn-warning my-2 my-sm-0 mx-1'
+                  className='btn btn-warning my-1 mx-0 mx-lg-1'
                 >
                   Register
                 </Button>

@@ -81,7 +81,7 @@ const LoginForm: React.FC = () => {
             <Col sm={{ span: 10, offset: 2 }}>
               <Button
                 variant='primary'
-                type='submit'
+                type='button'
                 onClick={(): void => {
                   login()
                 }}
