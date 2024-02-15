@@ -1,8 +1,8 @@
 import { ProtectedRoute } from 'components/ProtectedRoute'
-import BookCreate from 'pages/BookCreate'
 import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
+import MovieCreate from 'pages/MovieCreate'
 import NotFound from 'pages/NotFound'
 import Register from 'pages/Register'
 import type { RouteObject } from 'react-router-dom'
@@ -29,7 +29,7 @@ const children: RouteObject[] = [
     children: [
       {
         path: '/create',
-        element: <BookCreate />
+        element: <MovieCreate />
       }
     ]
   },

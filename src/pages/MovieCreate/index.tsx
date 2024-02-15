@@ -10,10 +10,10 @@ import Backend from 'utils/service'
 const Index: React.FC = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [bookTitle, setBookTitle] = useState('my book')
+  const [movieTitle, setMovieTitle] = useState('my movie')
   const { run: create } = useRequest(
     async () =>
-      Backend.book.v1BooksCreate({
+      Backend.movie.v1MoviesCreate({
         author: 'string',
         meta: {
           description: 'string',
@@ -21,7 +21,7 @@ const Index: React.FC = () => {
           rating: 10
         },
         status: 0,
-        title: bookTitle,
+        title: movieTitle,
         user_id: user?.id ?? ''
       }),
     {
@@ -34,17 +34,17 @@ const Index: React.FC = () => {
   return (
     <PageContainer>
       <div className='text-center'>
-        <h1>Create Book</h1>
+        <h1>Create Movie</h1>
       </div>
       <Form>
         <Form.Group className='mb-3'>
-          <Form.Label>Book Title</Form.Label>
+          <Form.Label>Movie Title</Form.Label>
           <Form.Control
             type='text'
-            placeholder='Book title'
-            defaultValue={bookTitle}
+            placeholder='Movie title'
+            defaultValue={movieTitle}
             onChange={e => {
-              setBookTitle(e.target.value)
+              setMovieTitle(e.target.value)
             }}
           />
         </Form.Group>

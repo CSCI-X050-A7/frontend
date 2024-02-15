@@ -6,7 +6,7 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Backend from 'utils/service'
 
 const Index: React.FC = () => {
-  const { data, loading } = useRequest(async () => Backend.book.v1BooksList())
+  const { data, loading } = useRequest(async () => Backend.movie.v1MoviesList())
   return (
     <PageContainer>
       <div className='text-center'>
@@ -26,13 +26,13 @@ const Index: React.FC = () => {
         <Card style={{ width: '18rem' }}>
           <Card.Body>
             <Card.Title>
-              <b>{loading ? 'loading...' : 'Books'}</b>
+              <b>{loading ? 'loading...' : 'Movies'}</b>
             </Card.Title>
           </Card.Body>
           {!loading && (
             <ListGroup variant='flush'>
-              {data?.data.data?.map(book => (
-                <ListGroup.Item key={book.id}>{book.title}</ListGroup.Item>
+              {data?.data.data?.map(movie => (
+                <ListGroup.Item key={movie.id}>{movie.title}</ListGroup.Item>
               ))}
             </ListGroup>
           )}

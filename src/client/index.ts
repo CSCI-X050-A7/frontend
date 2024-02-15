@@ -16,27 +16,7 @@ export interface SchemaAuth {
   username?: string
 }
 
-export interface SchemaBook {
-  /** @maxLength 255 */
-  author: string
-  created_at?: string
-  id?: string
-  meta: SchemaMeta
-  status: number
-  /** @maxLength 255 */
-  title: string
-  updated_at?: string
-  user_id: string
-}
-
-export interface SchemaBookListResponse {
-  count?: number
-  data?: SchemaBook[]
-  limit?: number
-  offset?: number
-}
-
-export interface SchemaCreateBook {
+export interface SchemaCreateMovie {
   /** @maxLength 255 */
   author: string
   meta: SchemaMeta
@@ -85,6 +65,26 @@ export interface SchemaMeta {
    * @max 10
    */
   rating?: number
+}
+
+export interface SchemaMovie {
+  /** @maxLength 255 */
+  author: string
+  created_at?: string
+  id?: string
+  meta: SchemaMeta
+  status: number
+  /** @maxLength 255 */
+  title: string
+  updated_at?: string
+  user_id: string
+}
+
+export interface SchemaMovieListResponse {
+  count?: number
+  data?: SchemaMovie[]
+  limit?: number
+  offset?: number
 }
 
 export interface SchemaTokenResponse {
@@ -559,16 +559,16 @@ export class Api<
         ...params
       })
   }
-  book = {
+  movie = {
     /**
-     * @description Get all books.
+     * @description Get all movies.
      *
-     * @tags Book
-     * @name V1BooksList
-     * @summary get all books
-     * @request GET:/api/v1/books
+     * @tags Movie
+     * @name V1MoviesList
+     * @summary get all movies
+     * @request GET:/api/v1/movies
      */
-    v1BooksList: (
+    v1MoviesList: (
       query?: {
         /** offset */
         offset?: number
@@ -577,8 +577,8 @@ export class Api<
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaBookListResponse, SchemaErrorResponse>({
-        path: `/api/v1/books`,
+      this.request<SchemaMovieListResponse, SchemaErrorResponse>({
+        path: `/api/v1/movies`,
         method: 'GET',
         query: query,
         type: ContentType.Json,
@@ -587,19 +587,22 @@ export class Api<
       }),
 
     /**
-     * @description Create a new book.
+     * @description Create a new movie.
      *
-     * @tags Book
-     * @name V1BooksCreate
-     * @summary create a new book
-     * @request POST:/api/v1/books
+     * @tags Movie
+     * @name V1MoviesCreate
+     * @summary create a new movie
+     * @request POST:/api/v1/movies
      * @secure
      */
-    v1BooksCreate: (createbook: SchemaCreateBook, params: RequestParams = {}) =>
-      this.request<SchemaBook, SchemaErrorResponse>({
-        path: `/api/v1/books`,
+    v1MoviesCreate: (
+      createmovie: SchemaCreateMovie,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaMovie, SchemaErrorResponse>({
+        path: `/api/v1/movies`,
         method: 'POST',
-        body: createbook,
+        body: createmovie,
         secure: true,
         type: ContentType.Json,
         format: 'json',
@@ -607,16 +610,16 @@ export class Api<
       }),
 
     /**
-     * @description a book.
+     * @description a movie.
      *
-     * @tags Book
-     * @name V1BooksDetail
-     * @summary get a book
-     * @request GET:/api/v1/books/{id}
+     * @tags Movie
+     * @name V1MoviesDetail
+     * @summary get a movie
+     * @request GET:/api/v1/movies/{id}
      */
-    v1BooksDetail: (id: string, params: RequestParams = {}) =>
-      this.request<SchemaBook, SchemaErrorResponse>({
-        path: `/api/v1/books/${id}`,
+    v1MoviesDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaMovie, SchemaErrorResponse>({
+        path: `/api/v1/movies/${id}`,
         method: 'GET',
         type: ContentType.Json,
         format: 'json',
@@ -624,23 +627,23 @@ export class Api<
       }),
 
     /**
-     * @description update book
+     * @description update movie
      *
-     * @tags Book
-     * @name V1BooksUpdate
-     * @summary update a book
-     * @request PUT:/api/v1/books/{id}
+     * @tags Movie
+     * @name V1MoviesUpdate
+     * @summary update a movie
+     * @request PUT:/api/v1/movies/{id}
      * @secure
      */
-    v1BooksUpdate: (
+    v1MoviesUpdate: (
       id: string,
-      updatebook: SchemaBook,
+      updatemovie: SchemaMovie,
       params: RequestParams = {}
     ) =>
-      this.request<SchemaBook, SchemaErrorResponse>({
-        path: `/api/v1/books/${id}`,
+      this.request<SchemaMovie, SchemaErrorResponse>({
+        path: `/api/v1/movies/${id}`,
         method: 'PUT',
-        body: updatebook,
+        body: updatemovie,
         secure: true,
         type: ContentType.Json,
         format: 'json',
@@ -648,17 +651,17 @@ export class Api<
       }),
 
     /**
-     * @description delete book
+     * @description delete movie
      *
-     * @tags Book
-     * @name V1BooksDelete
-     * @summary delete a book
-     * @request DELETE:/api/v1/books/{id}
+     * @tags Movie
+     * @name V1MoviesDelete
+     * @summary delete a movie
+     * @request DELETE:/api/v1/movies/{id}
      * @secure
      */
-    v1BooksDelete: (id: string, params: RequestParams = {}) =>
+    v1MoviesDelete: (id: string, params: RequestParams = {}) =>
       this.request<object, SchemaErrorResponse>({
-        path: `/api/v1/books/${id}`,
+        path: `/api/v1/movies/${id}`,
         method: 'DELETE',
         secure: true,
         type: ContentType.Json,
@@ -681,6 +684,24 @@ export class Api<
         path: `/api/v1/users/me`,
         method: 'GET',
         secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  misc = {
+    /**
+     * No description
+     *
+     * @tags Misc
+     * @name V1VersionList
+     * @summary get current software version
+     * @request GET:/api/v1/version
+     */
+    v1VersionList: (params: RequestParams = {}) =>
+      this.request<object, any>({
+        path: `/api/v1/version`,
+        method: 'GET',
         type: ContentType.Json,
         format: 'json',
         ...params
