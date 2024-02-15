@@ -37,3 +37,4 @@ jobs:
           script: |
             cd ~/frontend
             git fetch --all && git reset --hard origin/main
+            pnpm install --frozen-lockfile
