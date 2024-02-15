@@ -29,11 +29,14 @@ jobs:
     steps:
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@master
+        env:
+          PATH: ${{ secrets.ENV_PATH }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
+          envs: PATH
           script: |
             cd ~/frontend
             git fetch --all && git reset --hard origin/main
