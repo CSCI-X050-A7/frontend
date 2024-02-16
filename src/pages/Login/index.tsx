@@ -44,7 +44,7 @@ const LoginForm: React.FC = () => {
         <h1>Login</h1>
       </div>
       <Col xs={12} md={8} className='mx-auto mt-3'>
-        <Form>
+        <Form validated>
           <Form.Group as={Row} className='mb-3' controlId='formBasicEmail'>
             <Form.Label column sm={2}>
               Username
