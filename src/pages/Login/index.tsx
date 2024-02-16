@@ -43,10 +43,10 @@ const LoginForm: React.FC = () => {
       <div className='text-center'>
         <h1>Login</h1>
       </div>
-      <Col xs={12} md={8} className='mx-auto mt-3'>
+      <Col xs={12} md={8} lg={6} className='mx-auto mt-3'>
         <Form validated>
           <Form.Group as={Row} className='mb-3' controlId='formBasicEmail'>
-            <Form.Label column sm={2}>
+            <Form.Label className='text-sm-end' column sm={2}>
               Username
             </Form.Label>
             <Col sm={10}>
@@ -62,7 +62,7 @@ const LoginForm: React.FC = () => {
             </Col>
           </Form.Group>
           <Form.Group as={Row} className='mb-3' controlId='formBasicPassword'>
-            <Form.Label column sm={2}>
+            <Form.Label className='text-sm-end' column sm={2}>
               Password
             </Form.Label>
             <Col sm={10}>
