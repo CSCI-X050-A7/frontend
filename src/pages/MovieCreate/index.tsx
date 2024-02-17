@@ -1,6 +1,5 @@
 import { useRequest } from 'ahooks'
 import PageContainer from 'components/PageContainer'
-import { useAuth } from 'hooks/useAuth'
 import { useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
@@ -8,21 +7,24 @@ import { useNavigate } from 'react-router-dom'
 import Backend from 'utils/service'
 
 const Index: React.FC = () => {
-  const { user } = useAuth()
   const navigate = useNavigate()
   const [movieTitle, setMovieTitle] = useState('my movie')
   const { run: create } = useRequest(
     async () =>
+      // TODO: replace the movie with user input
       Backend.movie.v1MoviesCreate({
-        author: 'string',
-        meta: {
-          description: 'string',
-          picture: 'string',
-          rating: 10
-        },
-        status: 0,
         title: movieTitle,
-        user_id: user?.id ?? ''
+        cast: 'cast',
+        category: 'category',
+        director: 'director',
+        producer: 'producer',
+        rating_code: 'rating_code',
+        reviews: 'reviews',
+        show_time: '2016-01-02T15:04:05Z',
+        synopsis: 'synopsis',
+        trailer_picture: 'https://placehold.co/600x400',
+        trailer_video:
+          'https://www.youtube.com/embed/NpEaa2P7qZI?si=Ev2ybUCHzVxQPIO1&amp;controls=0'
       }),
     {
       manual: true,

@@ -55,20 +55,22 @@ const Index: React.FC = () => {
                   </Button>
                 </Link>
               ) : (
-                <Link to={`/login?from=${location.pathname}`}>
-                  <Button type='button' className='btn my-1 mx-0 mx-lg-1'>
-                    Login
-                  </Button>
-                </Link>
+                <>
+                  <Link to={`/login?from=${location.pathname}`}>
+                    <Button type='button' className='btn my-1 mx-0 mx-lg-1'>
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to='/register'>
+                    <Button
+                      type='button'
+                      className='btn btn-warning my-1 mx-0 mx-lg-1'
+                    >
+                      Register
+                    </Button>
+                  </Link>
+                </>
               )}
-              <Link to='/register'>
-                <Button
-                  type='button'
-                  className='btn btn-warning my-1 mx-0 mx-lg-1'
-                >
-                  Register
-                </Button>
-              </Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

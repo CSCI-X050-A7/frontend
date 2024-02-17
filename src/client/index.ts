@@ -16,16 +16,6 @@ export interface SchemaAuth {
   username?: string
 }
 
-export interface SchemaCreateMovie {
-  /** @maxLength 255 */
-  author: string
-  meta: SchemaMeta
-  status: number
-  /** @maxLength 255 */
-  title: string
-  user_id: string
-}
-
 export interface SchemaCreateUser {
   /** @maxLength 150 */
   email: string
@@ -57,27 +47,30 @@ export interface SchemaJWT {
   user_id?: string
 }
 
-export interface SchemaMeta {
-  description?: string
-  picture?: string
-  /**
-   * @min 1
-   * @max 10
-   */
-  rating?: number
-}
-
 export interface SchemaMovie {
   /** @maxLength 255 */
-  author: string
-  created_at?: string
+  cast: string
+  /** @maxLength 255 */
+  category: string
+  /** @maxLength 255 */
+  director: string
   id?: string
-  meta: SchemaMeta
-  status: number
+  /** @maxLength 255 */
+  producer: string
+  /** @maxLength 255 */
+  rating_code: string
+  /** @maxLength 255 */
+  reviews: string
+  /** @maxLength 255 */
+  show_time: string
+  /** @maxLength 255 */
+  synopsis: string
   /** @maxLength 255 */
   title: string
-  updated_at?: string
-  user_id: string
+  /** @maxLength 1023 */
+  trailer_picture: string
+  /** @maxLength 1023 */
+  trailer_video: string
 }
 
 export interface SchemaMovieListResponse {
@@ -100,6 +93,30 @@ export interface SchemaUpdateUser {
   is_admin?: boolean
   /** @maxLength 100 */
   last_name: string
+}
+
+export interface SchemaUpsertMovie {
+  /** @maxLength 255 */
+  cast: string
+  /** @maxLength 255 */
+  category: string
+  /** @maxLength 255 */
+  director: string
+  /** @maxLength 255 */
+  producer: string
+  /** @maxLength 255 */
+  rating_code: string
+  /** @maxLength 255 */
+  reviews: string
+  show_time: string
+  /** @maxLength 255 */
+  synopsis: string
+  /** @maxLength 255 */
+  title: string
+  /** @maxLength 1023 */
+  trailer_picture: string
+  /** @maxLength 1023 */
+  trailer_video: string
 }
 
 export interface SchemaUser {
@@ -574,6 +591,10 @@ export class Api<
         offset?: number
         /** limit */
         limit?: number
+        /** search by title */
+        search?: string
+        /** the moive is running or not */
+        running?: boolean
       },
       params: RequestParams = {}
     ) =>
@@ -595,14 +616,11 @@ export class Api<
      * @request POST:/api/v1/movies
      * @secure
      */
-    v1MoviesCreate: (
-      createmovie: SchemaCreateMovie,
-      params: RequestParams = {}
-    ) =>
+    v1MoviesCreate: (movie: SchemaUpsertMovie, params: RequestParams = {}) =>
       this.request<SchemaMovie, SchemaErrorResponse>({
         path: `/api/v1/movies`,
         method: 'POST',
-        body: createmovie,
+        body: movie,
         secure: true,
         type: ContentType.Json,
         format: 'json',
