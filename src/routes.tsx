@@ -5,6 +5,7 @@ import Main from 'pages/Main'
 import MovieCreate from 'pages/MovieCreate'
 import NotFound from 'pages/NotFound'
 import Register from 'pages/Register'
+import RegisterConfirm from 'pages/RegisterConfirm'
 import type { RouteObject } from 'react-router-dom'
 
 const children: RouteObject[] = [
@@ -19,6 +20,10 @@ const children: RouteObject[] = [
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/register/confirm',
+    element: <RegisterConfirm />
   },
   {
     path: '/',

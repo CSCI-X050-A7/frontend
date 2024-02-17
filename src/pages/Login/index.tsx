@@ -36,6 +36,11 @@ const LoginForm: React.FC = () => {
       }
     }
   )
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    login()
+  }
+
   return user ? (
     <Navigate to='/' />
   ) : (
@@ -44,7 +49,7 @@ const LoginForm: React.FC = () => {
         <h1>Login</h1>
       </div>
       <Col xs={12} md={8} lg={6} className='mx-auto mt-3'>
-        <Form validated>
+        <Form onSubmit={handleSubmit} validated>
           <Form.Group as={Row} className='mb-3' controlId='formBasicEmail'>
             <Form.Label className='text-sm-end' column sm={2}>
               Username
@@ -79,13 +84,7 @@ const LoginForm: React.FC = () => {
           </Form.Group>
           <Form.Group as={Row} className='mb-3'>
             <Col sm={{ span: 10, offset: 2 }}>
-              <Button
-                variant='primary'
-                type='button'
-                onClick={(): void => {
-                  login()
-                }}
-              >
+              <Button variant='primary' type='submit'>
                 Submit
               </Button>
             </Col>
