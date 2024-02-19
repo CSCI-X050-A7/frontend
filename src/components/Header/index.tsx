@@ -2,6 +2,7 @@ import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuth } from 'hooks/useAuth'
 import useTheme from 'hooks/useTheme'
+import { NavDropdown } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
@@ -27,9 +28,6 @@ const Index: React.FC = () => {
               <Link className='nav-link' to='/'>
                 Home
               </Link>
-              <Link className='nav-link' to='/create'>
-                Create
-              </Link>
             </Nav>
             <Nav>
               <span className='my-1 mx-0'>
@@ -45,6 +43,13 @@ const Index: React.FC = () => {
                   />
                 </Button>
               </span>
+              {user && user.is_admin ? (
+                <NavDropdown title='Administration' className='my-1'>
+                  <Link to='/create' className='dropdown-item'>
+                    Create Movie
+                  </Link>
+                </NavDropdown>
+              ) : null}
               {user ? (
                 <Link to='/logout'>
                   <Button
