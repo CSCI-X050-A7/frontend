@@ -22,7 +22,7 @@ const Index: React.FC = () => {
         reviews: 'reviews',
         show_time: '2016-01-02T15:04:05Z',
         synopsis: 'synopsis',
-        trailer_picture: 'https://placehold.co/600x400',
+        trailer_picture: 'https://placehold.co/400x592',
         trailer_video:
           'https://www.youtube.com/embed/NpEaa2P7qZI?si=Ev2ybUCHzVxQPIO1&amp;controls=0'
       }),

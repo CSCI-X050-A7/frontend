@@ -593,7 +593,7 @@ export class Api<
         limit?: number
         /** search by title */
         search?: string
-        /** the moive is running or not */
+        /** the movie is running or not */
         running?: boolean
       },
       params: RequestParams = {}

@@ -15,19 +15,16 @@ const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
   return (
-    <Card style={{ width: '18rem' }} className='mb-3'>
+    <Card className='mb-3'>
       <Card.Img variant='top' src={movie.trailer_picture} />
       <Card.Body>
         <Card.Title>{movie.title}</Card.Title>
         <Card.Text>
-          <div>Director: {movie.director}</div>
-          <div>Cast: {movie.cast}</div>
-          <div>Category: {movie.category}</div>
+          <Card.Link href='#' onClick={handleShow}>
+            Watch Trailer
+          </Card.Link>
         </Card.Text>
-        <Button variant='secondary' onClick={handleShow}>
-          Watch Trailer
-        </Button>{' '}
-        <Link to={`/moive/${movie.id}/book`}>
+        <Link to={`/movie/${movie.id}/book`}>
           <Button variant='primary'>Book Movie</Button>
         </Link>
       </Card.Body>
@@ -60,7 +57,7 @@ const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
 const MovieList: React.FC<{ movies: SchemaMovie[] }> = ({ movies }) => (
   <Row>
     {movies.map(movie => (
-      <Col key={movie.id}>
+      <Col key={movie.id} xs={12} sm={6} xl={4}>
         <Movie movie={movie} />
       </Col>
     ))}
@@ -92,7 +89,7 @@ const Index: React.FC = () => {
   return (
     <PageContainer>
       <div className='text-center mb-3'>
-        <h1>All Moives</h1>
+        <h1>All movies</h1>
         <p>
           Visit backend swagger: <a href='/swagger'>here</a>
         </p>
