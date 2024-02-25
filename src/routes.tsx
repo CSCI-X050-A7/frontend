@@ -6,6 +6,9 @@ import MovieCreate from 'pages/MovieCreate'
 import NotFound from 'pages/NotFound'
 import Register from 'pages/Register'
 import RegisterConfirm from 'pages/RegisterConfirm'
+import SelectMovie from 'pages/SelectMovie'
+import SelectSeat from 'pages/SelectSeat'
+import SelectTime from 'pages/SelectTime'
 import type { RouteObject } from 'react-router-dom'
 
 const children: RouteObject[] = [
@@ -37,6 +40,18 @@ const children: RouteObject[] = [
         element: <MovieCreate />
       }
     ]
+  },
+  {
+    path: '/SelectMovie',
+    element: <SelectMovie />
+  },
+  {
+    path: '/SelectTime',
+    element: <SelectTime />
+  },
+  {
+    path: '/SelectSeat',
+    element: <SelectSeat />
   },
   {
     path: '*',
