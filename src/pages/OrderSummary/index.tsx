@@ -38,7 +38,7 @@ const OrderSummary: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <div>
           {' '}
-          {/*TICKET DETAILS*/}
+          {/* TICKET DETAILS */}
           <h4 style={{ marginBottom: '20px' }}> Seat Details</h4>
           <label style={{ marginBottom: '20px', display: 'block' }}>
             {' '}
@@ -70,7 +70,7 @@ const OrderSummary: React.FC = () => {
         </div>
         <div>
           {' '}
-          {/*MOVIE DETAILS*/}
+          {/* MOVIE DETAILS */}
           <h4 style={{ marginBottom: '40px', display: 'block' }}>
             {' '}
             Movie Details

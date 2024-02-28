@@ -23,7 +23,6 @@ const RegistrationForm = () => {
       <Col className='mx-auto mt-3'>
         <Form onSubmit={handleSubmit} validated>
           <Row className='mb-3'>
-        
             <Form.Group as={Col} controlId='formGridName'>
               <Form.Label className='required'>First Name</Form.Label>
               <Form.Control required />
@@ -33,11 +32,9 @@ const RegistrationForm = () => {
               <Form.Label className='required'>Last Name</Form.Label>
               <Form.Control required />
             </Form.Group>
-
           </Row>
           <Row className='mb-3'>
-           
-          <Form.Group as={Col} controlId='formGridEmail'>
+            <Form.Group as={Col} controlId='formGridEmail'>
               <Form.Label className='required'>Email</Form.Label>
               <Form.Control type='email' placeholder='Enter email' required />
             </Form.Group>

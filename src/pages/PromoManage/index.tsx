@@ -43,77 +43,77 @@ const EditPromo: React.FC<{
   onClose: () => void
   selectedPromoTitle: string
 }> = ({ onClose, selectedPromoTitle }) => (
-    <Card
+  <Card
+    style={{
+      borderRadius: '10px',
+      padding: '20px',
+      marginBottom: '20px',
+      width: '300px'
+    }}
+  >
+    <h3 style={{ padding: '10px' }}>
+      {selectedPromoTitle === 'New Promo' ? 'Add ' : 'Edit: '}{' '}
+      {selectedPromoTitle}
+    </h3>
+    <input
+      type='text'
+      placeholder='Promo title'
+      style={{ marginBottom: '10px' }}
+    />
+    <input
+      type='text'
+      placeholder='Movie affected'
+      style={{ marginBottom: '10px' }}
+    />
+    <input
+      type='text'
+      placeholder='Discount percentage'
+      style={{ marginBottom: '10px' }}
+    />
+    <input
+      type='text'
+      placeholder='Date applicable'
+      style={{ marginBottom: '10px' }}
+    />
+
+    <div
       style={{
-        borderRadius: '10px',
-        padding: '20px',
-        marginBottom: '20px',
-        width: '300px'
+        padding: '10px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
     >
-      <h3 style={{ padding: '10px' }}>
-        {selectedPromoTitle === 'New Promo' ? 'Add ' : 'Edit: '}{' '}
-        {selectedPromoTitle}
-      </h3>
-      <input
-        type='text'
-        placeholder='Promo title'
-        style={{ marginBottom: '10px' }}
-      />
-      <input
-        type='text'
-        placeholder='Movie affected'
-        style={{ marginBottom: '10px' }}
-      />
-      <input
-        type='text'
-        placeholder='Discount percentage'
-        style={{ marginBottom: '10px' }}
-      />
-      <input
-        type='text'
-        placeholder='Date applicable'
-        style={{ marginBottom: '10px' }}
-      />
-
-      <div
-        style={{
-          padding: '10px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
+      <Button
+        style={{ width: '80px', padding: '5px', margin: '0 5px' }}
+        variant='primary'
+        onClick={onClose}
       >
-        <Button
-          style={{ width: '80px', padding: '5px', margin: '0 5px' }}
-          variant='primary'
-          onClick={onClose}
-        >
-          Submit
-        </Button>
-        <Button
-          style={{ width: '80px', padding: '5px', margin: '0 5px' }}
-          variant='primary'
-          onClick={onClose}
-        >
-          Close
-        </Button>
-        <Button
-          style={{
-            width: '80px',
-            padding: '5px',
-            margin: '0 5px',
-            backgroundColor: 'red',
-            borderColor: 'red'
-          }}
-          variant='primary'
-          onClick={onClose}
-        >
-          {selectedPromoTitle === 'New Promo' ? 'Cancel ' : 'Delete'}
-        </Button>
-      </div>
-    </Card>
-  )
+        Submit
+      </Button>
+      <Button
+        style={{ width: '80px', padding: '5px', margin: '0 5px' }}
+        variant='primary'
+        onClick={onClose}
+      >
+        Close
+      </Button>
+      <Button
+        style={{
+          width: '80px',
+          padding: '5px',
+          margin: '0 5px',
+          backgroundColor: 'red',
+          borderColor: 'red'
+        }}
+        variant='primary'
+        onClick={onClose}
+      >
+        {selectedPromoTitle === 'New Promo' ? 'Cancel ' : 'Delete'}
+      </Button>
+    </div>
+  </Card>
+)
 
 const LeftHalf: React.FC<{ onOpenTextInput: (promoTitle: string) => void }> = ({
   onOpenTextInput
@@ -199,25 +199,27 @@ const RightHalf: React.FC<{
   onCloseTextInput: () => void
   selectedPromoTitle: string
 }> = ({ showTextInput, onCloseTextInput, selectedPromoTitle }) => (
-    <div style={{ width: '20%', padding: '50px', paddingLeft: '0px' }}>
-      {!showTextInput && (
-        <Card
-          style={{
-            borderRadius: '10px',
-            padding: '20px',
-            marginBottom: '20px',
-            width: '300px'
-          }}
-        >
-          <p>Add a new promotion, or select one to begin editing.</p>
-        </Card>
-      )}
-      {showTextInput ? <EditPromo
-          onClose={onCloseTextInput}
-          selectedPromoTitle={selectedPromoTitle}
-        /> : null}
-    </div>
-  )
+  <div style={{ width: '20%', padding: '50px', paddingLeft: '0px' }}>
+    {!showTextInput && (
+      <Card
+        style={{
+          borderRadius: '10px',
+          padding: '20px',
+          marginBottom: '20px',
+          width: '300px'
+        }}
+      >
+        <p>Add a new promotion, or select one to begin editing.</p>
+      </Card>
+    )}
+    {showTextInput ? (
+      <EditPromo
+        onClose={onCloseTextInput}
+        selectedPromoTitle={selectedPromoTitle}
+      />
+    ) : null}
+  </div>
+)
 
 const Index: React.FC = () => {
   const [showTextInput, setShowTextInput] = useState<boolean>(false)

@@ -3,11 +3,11 @@ import { useRequest } from 'ahooks'
 import type { SchemaMovie } from 'client'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
-import { Col, Modal, Row , ListGroup } from 'react-bootstrap'
+import { Col, Modal, Row, ListGroup } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
-import { useNavigate , Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import Backend from 'utils/service'
 
 const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
@@ -205,17 +205,17 @@ const LeftHalf: React.FC = () => {
 }
 
 const Index: React.FC = () => (
-    <PageContainer>
-      <div style={{ display: 'flex' }}>
-        <LeftHalf />
-        <div
-          style={{ display: 'flex', flexDirection: 'column', padding: '20px' }}
-        >
-          <h2>Add Movie</h2>
-          <RightHalf />
-        </div>
+  <PageContainer>
+    <div style={{ display: 'flex' }}>
+      <LeftHalf />
+      <div
+        style={{ display: 'flex', flexDirection: 'column', padding: '20px' }}
+      >
+        <h2>Add Movie</h2>
+        <RightHalf />
       </div>
-    </PageContainer>
-  )
+    </div>
+  </PageContainer>
+)
 
 export default Index

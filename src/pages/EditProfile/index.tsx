@@ -52,11 +52,13 @@ const UserProfileForm: React.FC = () => {
           onChange={e => handleInputChange('username', e.target.value)}
           readOnly={!editingUser}
         />
-        {editingUser ? <button onClick={() => setEditingUser(false)}>
+        {editingUser ? (
+          <button onClick={() => setEditingUser(false)}>
             <span role='img' aria-label='Save'>
               ✅
             </span>
-          </button> : null}
+          </button>
+        ) : null}
         {!editingUser && (
           <button onClick={() => setEditingUser(true)}>
             <span role='img' aria-label='Edit'>
@@ -73,11 +75,13 @@ const UserProfileForm: React.FC = () => {
           onChange={e => handleInputChange('password', e.target.value)}
           readOnly={!editingPass}
         />
-        {editingPass ? <button onClick={() => setEditingPass(false)}>
+        {editingPass ? (
+          <button onClick={() => setEditingPass(false)}>
             <span role='img' aria-label='Save'>
               ✅
             </span>
-          </button> : null}
+          </button>
+        ) : null}
         {!editingPass && (
           <button onClick={() => setEditingPass(true)}>
             <span role='img' aria-label='Edit'>
@@ -94,11 +98,13 @@ const UserProfileForm: React.FC = () => {
           onChange={e => handleInputChange('email', e.target.value)}
           readOnly={!editingEmail}
         />
-        {editingEmail ? <button onClick={() => setEditingEmail(false)}>
+        {editingEmail ? (
+          <button onClick={() => setEditingEmail(false)}>
             <span role='img' aria-label='Save'>
               ✅
             </span>
-          </button> : null}
+          </button>
+        ) : null}
         {!editingEmail && (
           <button onClick={() => setEditingEmail(true)}>
             <span role='img' aria-label='Edit'>
@@ -115,11 +121,13 @@ const UserProfileForm: React.FC = () => {
           onChange={e => handleInputChange('birthday', e.target.value)}
           readOnly={!editingBday}
         />
-        {editingBday ? <button onClick={() => setEditingBday(false)}>
+        {editingBday ? (
+          <button onClick={() => setEditingBday(false)}>
             <span role='img' aria-label='Save'>
               ✅
             </span>
-          </button> : null}
+          </button>
+        ) : null}
         {!editingBday && (
           <button onClick={() => setEditingBday(true)}>
             <span role='img' aria-label='Edit'>
