@@ -45,8 +45,17 @@ const Index: React.FC = () => {
               </span>
               {user && user.is_admin ? (
                 <NavDropdown title='Administration' className='my-1'>
-                  <Link to='/create' className='dropdown-item'>
-                    Create Movie
+                  <Link to='/admin/movie/create' className='dropdown-item'>
+                    Create Movies
+                  </Link>
+                  <Link to='/admin/movie' className='dropdown-item'>
+                    Manage Movies
+                  </Link>
+                  <Link to='/admin/promo' className='dropdown-item'>
+                    Manage Promotions
+                  </Link>
+                  <Link to='/admin/user' className='dropdown-item'>
+                    Manage Users
                   </Link>
                 </NavDropdown>
               ) : null}
