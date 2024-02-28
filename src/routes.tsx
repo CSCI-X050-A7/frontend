@@ -3,11 +3,11 @@ import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
 import MovieCreate from 'pages/MovieCreate'
+import MovieSeatSelect from 'pages/MovieSeatSelect'
+import MovieSelect from 'pages/MovieSelect'
 import NotFound from 'pages/NotFound'
 import Register from 'pages/Register'
 import RegisterConfirm from 'pages/RegisterConfirm'
-import SelectMovie from 'pages/MovieSelect'
-import SelectSeat from 'pages/MovieSeatSelect'
 import type { RouteObject } from 'react-router-dom'
 
 const children: RouteObject[] = [
@@ -41,13 +41,13 @@ const children: RouteObject[] = [
     ]
   },
   {
-    path: '/SelectMovie',
-    element: <SelectMovie />
+    path: '/movie/:movieId/book',
+    element: <MovieSelect />
   },
 
   {
-    path: '/SelectSeat',
-    element: <SelectSeat />
+    path: '/movie/:movieId/seat',
+    element: <MovieSeatSelect />
   },
   {
     path: '*',
