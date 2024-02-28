@@ -1,13 +1,13 @@
-import { ProtectedRoute } from 'components/ProtectedRoute'
+// import { ProtectedRoute } from 'components/ProtectedRoute'
 import Checkout from 'pages/Checkout'
 import EditProfile from 'pages/EditProfile'
 import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
 import MovieCreate from 'pages/MovieCreate'
+import MovieManage from 'pages/MovieManage'
 import MovieSeatSelect from 'pages/MovieSeatSelect'
 import MovieSelect from 'pages/MovieSelect'
-import MovieManage from 'pages/MovieManage'
 import NotFound from 'pages/NotFound'
 import OrderConfirmation from 'pages/OrderConfirmation'
 import OrderSummary from 'pages/OrderSummary'
@@ -43,6 +43,10 @@ const children: RouteObject[] = [
     element: <MovieManage />
   },
   {
+    path: '/admin/movie/create',
+    element: <MovieCreate />
+  },
+  {
     path: '/admin/user',
     element: <UserManage />
   },
@@ -54,15 +58,15 @@ const children: RouteObject[] = [
     path: '/',
     element: <Main />
   },
-  {
-    element: <ProtectedRoute />,
-    children: [
-      {
-        path: '/create',
-        element: <MovieCreate />
-      }
-    ]
-  },
+  // {
+  //   element: <ProtectedRoute />,
+  //   children: [
+  //     {
+  //       path: '/create',
+  //       element: <MovieCreate />
+  //     }
+  //   ]
+  // },
   {
     path: '/movie/:movieId/book',
     element: <MovieSelect />
