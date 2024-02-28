@@ -2,11 +2,15 @@ import { ProtectedRoute } from 'components/ProtectedRoute'
 import Checkout from 'pages/Checkout'
 import EditProfile from 'pages/EditProfile'
 import Login from 'pages/Login'
+import Admin from 'pages/Admin'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
 import MovieCreate from 'pages/MovieCreate'
 import MovieSeatSelect from 'pages/MovieSeatSelect'
 import MovieSelect from 'pages/MovieSelect'
+import MovieManage from 'pages/MovieManage'
+import UserManage from 'pages/UserManage'
+import PromoManage from 'pages/PromoManage'
 import NotFound from 'pages/NotFound'
 import OrderConfirmation from 'pages/OrderConfirmation'
 import OrderSummary from 'pages/OrderSummary'
@@ -34,6 +38,22 @@ const children: RouteObject[] = [
   {
     path: '/register/confirm',
     element: <RegisterConfirm />
+  },
+  {
+    path: '/admin',
+    element: <Admin />
+  },
+  {
+    path:'/ManageMovies',
+    element: <MovieManage />
+  },
+  {
+    path:'/ManageUsers',
+    element: <UserManage />
+  },
+  {
+    path:'/ManagePromos',
+    element: <PromoManage />
   },
   {
     path: '/',
