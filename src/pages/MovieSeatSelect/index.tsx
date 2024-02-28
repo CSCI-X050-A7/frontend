@@ -2,7 +2,9 @@
 import PageContainer from 'components/PageContainer';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button'
 import styles from './style.module.css';
+import { Link } from 'react-router-dom';
 
 interface Seat {
   id: string;
@@ -99,6 +101,9 @@ const Index: React.FC = () => {
 ))}
 
       </div>
+      <Link to='/order/summary'>
+        <Button>Confirm</Button>
+      </Link>
     </PageContainer>
   );
 };

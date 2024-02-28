@@ -51,14 +51,24 @@ const Index: React.FC = () => {
                 </NavDropdown>
               ) : null}
               {user ? (
-                <Link to='/logout'>
-                  <Button
-                    type='button'
-                    className='btn btn-danger my-1 mx-0 mx-lg-1'
-                  >
-                    Logout
-                  </Button>
-                </Link>
+                <>
+                  <Link to='/profile/edit'>
+                    <Button
+                      type='button'
+                      className='btn btn-link my-1 mx-0 mx-lg-1'
+                    >
+                      Profile
+                    </Button>
+                  </Link>
+                  <Link to='/logout'>
+                    <Button
+                      type='button'
+                      className='btn btn-danger my-1 mx-0 mx-lg-1'
+                    >
+                      Logout
+                    </Button>
+                  </Link>
+                </>
               ) : (
                 <>
                   <Link to={`/login?from=${location.pathname}`}>

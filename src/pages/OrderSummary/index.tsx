@@ -1,6 +1,7 @@
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
 import Button from 'react-bootstrap/Button'
+import { Link } from 'react-router-dom';
 
 interface UserProfile {
     movie: string;
@@ -60,9 +61,11 @@ interface UserProfile {
         Edit Details ✎
     </Button>
 
-    <Button variant='primary' type='submit'>
-         Confirm Order
-     </Button>
+    <Link to='/order/confirmation'>
+      <Button variant='primary' type='submit'>
+        Confirm Order
+      </Button>
+     </Link>
 
 </div>
   );
