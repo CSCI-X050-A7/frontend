@@ -1,7 +1,6 @@
 import { ProtectedRoute } from 'components/ProtectedRoute'
 import Checkout from 'pages/Checkout'
 import EditProfile from 'pages/EditProfile'
-import Admin from 'pages/Admin'
 import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
@@ -40,22 +39,16 @@ const children: RouteObject[] = [
     element: <RegisterConfirm />
   },
   {
-    path: '/admin',
-    element: <Admin />,
-    children: [
-      {
-        path: '/movies',
-        element: <MovieManage />
-      },
-      {
-        path: '/users',
-        element: <UserManage />
-      },
-      {
-        path: '/promos',
-        element: <PromoManage />
-      }
-    ]
+    path: '/admin/movie',
+    element: <MovieManage />
+  },
+  {
+    path: '/admin/user',
+    element: <UserManage />
+  },
+  {
+    path: '/admin/promo',
+    element: <PromoManage />
   },
   {
     path: '/',

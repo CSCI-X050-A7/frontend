@@ -28,9 +28,6 @@ const Index: React.FC = () => {
               <Link className='nav-link' to='/'>
                 Home
               </Link>
-              <Link className='nav-link' to='/admin'>
-                Admin
-              </Link>
             </Nav>
             <Nav>
               <span className='my-1 mx-0'>
@@ -48,13 +45,13 @@ const Index: React.FC = () => {
               </span>
               {user && user.is_admin ? (
                 <NavDropdown title='Administration' className='my-1'>
-                  <Link to='/MovieManage' className='dropdown-item'>
+                  <Link to='/admin/movie' className='dropdown-item'>
                     Manage Movies
                   </Link>
-                  <Link to='/PromoManage' className='dropdown-item'>
+                  <Link to='/admin/promo' className='dropdown-item'>
                     Manage Promotions
                   </Link>
-                  <Link to='/UserManage' className='dropdown-item'>
+                  <Link to='/admin/user' className='dropdown-item'>
                     Manage Users
                   </Link>
                 </NavDropdown>
