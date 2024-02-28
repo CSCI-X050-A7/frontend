@@ -5,6 +5,8 @@ import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
 import MovieCreate from 'pages/MovieCreate'
+import MovieSeatSelect from 'pages/MovieSeatSelect'
+import MovieSelect from 'pages/MovieSelect'
 import NotFound from 'pages/NotFound'
 import OrderConfirmation from 'pages/OrderConfirmation'
 import OrderSummary from 'pages/OrderSummary'
@@ -45,6 +47,15 @@ const children: RouteObject[] = [
         element: <MovieCreate />
       }
     ]
+  },
+  {
+    path: '/movie/:movieId/book',
+    element: <MovieSelect />
+  },
+
+  {
+    path: '/movie/:movieId/seat',
+    element: <MovieSeatSelect />
   },
   {
     path: '*',
