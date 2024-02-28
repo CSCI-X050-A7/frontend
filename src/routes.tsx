@@ -26,7 +26,7 @@ const children: RouteObject[] = [
     element: <Register />
   },
   {
-    path: '/editProfile',
+    path: '/profile/edit',
     element: <EditProfile />
   },
   {
@@ -51,14 +51,14 @@ const children: RouteObject[] = [
     element: <NotFound />
   },
   {
-    path: '/OrderConfirmation',
+    path: '/order/confirmation',
     element: <OrderConfirmation />
   },
   {
-    path: '/OrderSummary',
+    path: '/order/summary',
     element: <OrderSummary />
   },
-  { path: '/Checkout', element: <Checkout /> }
+  { path: '/order/checkout', element: <Checkout /> }
 ]
 
 export default children
