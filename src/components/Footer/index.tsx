@@ -1,12 +1,5 @@
-import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useAuth } from 'hooks/useAuth'
-import useTheme from 'hooks/useTheme'
-import { NavDropdown } from 'react-bootstrap'
-import Button from 'react-bootstrap/Button'
+
 import Container from 'react-bootstrap/Container'
-import Nav from 'react-bootstrap/Nav'
-import Navbar from 'react-bootstrap/Navbar'
 import { Link, useLocation } from 'react-router-dom'
 
 const Index: React.FC = () => (
