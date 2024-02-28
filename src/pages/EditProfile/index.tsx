@@ -45,7 +45,7 @@ const UserProfileForm: React.FC = () => {
       <h1 style={{ marginBottom: '30px' }}> User Profile</h1>
       <h1 style={{ marginBottom: '30px' }}> 🎥</h1>
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '40px' }}>Username: </label>
+        <p style={{ marginRight: '40px' }}>Username: </p>
         <input
           type='text'
           value={userProfile.username}
@@ -53,22 +53,18 @@ const UserProfileForm: React.FC = () => {
           readOnly={!editingUser}
         />
         {editingUser ? (
-          <button onClick={() => setEditingUser(false)}>
-            <span role='img' aria-label='Save'>
-              ✅
-            </span>
+          <button type='button' onClick={() => setEditingUser(false)}>
+            <span role='img'>✅</span>
           </button>
         ) : null}
         {!editingUser && (
-          <button onClick={() => setEditingUser(true)}>
-            <span role='img' aria-label='Edit'>
-              ✏️
-            </span>
+          <button type='button' onClick={() => setEditingUser(true)}>
+            <span role='img'>✏️</span>
           </button>
         )}
       </div>
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '40px' }}>Password:</label>
+        <p style={{ marginRight: '40px' }}>Password:</p>
         <input
           type='text'
           value={userProfile.password}
@@ -76,22 +72,18 @@ const UserProfileForm: React.FC = () => {
           readOnly={!editingPass}
         />
         {editingPass ? (
-          <button onClick={() => setEditingPass(false)}>
-            <span role='img' aria-label='Save'>
-              ✅
-            </span>
+          <button type='button' onClick={() => setEditingPass(false)}>
+            <span role='img'>✅</span>
           </button>
         ) : null}
         {!editingPass && (
-          <button onClick={() => setEditingPass(true)}>
-            <span role='img' aria-label='Edit'>
-              ✏️
-            </span>
+          <button type='button' onClick={() => setEditingPass(true)}>
+            <span role='img'>✏️</span>
           </button>
         )}
       </div>
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '65px' }}>Email:</label>
+        <p style={{ marginRight: '65px' }}>Email:</p>
         <input
           type='text'
           value={userProfile.email}
@@ -99,22 +91,18 @@ const UserProfileForm: React.FC = () => {
           readOnly={!editingEmail}
         />
         {editingEmail ? (
-          <button onClick={() => setEditingEmail(false)}>
-            <span role='img' aria-label='Save'>
-              ✅
-            </span>
+          <button type='button' onClick={() => setEditingEmail(false)}>
+            <span role='img'>✅</span>
           </button>
         ) : null}
         {!editingEmail && (
-          <button onClick={() => setEditingEmail(true)}>
-            <span role='img' aria-label='Edit'>
-              ✏️
-            </span>
+          <button type='button' onClick={() => setEditingEmail(true)}>
+            <span role='img'>✏️</span>
           </button>
         )}
       </div>
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ marginRight: '40px' }}>Birthday:</label>
+        <p style={{ marginRight: '40px' }}>Birthday:</p>
         <input
           type='text'
           value={userProfile.birthday}
@@ -122,17 +110,13 @@ const UserProfileForm: React.FC = () => {
           readOnly={!editingBday}
         />
         {editingBday ? (
-          <button onClick={() => setEditingBday(false)}>
-            <span role='img' aria-label='Save'>
-              ✅
-            </span>
+          <button type='button' onClick={() => setEditingBday(false)}>
+            <span role='img'>✅</span>
           </button>
         ) : null}
         {!editingBday && (
-          <button onClick={() => setEditingBday(true)}>
-            <span role='img' aria-label='Edit'>
-              ✏️
-            </span>
+          <button type='button' onClick={() => setEditingBday(true)}>
+            <span role='img'>✏️</span>
           </button>
         )}
       </div>

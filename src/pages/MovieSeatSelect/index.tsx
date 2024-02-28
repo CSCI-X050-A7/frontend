@@ -44,19 +44,13 @@ const Index: React.FC = () => {
     }
   }
 
-  const handleTicketTypeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedTicketType(event.target.value as TicketType)
-  }
-
   const renderSeats = () => {
     const rows = 5
     const seatsPerRow = 8
     const seats: Seat[] = []
 
-    for (let row = 1; row <= rows; row++) {
-      for (let number = 1; number <= seatsPerRow; number++) {
+    for (let row = 1; row <= rows; row += 1) {
+      for (let number = 1; number <= seatsPerRow; number += 1) {
         const id = `${row}-${number}`
         seats.push({ id, row, number, ticketType: null })
       }
@@ -64,6 +58,7 @@ const Index: React.FC = () => {
 
     return seats.map(seat => (
       <button
+        type='button'
         key={seat.id}
         onClick={() => handleSeatClick(seat)}
         className={`${styles.seat} ${
@@ -88,8 +83,10 @@ const Index: React.FC = () => {
           <Form.Label>Select Ticket Type:</Form.Label>
           <Form.Control
             as='select'
-            onChange={handleTicketTypeChange}
-            value={selectedTicketType || ''}
+            onChange={e => {
+              setSelectedTicketType(e.target.value as TicketType)
+            }}
+            value={selectedTicketType ?? ''}
           >
             <option value='' disabled>
               Select Ticket Type
