@@ -87,7 +87,7 @@ const Index: React.FC = () => {
       <div className='text-center'>
         <h1>Select Seat</h1>
       </div>
-      <div className={styles.seatContainer}>{renderSeats()}</div>
+      <div className={`${styles.seatContainer} mt-3`}>{renderSeats()}</div>
       <Form>
         <Form.Group controlId='ticketType'>
           <Form.Label>Select Ticket Type:</Form.Label>
@@ -106,9 +106,10 @@ const Index: React.FC = () => {
           </Form.Control>
         </Form.Group>
       </Form>
-      <div className={styles.messageContainer}>
-        <p className={styles.message}>
-          You have selected <strong>{totalSelectedSeats}</strong> seat(s):{' '}
+      <div>
+        <p className='mt-2'>
+          You have selected <strong>{totalSelectedSeats}</strong>{' '}
+          {totalSelectedSeats === 1 ? 'seat' : 'seats'}:{' '}
           {selectedSeats.map((seat, index) => (
             <span key={index}>
               {seat.ticketType ? (
