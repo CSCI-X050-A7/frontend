@@ -1,4 +1,4 @@
-import './style.module.css'
+import styles from './style.module.css'
 import { useRequest } from 'ahooks'
 import type { SchemaMovie } from 'client'
 import PageContainer from 'components/PageContainer'
@@ -22,12 +22,12 @@ const MovieRow: React.FC<{
   const [producer, setProducer] = useState(movie.producer)
   const [ratingCode, setRatingCode] = useState(movie.rating_code)
   const [reviews, setReviews] = useState(movie.reviews)
-  const [showTime, setShowTime] = useState(movie.show_time)
+  const [showTime, setShowTime] = useState(movie.show_time.slice(0, -1))
   const [synopsis, setSynopsis] = useState(movie.synopsis)
   const [trailerPicture, setTrailerPicture] = useState(movie.trailer_picture)
   const [trailerVideo, setTrailerVideo] = useState(movie.trailer_video)
   const { run: update } = useRequest(
-    async () =>
+    async () => {
       Backend.movie.v1MoviesUpdate(movie.id, {
         title: movieTitle,
         cast,
@@ -36,11 +36,12 @@ const MovieRow: React.FC<{
         producer,
         rating_code: ratingCode,
         reviews,
-        show_time: showTime,
+        show_time: new Date(showTime).toISOString(),
         synopsis,
         trailer_picture: trailerPicture,
         trailer_video: trailerVideo
-      }),
+      })
+    },
     {
       manual: true,
       onSuccess: () => {
@@ -52,17 +53,17 @@ const MovieRow: React.FC<{
   return (
     <>
       <tr className='align-middle' key={key}>
-        <td>{movie.title}</td>
-        <td>{movie.cast}</td>
-        <td>{movie.category}</td>
-        <td>{movie.director}</td>
-        <td>{movie.producer}</td>
-        <td>{movie.rating_code}</td>
-        <td>{movie.reviews}</td>
-        <td>{movie.show_time}</td>
-        <td>{movie.synopsis}</td>
-        <td>{movie.trailer_picture}</td>
-        <td>{movie.trailer_video}</td>
+        <td className={styles.hideOverflow}>{movie.title}</td>
+        <td className={styles.hideOverflow}>{movie.cast}</td>
+        <td className={styles.hideOverflow}>{movie.category}</td>
+        <td className={styles.hideOverflow}>{movie.director}</td>
+        <td className={styles.hideOverflow}>{movie.producer}</td>
+        <td className={styles.hideOverflow}>{movie.rating_code}</td>
+        <td className={styles.hideOverflow}>{movie.reviews}</td>
+        <td className={styles.hideOverflow}>{movie.show_time}</td>
+        <td className={styles.hideOverflow}>{movie.synopsis}</td>
+        <td className={styles.hideOverflow}>{movie.trailer_picture}</td>
+        <td className={styles.hideOverflow}>{movie.trailer_video}</td>
         <td className='text-end'>
           <Button variant='primary' onClick={handleShow}>
             Edit
@@ -134,11 +135,9 @@ const MovieRow: React.FC<{
             <Form.Group className='mb-3'>
               <Form.Label>Show Time</Form.Label>
               <Form.Control
-                type='date'
+                type='datetime-local'
                 value={showTime}
-                onChange={e =>
-                  setShowTime(new Date(e.target.value).toISOString())
-                }
+                onChange={e => setShowTime(e.target.value)}
               />
             </Form.Group>
             <Form.Group className='mb-3'>
@@ -188,7 +187,7 @@ const Index: React.FC = () => {
   const [producer, setProducer] = useState('producer')
   const [ratingCode, setRatingCode] = useState('rating code')
   const [reviews, setReviews] = useState('reviews')
-  const [showTime, setShowTime] = useState('2016-01-02T15:04:05Z')
+  const [showTime, setShowTime] = useState('2024-03-14T18:27')
   const [synopsis, setSynopsis] = useState('synopsis')
   const [trailerPicture, setTrailerPicture] = useState(
     'https://placehold.co/400x592'
@@ -200,7 +199,7 @@ const Index: React.FC = () => {
     data,
     loading,
     run: refresh
-  } = useRequest(async () => Backend.movie.v1MoviesList({ running: true }))
+  } = useRequest(async () => Backend.movie.v1MoviesList())
   const { run: create } = useRequest(
     async () =>
       Backend.movie.v1MoviesCreate({
@@ -211,7 +210,7 @@ const Index: React.FC = () => {
         producer,
         rating_code: ratingCode,
         reviews,
-        show_time: showTime,
+        show_time: new Date(showTime).toISOString(),
         synopsis,
         trailer_picture: trailerPicture,
         trailer_video: trailerVideo
@@ -349,11 +348,11 @@ const Index: React.FC = () => {
             <Form.Group className='mb-3'>
               <Form.Label>Show Time</Form.Label>
               <Form.Control
-                type='date'
+                type='datetime-local'
                 placeholder='Show Time'
                 defaultValue={showTime}
                 onChange={e => {
-                  setShowTime(new Date(e.target.value).toISOString())
+                  setShowTime(e.target.value)
                 }}
               />
             </Form.Group>

@@ -17,5 +17,10 @@ export default defineConfig({
       }
     }
   },
-  plugins: [tsconfigPaths(), react(), eslintPlugin()]
+  plugins: [tsconfigPaths(), react(), eslintPlugin()],
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly'
+    }
+  }
 })

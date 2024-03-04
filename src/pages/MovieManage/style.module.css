@@ -1,4 +1,17 @@
-td {
-  word-wrap: break-word;
-  word-break: break-all;
+.hide-overflow {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.test-case {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #000;
+  margin: 10px;
+  width: 300px;
+  background-color: #f0f0f0;
 }
