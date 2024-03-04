@@ -13,17 +13,18 @@ interface Seat {
 }
 
 enum TicketType {
-  Student = 'Student',
+  Adult = 'Adult',
+  Senior = 'Senior',
   Children = 'Children',
   Veteran = 'Veteran',
-  Adult = 'Adult',
-  Senior = 'Senior'
+  Student = 'Student'
 }
 
 const Index: React.FC = () => {
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([])
-  const [selectedTicketType, setSelectedTicketType] =
-    useState<TicketType | null>(null)
+  const [selectedTicketType, setSelectedTicketType] = useState<TicketType>(
+    TicketType.Adult
+  )
 
   const totalSelectedSeats = selectedSeats.length
 
@@ -56,20 +57,29 @@ const Index: React.FC = () => {
       }
     }
 
-    return seats.map(seat => (
-      <button
-        type='button'
-        key={seat.id}
-        onClick={() => handleSeatClick(seat)}
-        className={`${styles.seat} ${
-          selectedSeats.some(selectedSeat => selectedSeat.id === seat.id)
-            ? styles.selected
-            : ''
-        }`}
-      >
-        {seat.row} - {seat.number}
-      </button>
-    ))
+    const seatRows = []
+    for (let row = 0; row < rows; row += 1) {
+      const seatRow = seats.slice(row * seatsPerRow, (row + 1) * seatsPerRow)
+      seatRows.push(
+        <div key={row} className='text-center'>
+          {seatRow.map(seat => (
+            <Button
+              type='button'
+              key={seat.id}
+              onClick={() => handleSeatClick(seat)}
+              className={`${styles.seat} ${
+                selectedSeats.some(selectedSeat => selectedSeat.id === seat.id)
+                  ? styles.selected
+                  : ''
+              }`}
+            >
+              {seat.row} - {seat.number}
+            </Button>
+          ))}
+        </div>
+      )
+    }
+    return seatRows
   }
 
   return (
@@ -86,11 +96,8 @@ const Index: React.FC = () => {
             onChange={e => {
               setSelectedTicketType(e.target.value as TicketType)
             }}
-            value={selectedTicketType ?? ''}
+            value={selectedTicketType}
           >
-            <option value='' disabled>
-              Select Ticket Type
-            </option>
             {Object.values(TicketType).map(type => (
               <option key={type} value={type}>
                 {type}
@@ -101,18 +108,18 @@ const Index: React.FC = () => {
       </Form>
       <div className={styles.messageContainer}>
         <p className={styles.message}>
-          You have selected <strong>{totalSelectedSeats}</strong> seat(s).
+          You have selected <strong>{totalSelectedSeats}</strong> seat(s):{' '}
+          {selectedSeats.map((seat, index) => (
+            <span key={index}>
+              {seat.ticketType ? (
+                <span>
+                  {seat.ticketType}
+                  {index < selectedSeats.length - 1 && ', '}
+                </span>
+              ) : null}
+            </span>
+          ))}
         </p>
-        {selectedSeats.map((seat, index) => (
-          <div key={index}>
-            {seat.ticketType ? (
-              <p>
-                {seat.ticketType}
-                {index < selectedSeats.length - 1 && ', '}
-              </p>
-            ) : null}
-          </div>
-        ))}
       </div>
       <Link to='/order/summary'>
         <Button>Confirm</Button>
