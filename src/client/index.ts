@@ -54,7 +54,7 @@ export interface SchemaMovie {
   category: string
   /** @maxLength 255 */
   director: string
-  id?: string
+  id: string
   /** @maxLength 255 */
   producer: string
   /** @maxLength 255 */
@@ -123,7 +123,7 @@ export interface SchemaUser {
   created_at?: string
   email?: string
   first_name?: string
-  id?: string
+  id: string
   is_active?: boolean
   is_admin?: boolean
   last_name?: string
@@ -655,7 +655,7 @@ export class Api<
      */
     v1MoviesUpdate: (
       id: string,
-      updatemovie: SchemaMovie,
+      updatemovie: SchemaUpsertMovie,
       params: RequestParams = {}
     ) =>
       this.request<SchemaMovie, SchemaErrorResponse>({

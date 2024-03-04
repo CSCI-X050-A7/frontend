@@ -45,9 +45,6 @@ const Index: React.FC = () => {
               </span>
               {user && user.is_admin ? (
                 <NavDropdown title='Administration' className='my-1'>
-                  <Link to='/admin/movie/create' className='dropdown-item'>
-                    Create Movies
-                  </Link>
                   <Link to='/admin/movie' className='dropdown-item'>
                     Manage Movies
                   </Link>

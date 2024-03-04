@@ -1,221 +1,411 @@
-/* eslint-disable react/prop-types */
+import './style.module.css'
 import { useRequest } from 'ahooks'
 import type { SchemaMovie } from 'client'
 import PageContainer from 'components/PageContainer'
+import type React from 'react'
 import { useState } from 'react'
-import { Col, Modal, Row, ListGroup } from 'react-bootstrap'
-import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
-import Form from 'react-bootstrap/Form'
-import { useNavigate, Link } from 'react-router-dom'
+import { Button, Card, Form, Modal, Table } from 'react-bootstrap'
 import Backend from 'utils/service'
 
-const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
+const MovieRow: React.FC<{
+  key: string
+  movie: SchemaMovie
+  refresh: () => void
+}> = ({ key, movie, refresh }) => {
   const [show, setShow] = useState(false)
-
   const handleClose = () => setShow(false)
-
-  return (
-    <Card className='mb-3'>
-      <Card.Img variant='top' src={movie.trailer_picture} />
-      <Card.Body>
-        <Card.Title>{movie.title}</Card.Title>
-        <Card.Text />
-        <Link to={`/movie/${movie.id}/book`}>
-          <Button variant='primary'>Edit</Button>
-        </Link>
-      </Card.Body>
-      <Modal
-        size='lg'
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-        show={show}
-        onHide={handleClose}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Trailer of {movie.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* eslint-disable-next-line react/iframe-missing-sandbox */}
-          <iframe
-            width='100%'
-            height='400px'
-            src={movie.trailer_video}
-            title='Trailer'
-            allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-            allowFullScreen
-            sandbox='allow-scripts allow-popups allow-same-origin'
-          />
-        </Modal.Body>
-      </Modal>
-    </Card>
-  )
-}
-
-const MovieList: React.FC<{ movies: SchemaMovie[] }> = ({ movies }) => (
-  <Row>
-    {movies.map(movie => (
-      <Col key={movie.id} xs={12} sm={6} xl={4}>
-        <Movie movie={movie} />
-      </Col>
-    ))}
-  </Row>
-)
-
-const SearchList: React.FC<{ search: string }> = ({ search }) => {
-  const { data, loading } = useRequest(
-    async () => Backend.movie.v1MoviesList({ running: true, search }),
-    { refreshDeps: [search], debounceWait: 200 }
-  )
-  return (
-    !loading && (data?.data.data ? <MovieList movies={data.data.data} /> : null)
-  )
-}
-
-const RightHalf: React.FC = () => {
-  const navigate = useNavigate()
-  const [movieTitle, setMovieTitle] = useState('')
-  const { run: create } = useRequest(
+  const handleShow = () => setShow(true)
+  const [movieTitle, setMovieTitle] = useState(movie.title)
+  const [cast, setCast] = useState(movie.cast)
+  const [category, setCategory] = useState(movie.category)
+  const [director, setDirector] = useState(movie.director)
+  const [producer, setProducer] = useState(movie.producer)
+  const [ratingCode, setRatingCode] = useState(movie.rating_code)
+  const [reviews, setReviews] = useState(movie.reviews)
+  const [showTime, setShowTime] = useState(movie.show_time)
+  const [synopsis, setSynopsis] = useState(movie.synopsis)
+  const [trailerPicture, setTrailerPicture] = useState(movie.trailer_picture)
+  const [trailerVideo, setTrailerVideo] = useState(movie.trailer_video)
+  const { run: update } = useRequest(
     async () =>
-      // TODO: replace the movie with user input
-      Backend.movie.v1MoviesCreate({
+      Backend.movie.v1MoviesUpdate(movie.id, {
         title: movieTitle,
-        cast: 'cast',
-        category: 'category',
-        director: 'director',
-        producer: 'producer',
-        rating_code: 'rating_code',
-        reviews: 'reviews',
-        show_time: '2016-01-02T15:04:05Z',
-        synopsis: 'synopsis',
-        trailer_picture: 'https://placehold.co/400x592',
-        trailer_video:
-          'https://www.youtube.com/embed/NpEaa2P7qZI?si=Ev2ybUCHzVxQPIO1&amp;controls=0'
+        cast,
+        category,
+        director,
+        producer,
+        rating_code: ratingCode,
+        reviews,
+        show_time: showTime,
+        synopsis,
+        trailer_picture: trailerPicture,
+        trailer_video: trailerVideo
       }),
     {
       manual: true,
       onSuccess: () => {
-        navigate('/')
+        refresh()
+        handleClose()
       }
     }
   )
-
   return (
-    <div style={{ width: '50%', paddingTop: '10px' }}>
-      <Card style={{ width: '400px' }}>
-        <Card.Body>
-          <Card.Title>Movie Details</Card.Title>
-          <Form>
-            <ListGroup className='mb-3' style={{}}>
-              <ListGroup.Item style={{ padding: '5px 0', border: 'none' }}>
-                <Form.Label>Movie Title</Form.Label>
-                <Form.Control
-                  type='text'
-                  placeholder='Movie title'
-                  value={movieTitle}
-                  onChange={e => setMovieTitle(e.target.value)}
-                />
-              </ListGroup.Item>
-              <ListGroup.Item style={{ padding: '5px 0', border: 'none' }}>
-                <Form.Label>Add cast members</Form.Label>
-                <Form.Control type='text' placeholder='Cast member' />
-              </ListGroup.Item>
-              <ListGroup.Item style={{ padding: '5px 0', border: 'none' }}>
-                <Form.Label>Category</Form.Label>
-                <Form.Control type='text' placeholder='Category' />
-              </ListGroup.Item>
-              <ListGroup.Item style={{ padding: '5px 0', border: 'none' }}>
-                <Form.Label>Director</Form.Label>
-                <Form.Control type='text' placeholder='Director' />
-              </ListGroup.Item>
-              <ListGroup.Item style={{ padding: '5px 0', border: 'none' }}>
-                <Form.Label>Producer</Form.Label>
-                <Form.Control type='text' placeholder='Producer' />
-              </ListGroup.Item>
-              <ListGroup.Item style={{ padding: '5px 0', border: 'none' }}>
-                <Form.Label>Rating</Form.Label>
-                <Form.Control type='text' placeholder='Rating code' />
-              </ListGroup.Item>
-            </ListGroup>
-            <Button variant='primary' type='button' onClick={create}>
-              Submit
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-    </div>
-  )
-}
-
-const LeftHalf: React.FC = () => {
-  const [search, setSearch] = useState('')
-  const [showEditPopup, setShowEditPopup] = useState(false)
-
-  const handleEditClick = () => {
-    setShowEditPopup(true)
-  }
-
-  const handleCloseEditPopup = () => {
-    setShowEditPopup(false)
-  }
-
-  return (
-    <div style={{ width: '50%', padding: '20px' }}>
-      <div style={{ display: 'flex' }}>
-        <h2>Edit Movie</h2>
-        <Button
-          variant='primary'
-          onClick={handleEditClick}
-          style={{ marginLeft: '210px' }}
-        >
-          {' '}
-          {/* Only here due to a lack of backend functionality!!! */}
-          Edit
-        </Button>
-      </div>
-
-      <Modal show={showEditPopup} onHide={handleCloseEditPopup}>
+    <>
+      <tr className='align-middle' key={key}>
+        <td>{movie.title}</td>
+        <td>{movie.cast}</td>
+        <td>{movie.category}</td>
+        <td>{movie.director}</td>
+        <td>{movie.producer}</td>
+        <td>{movie.rating_code}</td>
+        <td>{movie.reviews}</td>
+        <td>{movie.show_time}</td>
+        <td>{movie.synopsis}</td>
+        <td>{movie.trailer_picture}</td>
+        <td>{movie.trailer_video}</td>
+        <td className='text-end'>
+          <Button variant='primary' onClick={handleShow}>
+            Edit
+          </Button>
+        </td>
+      </tr>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Movie</Modal.Title>
         </Modal.Header>
-        <Modal.Body
-          style={{
-            display: 'flex',
-            paddingRight: '390px',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <RightHalf />
+        <Modal.Body>
+          <Form>
+            <Form.Group className='mb-3'>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type='text'
+                value={movieTitle}
+                onChange={e => setMovieTitle(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Cast</Form.Label>
+              <Form.Control
+                type='text'
+                value={cast}
+                onChange={e => setCast(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type='text'
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Director</Form.Label>
+              <Form.Control
+                type='text'
+                value={director}
+                onChange={e => setDirector(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Producer</Form.Label>
+              <Form.Control
+                type='text'
+                value={producer}
+                onChange={e => setProducer(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Rating Code</Form.Label>
+              <Form.Control
+                type='text'
+                value={ratingCode}
+                onChange={e => setRatingCode(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Reviews</Form.Label>
+              <Form.Control
+                type='text'
+                value={reviews}
+                onChange={e => setReviews(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Show Time</Form.Label>
+              <Form.Control
+                type='date'
+                value={showTime}
+                onChange={e =>
+                  setShowTime(new Date(e.target.value).toISOString())
+                }
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Synopsis</Form.Label>
+              <Form.Control
+                type='text'
+                value={synopsis}
+                onChange={e => setSynopsis(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Trailer Picture</Form.Label>
+              <Form.Control
+                type='text'
+                value={trailerPicture}
+                onChange={e => setTrailerPicture(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Trailer Video</Form.Label>
+              <Form.Control
+                type='text'
+                value={trailerVideo}
+                onChange={e => setTrailerVideo(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant='primary' onClick={update}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
       </Modal>
-
-      <div style={{ padding: '10px' }} className='text-center mb-3'>
-        <Form.Control
-          style={{ width: '400px' }}
-          type='text'
-          placeholder='Search'
-          onChange={e => setSearch(e.target.value)}
-        />
-
-        <SearchList search={search} />
-      </div>
-    </div>
+    </>
   )
 }
 
-const Index: React.FC = () => (
-  <PageContainer>
-    <div style={{ display: 'flex' }}>
-      <LeftHalf />
-      <div
-        style={{ display: 'flex', flexDirection: 'column', padding: '20px' }}
-      >
-        <h2>Add Movie</h2>
-        <RightHalf />
-      </div>
-    </div>
-  </PageContainer>
-)
+const Index: React.FC = () => {
+  const [show, setShow] = useState(false)
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+  const [movieTitle, setMovieTitle] = useState('my movie')
+  const [cast, setCast] = useState('cast')
+  const [category, setCategory] = useState('category')
+  const [director, setDirector] = useState('director')
+  const [producer, setProducer] = useState('producer')
+  const [ratingCode, setRatingCode] = useState('rating code')
+  const [reviews, setReviews] = useState('reviews')
+  const [showTime, setShowTime] = useState('2016-01-02T15:04:05Z')
+  const [synopsis, setSynopsis] = useState('synopsis')
+  const [trailerPicture, setTrailerPicture] = useState(
+    'https://placehold.co/400x592'
+  )
+  const [trailerVideo, setTrailerVideo] = useState(
+    'https://www.youtube.com/embed/NpEaa2P7qZI?si=Ev2ybUCHzVxQPIO1&amp;controls=0'
+  )
+  const {
+    data,
+    loading,
+    run: refresh
+  } = useRequest(async () => Backend.movie.v1MoviesList({ running: true }))
+  const { run: create } = useRequest(
+    async () =>
+      Backend.movie.v1MoviesCreate({
+        title: movieTitle,
+        cast,
+        category,
+        director,
+        producer,
+        rating_code: ratingCode,
+        reviews,
+        show_time: showTime,
+        synopsis,
+        trailer_picture: trailerPicture,
+        trailer_video: trailerVideo
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        refresh()
+        handleClose()
+      }
+    }
+  )
+  return (
+    <PageContainer>
+      <Card>
+        <Card.Header>
+          <div className='d-flex justify-content-between align-items-center'>
+            <b>Manage Movie</b>
+            <Button variant='primary' className='ml-auto' onClick={handleShow}>
+              Create
+            </Button>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <Table hover>
+            <thead className='small text-uppercase'>
+              <tr>
+                <th>Title</th>
+                <th>Cast</th>
+                <th>Category</th>
+                <th>Director</th>
+                <th>Producer</th>
+                <th>Rating Code</th>
+                <th>Reviews</th>
+                <th>Show Time</th>
+                <th>Synopsis</th>
+                <th>Trailer Picture</th>
+                <th>Trailer Video</th>
+                <th className='text-end'>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading
+                ? null
+                : data?.data.data?.map(movie => (
+                    <MovieRow key={movie.id} movie={movie} refresh={refresh} />
+                  ))}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Movie</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className='mb-3'>
+              <Form.Label>Movie Title</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Movie title'
+                defaultValue={movieTitle}
+                onChange={e => {
+                  setMovieTitle(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Cast</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Cast'
+                defaultValue={cast}
+                onChange={e => {
+                  setCast(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Category'
+                defaultValue={category}
+                onChange={e => {
+                  setCategory(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Director</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Director'
+                defaultValue={director}
+                onChange={e => {
+                  setDirector(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Producer</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Producer'
+                defaultValue={producer}
+                onChange={e => {
+                  setProducer(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Rating Code</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Rating Code'
+                defaultValue={ratingCode}
+                onChange={e => {
+                  setRatingCode(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Reviews</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Reviews'
+                defaultValue={reviews}
+                onChange={e => {
+                  setReviews(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Show Time</Form.Label>
+              <Form.Control
+                type='date'
+                placeholder='Show Time'
+                defaultValue={showTime}
+                onChange={e => {
+                  setShowTime(new Date(e.target.value).toISOString())
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Synopsis</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Synopsis'
+                defaultValue={synopsis}
+                onChange={e => {
+                  setSynopsis(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Trailer Picture</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Trailer Picture'
+                defaultValue={trailerPicture}
+                onChange={e => {
+                  setTrailerPicture(e.target.value)
+                }}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Trailer Video</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Trailer Video'
+                defaultValue={trailerVideo}
+                onChange={e => {
+                  setTrailerVideo(e.target.value)
+                }}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='primary'
+            type='button'
+            onClick={(): void => {
+              create()
+            }}
+          >
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </PageContainer>
+  )
+}
 
 export default Index

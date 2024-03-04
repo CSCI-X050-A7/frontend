@@ -4,7 +4,6 @@ import EditProfile from 'pages/EditProfile'
 import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
-import MovieCreate from 'pages/MovieCreate'
 import MovieManage from 'pages/MovieManage'
 import MovieSeatSelect from 'pages/MovieSeatSelect'
 import MovieSelect from 'pages/MovieSelect'
@@ -41,10 +40,6 @@ const children: RouteObject[] = [
   {
     path: '/admin/movie',
     element: <MovieManage />
-  },
-  {
-    path: '/admin/movie/create',
-    element: <MovieCreate />
   },
   {
     path: '/admin/user',
