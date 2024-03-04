@@ -12,7 +12,7 @@ import OrderConfirmation from 'pages/OrderConfirmation'
 import OrderSummary from 'pages/OrderSummary'
 import PromoManage from 'pages/PromoManage'
 import Register from 'pages/Register'
-import RegisterConfirm from 'pages/RegisterConfirm'
+import RegisterConfirmation from 'pages/RegisterConfirmation'
 import UserManage from 'pages/UserManage'
 import type { RouteObject } from 'react-router-dom'
 
@@ -35,7 +35,7 @@ const children: RouteObject[] = [
   },
   {
     path: '/register/confirm',
-    element: <RegisterConfirm />
+    element: <RegisterConfirmation />
   },
   {
     path: '/admin/movie',
@@ -76,7 +76,7 @@ const children: RouteObject[] = [
     element: <NotFound />
   },
   {
-    path: '/order/confirmation',
+    path: '/order/confirm',
     element: <OrderConfirmation />
   },
   {

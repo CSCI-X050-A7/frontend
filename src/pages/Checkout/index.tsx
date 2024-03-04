@@ -12,7 +12,7 @@ const RegistrationForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('TODO: Implement Checkout')
-    navigate('/order/confirmation')
+    navigate('/order/confirm')
   }
 
   return (

@@ -74,7 +74,7 @@ const OrderSummary: React.FC = () => {
       </div>
 
       <Button variant='success' type='submit' style={{ marginBottom: '20px' }}>
-        Edit Details ✎
+        Edit Details
       </Button>
 
       <Link to='/order/checkout'>
