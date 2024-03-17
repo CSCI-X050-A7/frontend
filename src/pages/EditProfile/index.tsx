@@ -201,6 +201,19 @@ const UserProfileForm: React.FC = () => {
               />
             </Form.Group>
           </Row>
+          <Row className='mb-3'>
+            <Form.Check
+              type='checkbox'
+              label='Email me promotion'
+              checked={user?.need_promotion ?? false}
+              onChange={e => {
+                setUser(prevUser => ({
+                  ...prevUser,
+                  need_promotion: e.target.checked
+                }))
+              }}
+            />
+          </Row>
           <Accordion>
             <Accordion.Item eventKey='0'>
               <Accordion.Header>Payment Information</Accordion.Header>
