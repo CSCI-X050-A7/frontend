@@ -159,6 +159,9 @@ const RegistrationForm = () => {
               <Form.Control required />
             </Form.Group>
           </Row>
+          <Row className='mb-3'>
+            <Form.Check type='checkbox' label='Email me promotion' />
+          </Row>
           <Accordion>
             <Accordion.Item eventKey='0'>
               <Accordion.Header>Payment Information</Accordion.Header>
