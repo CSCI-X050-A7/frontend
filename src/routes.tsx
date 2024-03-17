@@ -1,4 +1,5 @@
 // import { ProtectedRoute } from 'components/ProtectedRoute'
+import Activate from 'pages/Activate'
 import Checkout from 'pages/Checkout'
 import EditProfile from 'pages/EditProfile'
 import Login from 'pages/Login'
@@ -28,6 +29,10 @@ const children: RouteObject[] = [
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/activate',
+    element: <Activate />
   },
   {
     path: '/profile/edit',
