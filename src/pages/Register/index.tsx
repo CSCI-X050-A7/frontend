@@ -9,22 +9,98 @@ import Backend from 'utils/service'
 
 const RegistrationForm = () => {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [username, setUsername] = useState('')
   const [error, setError] = useState('')
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    name: '',
+    username: '',
+    address: '',
+    address2: '',
+    phone: '',
+    need_promotion: false,
+    city: '',
+    state: '',
+    zip: '',
+    card_address: '',
+    card_address2: '',
+    card_city: '',
+    card_state: '',
+    card_zip: '',
+    card_type: '',
+    card_number: '',
+    card_exp: ''
+  })
+  const usStates = [
+    'AL',
+    'AK',
+    'AZ',
+    'AR',
+    'CA',
+    'CO',
+    'CT',
+    'DE',
+    'FL',
+    'GA',
+    'HI',
+    'ID',
+    'IL',
+    'IN',
+    'IA',
+    'KS',
+    'KY',
+    'LA',
+    'ME',
+    'MD',
+    'MA',
+    'MI',
+    'MN',
+    'MS',
+    'MO',
+    'MT',
+    'NE',
+    'NV',
+    'NH',
+    'NJ',
+    'NM',
+    'NY',
+    'NC',
+    'ND',
+    'OH',
+    'OK',
+    'OR',
+    'PA',
+    'RI',
+    'SC',
+    'SD',
+    'TN',
+    'TX',
+    'UT',
+    'VT',
+    'VA',
+    'WA',
+    'WV',
+    'WI',
+    'WY'
+  ]
+
+  // fix: is there a better way to handle this?
+  const handleChange = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const { name, value } = event.target as { name?: string; value: unknown }
+    if (name === 'need_promotion') {
+      setForm(changeForm => ({
+        ...changeForm,
+        need_promotion: !changeForm.need_promotion
+      }))
+    } else if (typeof name === 'string') {
+      setForm(changeForm => ({ ...changeForm, [name]: value }))
+    }
+  }
 
   const { run: registerUser } = useRequest(
-    async () =>
-      Backend.admin.v1AdminUsersCreate({
-        email,
-        password,
-        first_name: firstName,
-        last_name: lastName,
-        username
-      }), // TODO: add more fields (promotions, payment info, address, phone...)
+    async () => Backend.auth.v1AuthRegisterCreate(form),
     {
       manual: true,
       onSuccess: () => {
@@ -39,28 +115,8 @@ const RegistrationForm = () => {
   )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    Backend.auth.v1AuthLoginCreate({
-      username: 'demo',
-      password: '123456'
-    })
     registerUser()
     e.preventDefault()
-    Backend.auth.v1AuthLogoutCreate()
-    // validate input fields
-    // if (!email || !password || !name || !phone) {
-    //   setError('Please fill in all mandatory fields')
-    //   return
-    // }
-    // send registration request to the server
-    // handle response and set error or success message accordingly
-  }
-
-  // eslint-disable-next-line
-  const [checked, setChecked] = useState(false)
-  // eslint-disable-next-line
-  const handleCheckboxChange = () => {
-    // TODO: change user's promotions preference to true
-    setChecked(prevChecked => !prevChecked)
   }
 
   return (
@@ -77,8 +133,8 @@ const RegistrationForm = () => {
                 type='username'
                 placeholder='Enter username (5 characters or longer)'
                 required
-                value={username}
-                onChange={e => setUsername(e.target.value)}
+                value={form.username}
+                onChange={handleChange}
               />
             </Form.Group>
 
@@ -88,8 +144,8 @@ const RegistrationForm = () => {
                 type='email'
                 placeholder='Enter email'
                 required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                value={form.email}
+                onChange={handleChange}
               />
             </Form.Group>
 
@@ -99,77 +155,119 @@ const RegistrationForm = () => {
                 type='password'
                 placeholder='Password (10 characters or longer)'
                 required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
+                value={form.password}
+                onChange={handleChange}
               />
             </Form.Group>
           </Row>
 
           <Row className='mb-3'>
-            <Form.Group as={Col} controlId='formGridFirstName'>
+            <Form.Group as={Col} controlId='formGridName'>
               <Form.Label className='required'>Name</Form.Label>
               <Form.Control
-                type='firstName'
-                placeholder='First Name'
+                type='name'
+                placeholder='Name'
                 required
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-              />
-            </Form.Group>
-
-            <Form.Group as={Col} controlId='formGridLastName'>
-              <Form.Label className='required'>Last Name</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Last Name'
-                required
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
+                value={form.name}
+                onChange={handleChange}
               />
             </Form.Group>
 
             <Form.Group as={Col} controlId='formGridPhone'>
               <Form.Label className='required'>Phone</Form.Label>
-              <Form.Control required />
+              <Form.Control
+                type='phone'
+                placeholder='Phone'
+                required
+                value={form.phone}
+                onChange={handleChange}
+              />
             </Form.Group>
           </Row>
 
           <Form.Group className='mb-3' controlId='formGridAddress1'>
             <Form.Label className='required'>Address</Form.Label>
-            <Form.Control placeholder='1234 Main St' required />
+            <Form.Control
+              type='address'
+              placeholder='1234 Main St'
+              required
+              value={form.address}
+              onChange={handleChange}
+            />
           </Form.Group>
+
           <Form.Group className='mb-3' controlId='formGridAddress2'>
             <Form.Label className='required'>Address 2</Form.Label>
-            <Form.Control placeholder='Apartment, studio, or floor' required />
+            <Form.Control
+              type='address2'
+              placeholder='Apartment, studio, or floor'
+              required
+              value={form.address2}
+              onChange={handleChange}
+            />
           </Form.Group>
+
           <Row className='mb-3'>
             <Form.Group as={Col} controlId='formGridCity'>
               <Form.Label className='required'>City</Form.Label>
-              <Form.Control required />
+              <Form.Control
+                type='city'
+                placeholder='City'
+                required
+                value={form.city}
+                onChange={handleChange}
+              />
             </Form.Group>
+
             <Form.Group as={Col} controlId='formGridState'>
               <Form.Label className='required'>State</Form.Label>
-              <Form.Select defaultValue='Choose...' required>
+              <Form.Select
+                defaultValue='Choose...'
+                onChange={handleChange}
+                name='state'
+              >
                 <option>Choose...</option>
-                <option>...</option>
+                {usStates.map((state, index) => (
+                  <option key={index} value={state}>
+                    {' '}
+                    {state}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
+
             <Form.Group as={Col} md={3} controlId='formGridZip'>
               <Form.Label className='required'>Zip</Form.Label>
-              <Form.Control required />
+              <Form.Control
+                type='zip'
+                required
+                value={form.zip}
+                onChange={handleChange}
+              />
             </Form.Group>
           </Row>
+
           <Row className='mb-3'>
-            <Form.Check type='checkbox' label='Email me promotion' />
+            <Form.Check
+              type='checkbox'
+              label='Email me promotions!'
+              onChange={handleChange}
+              name='need_promotion'
+            />
           </Row>
+
           <Accordion>
             <Accordion.Item eventKey='0'>
               <Accordion.Header>Payment Information</Accordion.Header>
               <Accordion.Body>
                 <Row className='mb-3'>
-                  <Form.Group as={Col} md={3} controlId='formGridEmail'>
+                  <Form.Group as={Col} md={3} controlId='formGridCardType'>
                     <Form.Label>Card Type</Form.Label>
-                    <Form.Select>
+                    <Form.Select
+                      defaultValue='Choose...'
+                      onChange={handleChange}
+                      name='card_type'
+                    >
                       <option value=''>Select card type</option>
                       <option value='Visa'>Visa</option>
                       <option value='MasterCard'>MasterCard</option>
@@ -180,52 +278,89 @@ const RegistrationForm = () => {
 
                   <Form.Group as={Col} md={6} controlId='formGridCardNumber'>
                     <Form.Label>Card Number</Form.Label>
-                    <Form.Control />
+                    <Form.Control
+                      type='card_number'
+                      required
+                      value={form.card_number}
+                      onChange={handleChange}
+                    />
                   </Form.Group>
+
                   <Form.Group as={Col} md={3} controlId='formGridCardExp'>
                     <Form.Label>Card Expiration</Form.Label>
-                    <Form.Control type='text' placeholder='01/28' />
+                    <Form.Control
+                      type='text'
+                      required
+                      placeholder='01/28'
+                      value={form.card_exp}
+                      onChange={handleChange}
+                    />
                   </Form.Group>
                 </Row>
-                <Form.Group className='mb-3' controlId='formGridAddress1'>
+
+                <Form.Group className='mb-3' controlId='formGridCardAddress1'>
                   <Form.Label>Address</Form.Label>
-                  <Form.Control placeholder='1234 Main St' />
+                  <Form.Control
+                    type='card_address'
+                    required
+                    placeholder='1234 Main St'
+                    value={form.card_address}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
-                <Form.Group className='mb-3' controlId='formGridAddress2'>
+
+                <Form.Group className='mb-3' controlId='formGridCardAddress2'>
                   <Form.Label>Address 2</Form.Label>
-                  <Form.Control placeholder='Apartment, studio, or floor' />
+                  <Form.Control
+                    type='card_address2'
+                    required
+                    placeholder='Apartment, studio, or floor'
+                    value={form.card_address2}
+                    onChange={handleChange}
+                  />
                 </Form.Group>
+
                 <Row className='mb-3'>
-                  <Form.Group as={Col} controlId='formGridCity'>
+                  <Form.Group as={Col} controlId='formGridCardCity'>
                     <Form.Label>City</Form.Label>
-                    <Form.Control />
+                    <Form.Control
+                      type='card_city'
+                      required
+                      placeholder='City'
+                      value={form.card_city}
+                      onChange={handleChange}
+                    />
                   </Form.Group>
-                  <Form.Group as={Col} controlId='formGridState'>
+
+                  <Form.Group as={Col} controlId='formGridCardState'>
                     <Form.Label>State</Form.Label>
-                    <Form.Select defaultValue='Choose...'>
+                    <Form.Select
+                      defaultValue='Choose...'
+                      onChange={handleChange}
+                      name='card_state'
+                    >
                       <option>Choose...</option>
-                      <option>...</option>
+                      {usStates.map((state, index) => (
+                        <option key={index} value={state}>
+                          {' '}
+                          {state}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Form.Group>
-                  <Form.Group as={Col} md={3} controlId='formGridZip'>
+
+                  <Form.Group as={Col} md={3} controlId='formGridCardZip'>
                     <Form.Label>Zip</Form.Label>
-                    <Form.Control />
+                    <Form.Control
+                      type='state'
+                      value={form.state}
+                      onChange={handleChange}
+                    />
                   </Form.Group>
                 </Row>
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
-
-          <input
-            type='checkbox'
-            id='promotions'
-            checked={checked}
-            onChange={handleCheckboxChange}
-          />
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor='promotions' style={{ padding: '10px' }}>
-            I would like to receive promotions!
-          </label>
 
           <Form.Group as={Row} className='mt-3'>
             <Button variant='primary' type='submit'>
