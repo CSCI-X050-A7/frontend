@@ -19,19 +19,19 @@ export interface SchemaAuth {
 export interface SchemaCreateUser {
   /** @maxLength 150 */
   email: string
-  /** @maxLength 100 */
-  first_name: string
   is_active?: boolean
   is_admin?: boolean
   /** @maxLength 100 */
-  last_name: string
+  name: string
   /**
-   * @minLength 10
+   * @minLength 8
    * @maxLength 100
    */
   password: string
+  /** @maxLength 20 */
+  phone: string
   /**
-   * @minLength 5
+   * @minLength 3
    * @maxLength 50
    */
   username: string
@@ -86,28 +86,28 @@ export interface SchemaRegisterUser {
   /** @maxLength 150 */
   address2?: string
   /** @maxLength 150 */
-  cardAddress?: string
+  card_address?: string
   /** @maxLength 150 */
-  cardAddress2?: string
+  card_address2?: string
   /** @maxLength 100 */
-  cardCity?: string
+  card_city?: string
   /** @maxLength 50 */
-  cardExpiration?: string
+  card_expiration?: string
   /** @maxLength 50 */
-  cardNumber?: string
+  card_number?: string
   /** @maxLength 100 */
-  cardState?: string
+  card_state?: string
   /** @maxLength 50 */
-  cardType?: string
+  card_type?: string
   /** @maxLength 20 */
-  cardZip?: string
+  card_zip?: string
   /** @maxLength 100 */
   city: string
   /** @maxLength 150 */
   email: string
   /** @maxLength 100 */
   name: string
-  needPromotion?: boolean
+  need_promotion?: boolean
   /**
    * @minLength 8
    * @maxLength 100
@@ -121,7 +121,7 @@ export interface SchemaRegisterUser {
    * @minLength 3
    * @maxLength 50
    */
-  userName: string
+  username: string
   /** @maxLength 20 */
   zip: string
 }
@@ -133,12 +133,47 @@ export interface SchemaTokenResponse {
 }
 
 export interface SchemaUpdateUser {
+  /** @maxLength 150 */
+  address: string
+  /** @maxLength 150 */
+  address2?: string
+  /** @maxLength 150 */
+  card_address?: string
+  /** @maxLength 150 */
+  card_address2?: string
   /** @maxLength 100 */
-  first_name: string
-  is_active?: boolean
-  is_admin?: boolean
+  card_city?: string
+  /** @maxLength 50 */
+  card_expiration?: string
+  /** @maxLength 50 */
+  card_number?: string
   /** @maxLength 100 */
-  last_name: string
+  card_state?: string
+  /** @maxLength 50 */
+  card_type?: string
+  /** @maxLength 20 */
+  card_zip?: string
+  /** @maxLength 100 */
+  city: string
+  /** @maxLength 100 */
+  name: string
+  need_promotion?: boolean
+  /**
+   * @minLength 8
+   * @maxLength 100
+   */
+  password: string
+  /** @maxLength 20 */
+  phone: string
+  /** @maxLength 100 */
+  state: string
+  /**
+   * @minLength 3
+   * @maxLength 50
+   */
+  username: string
+  /** @maxLength 20 */
+  zip: string
 }
 
 export interface SchemaUpsertMovie {
@@ -166,14 +201,36 @@ export interface SchemaUpsertMovie {
 }
 
 export interface SchemaUser {
-  created_at?: string
   email?: string
   id: string
   is_active?: boolean
   is_admin?: boolean
   name?: string
-  updated_at?: string
   username?: string
+}
+
+export interface SchemaUserDetail {
+  address?: string
+  address2?: string
+  card_address?: string
+  card_address2?: string
+  card_city?: string
+  card_expiration?: string
+  card_number?: string
+  card_state?: string
+  card_type?: string
+  card_zip?: string
+  city?: string
+  email?: string
+  id?: string
+  is_active?: boolean
+  is_admin?: boolean
+  name?: string
+  need_promotion?: boolean
+  phone?: string
+  state?: string
+  username?: string
+  zip?: string
 }
 
 export interface SchemaUserListResponse {
@@ -790,7 +847,7 @@ export class Api<
      * @secure
      */
     v1UsersMeList: (params: RequestParams = {}) =>
-      this.request<SchemaUser, SchemaErrorResponse>({
+      this.request<SchemaUserDetail, SchemaErrorResponse>({
         path: `/api/v1/users/me`,
         method: 'GET',
         secure: true,

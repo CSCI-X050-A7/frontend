@@ -1,16 +1,16 @@
 // from https://github.com/sanjay-arya/react-auth-demo
 // we use HttpOnly cookies from backend, not localStorage for security
 import { useRequest } from 'ahooks'
-import type { HttpResponse, SchemaUser } from 'client'
+import type { HttpResponse, SchemaUserDetail } from 'client'
 import type React from 'react'
 import { createContext, useContext, useMemo, useState } from 'react'
 import Backend from 'utils/service'
 
 export interface AuthContextValue {
-  user: SchemaUser | undefined
+  user: SchemaUserDetail | undefined
   loading: boolean
   refresh: () => void
-  refreshAsync?: () => Promise<HttpResponse<SchemaUser>>
+  refreshAsync?: () => Promise<HttpResponse<SchemaUserDetail>>
 }
 const AuthContext = createContext<AuthContextValue>({
   user: undefined,
@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextValue>({
 })
 
 const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState<SchemaUser>()
+  const [user, setUser] = useState<SchemaUserDetail>()
   const { loading, refresh, refreshAsync } = useRequest(
     async () => Backend.user.v1UsersMeList(),
     {
