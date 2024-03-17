@@ -80,6 +80,52 @@ export interface SchemaMovieListResponse {
   offset?: number
 }
 
+export interface SchemaRegisterUser {
+  /** @maxLength 150 */
+  address: string
+  /** @maxLength 150 */
+  address2?: string
+  /** @maxLength 150 */
+  cardAddress?: string
+  /** @maxLength 150 */
+  cardAddress2?: string
+  /** @maxLength 100 */
+  cardCity?: string
+  /** @maxLength 50 */
+  cardExpiration?: string
+  /** @maxLength 50 */
+  cardNumber?: string
+  /** @maxLength 100 */
+  cardState?: string
+  /** @maxLength 50 */
+  cardType?: string
+  /** @maxLength 20 */
+  cardZip?: string
+  /** @maxLength 100 */
+  city: string
+  /** @maxLength 150 */
+  email: string
+  /** @maxLength 100 */
+  name: string
+  needPromotion?: boolean
+  /**
+   * @minLength 8
+   * @maxLength 100
+   */
+  password: string
+  /** @maxLength 20 */
+  phone: string
+  /** @maxLength 100 */
+  state: string
+  /**
+   * @minLength 3
+   * @maxLength 50
+   */
+  userName: string
+  /** @maxLength 20 */
+  zip: string
+}
+
 export interface SchemaTokenResponse {
   access_token?: string
   msg?: string
@@ -122,11 +168,10 @@ export interface SchemaUpsertMovie {
 export interface SchemaUser {
   created_at?: string
   email?: string
-  first_name?: string
   id: string
   is_active?: boolean
   is_admin?: boolean
-  last_name?: string
+  name?: string
   updated_at?: string
   username?: string
 }
@@ -513,6 +558,32 @@ export class Api<
   }
   auth = {
     /**
+     * @description Activate a new user.
+     *
+     * @tags Auth
+     * @name V1AuthActivateCreate
+     * @summary activate
+     * @request POST:/api/v1/auth/activate
+     */
+    v1AuthActivateCreate: (
+      query?: {
+        /** id */
+        id?: string
+        /** code */
+        code?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaUser, SchemaErrorResponse>({
+        path: `/api/v1/auth/activate`,
+        method: 'POST',
+        query: query,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
      * @description Get current JWT.
      *
      * @tags Auth
@@ -571,6 +642,27 @@ export class Api<
         path: `/api/v1/auth/logout`,
         method: 'POST',
         secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Register for a new user.
+     *
+     * @tags Auth
+     * @name V1AuthRegisterCreate
+     * @summary register
+     * @request POST:/api/v1/auth/register
+     */
+    v1AuthRegisterCreate: (
+      register: SchemaRegisterUser,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaUser, SchemaErrorResponse>({
+        path: `/api/v1/auth/register`,
+        method: 'POST',
+        body: register,
         type: ContentType.Json,
         format: 'json',
         ...params
