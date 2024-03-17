@@ -1,18 +1,51 @@
 import './style.module.css'
+import { useRequest } from 'ahooks'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
 import { Form, Button, Col, Row, Alert, Accordion } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
+import Backend from 'utils/service'
 
 const RegistrationForm = () => {
   const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [username, setUsername] = useState('')
   const [error, setError] = useState('')
 
+  const { run: registerUser } = useRequest(
+    async () =>
+      Backend.admin.v1AdminUsersCreate({
+        email,
+        password,
+        first_name: firstName,
+        last_name: lastName,
+        username
+      }), // TODO: add more fields (promotions, payment info, address, phone...)
+    {
+      manual: true,
+      onSuccess: () => {
+        navigate('/register/confirm')
+      },
+      onError: err => {
+        // TODO: if status is 409, tell user that email/username is already registered
+        // FIX: error.message does not work?
+        setError(err.message || 'Registration failed. Please try again.')
+      }
+    }
+  )
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    Backend.auth.v1AuthLoginCreate({
+      username: 'demo',
+      password: '123456'
+    })
+    registerUser()
     e.preventDefault()
-    setError('TODO: Implement registration')
-    navigate('/register/confirm')
+    Backend.auth.v1AuthLogoutCreate()
     // validate input fields
     // if (!email || !password || !name || !phone) {
     //   setError('Please fill in all mandatory fields')
@@ -20,6 +53,14 @@ const RegistrationForm = () => {
     // }
     // send registration request to the server
     // handle response and set error or success message accordingly
+  }
+
+  // eslint-disable-next-line
+  const [checked, setChecked] = useState(false)
+  // eslint-disable-next-line
+  const handleCheckboxChange = () => {
+    // TODO: change user's promotions preference to true
+    setChecked(prevChecked => !prevChecked)
   }
 
   return (
@@ -30,20 +71,61 @@ const RegistrationForm = () => {
       <Col className='mx-auto mt-3'>
         <Form onSubmit={handleSubmit} validated>
           <Row className='mb-3'>
+            <Form.Group as={Col} controlId='formGridUsername'>
+              <Form.Label className='required'>Username</Form.Label>
+              <Form.Control
+                type='username'
+                placeholder='Enter username (5 characters or longer)'
+                required
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+              />
+            </Form.Group>
+
             <Form.Group as={Col} controlId='formGridEmail'>
               <Form.Label className='required'>Email</Form.Label>
-              <Form.Control type='email' placeholder='Enter email' required />
+              <Form.Control
+                type='email'
+                placeholder='Enter email'
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
             </Form.Group>
 
             <Form.Group as={Col} controlId='formGridPassword'>
               <Form.Label className='required'>Password</Form.Label>
-              <Form.Control type='password' placeholder='Password' required />
+              <Form.Control
+                type='password'
+                placeholder='Password (10 characters or longer)'
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
             </Form.Group>
           </Row>
+
           <Row className='mb-3'>
-            <Form.Group as={Col} controlId='formGridName'>
+            <Form.Group as={Col} controlId='formGridFirstName'>
               <Form.Label className='required'>Name</Form.Label>
-              <Form.Control required />
+              <Form.Control
+                type='firstName'
+                placeholder='First Name'
+                required
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group as={Col} controlId='formGridLastName'>
+              <Form.Label className='required'>Last Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Last Name'
+                required
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+              />
             </Form.Group>
 
             <Form.Group as={Col} controlId='formGridPhone'>
@@ -51,6 +133,7 @@ const RegistrationForm = () => {
               <Form.Control required />
             </Form.Group>
           </Row>
+
           <Form.Group className='mb-3' controlId='formGridAddress1'>
             <Form.Label className='required'>Address</Form.Label>
             <Form.Control placeholder='1234 Main St' required />
@@ -129,6 +212,17 @@ const RegistrationForm = () => {
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
+
+          <input
+            type='checkbox'
+            id='promotions'
+            checked={checked}
+            onChange={handleCheckboxChange}
+          />
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor='promotions' style={{ padding: '10px' }}>
+            I would like to receive promotions!
+          </label>
 
           <Form.Group as={Row} className='mt-3'>
             <Button variant='primary' type='submit'>
