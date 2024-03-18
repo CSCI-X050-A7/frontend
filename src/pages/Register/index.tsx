@@ -29,7 +29,7 @@ const RegistrationForm = () => {
     card_zip: '',
     card_type: '',
     card_number: '',
-    card_exp: ''
+    card_expiration: ''
   })
   const usStates = [
     'AL',
@@ -130,6 +130,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} controlId='formGridUsername'>
               <Form.Label className='required'>Username</Form.Label>
               <Form.Control
+                name='username'
                 type='username'
                 placeholder='Enter username (5 characters or longer)'
                 required
@@ -141,6 +142,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} controlId='formGridEmail'>
               <Form.Label className='required'>Email</Form.Label>
               <Form.Control
+                name='email'
                 type='email'
                 placeholder='Enter email'
                 required
@@ -152,6 +154,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} controlId='formGridPassword'>
               <Form.Label className='required'>Password</Form.Label>
               <Form.Control
+                name='password'
                 type='password'
                 placeholder='Password (10 characters or longer)'
                 required
@@ -165,6 +168,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} controlId='formGridName'>
               <Form.Label className='required'>Name</Form.Label>
               <Form.Control
+                name='name'
                 type='name'
                 placeholder='Name'
                 required
@@ -176,6 +180,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} controlId='formGridPhone'>
               <Form.Label className='required'>Phone</Form.Label>
               <Form.Control
+                name='phone'
                 type='phone'
                 placeholder='Phone'
                 required
@@ -188,6 +193,7 @@ const RegistrationForm = () => {
           <Form.Group className='mb-3' controlId='formGridAddress1'>
             <Form.Label className='required'>Address</Form.Label>
             <Form.Control
+              name='address'
               type='address'
               placeholder='1234 Main St'
               required
@@ -199,6 +205,7 @@ const RegistrationForm = () => {
           <Form.Group className='mb-3' controlId='formGridAddress2'>
             <Form.Label className='required'>Address 2</Form.Label>
             <Form.Control
+              name='address2'
               type='address2'
               placeholder='Apartment, studio, or floor'
               required
@@ -211,6 +218,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} controlId='formGridCity'>
               <Form.Label className='required'>City</Form.Label>
               <Form.Control
+                name='city'
                 type='city'
                 placeholder='City'
                 required
@@ -239,6 +247,7 @@ const RegistrationForm = () => {
             <Form.Group as={Col} md={3} controlId='formGridZip'>
               <Form.Label className='required'>Zip</Form.Label>
               <Form.Control
+                name='zip'
                 type='zip'
                 required
                 value={form.zip}
@@ -279,6 +288,7 @@ const RegistrationForm = () => {
                   <Form.Group as={Col} md={6} controlId='formGridCardNumber'>
                     <Form.Label>Card Number</Form.Label>
                     <Form.Control
+                      name='card_number'
                       type='card_number'
                       required
                       value={form.card_number}
@@ -289,10 +299,11 @@ const RegistrationForm = () => {
                   <Form.Group as={Col} md={3} controlId='formGridCardExp'>
                     <Form.Label>Card Expiration</Form.Label>
                     <Form.Control
-                      type='text'
+                      name='card_expiration'
+                      type='card_expiration'
                       required
                       placeholder='01/28'
-                      value={form.card_exp}
+                      value={form.card_expiration}
                       onChange={handleChange}
                     />
                   </Form.Group>
@@ -301,6 +312,7 @@ const RegistrationForm = () => {
                 <Form.Group className='mb-3' controlId='formGridCardAddress1'>
                   <Form.Label>Address</Form.Label>
                   <Form.Control
+                    name='card_address'
                     type='card_address'
                     required
                     placeholder='1234 Main St'
@@ -312,6 +324,7 @@ const RegistrationForm = () => {
                 <Form.Group className='mb-3' controlId='formGridCardAddress2'>
                   <Form.Label>Address 2</Form.Label>
                   <Form.Control
+                    name='card_address2'
                     type='card_address2'
                     required
                     placeholder='Apartment, studio, or floor'
@@ -324,6 +337,7 @@ const RegistrationForm = () => {
                   <Form.Group as={Col} controlId='formGridCardCity'>
                     <Form.Label>City</Form.Label>
                     <Form.Control
+                      name='card_city'
                       type='card_city'
                       required
                       placeholder='City'
@@ -352,8 +366,9 @@ const RegistrationForm = () => {
                   <Form.Group as={Col} md={3} controlId='formGridCardZip'>
                     <Form.Label>Zip</Form.Label>
                     <Form.Control
-                      type='state'
-                      value={form.state}
+                      name='card_zip'
+                      type='card_zip'
+                      value={form.card_zip}
                       onChange={handleChange}
                     />
                   </Form.Group>
