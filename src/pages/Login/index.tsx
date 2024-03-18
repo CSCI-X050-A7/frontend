@@ -9,11 +9,18 @@ import { Navigate, useSearchParams } from 'react-router-dom'
 import { DOMAIN_HOST } from 'utils/constants'
 import Backend from 'utils/service'
 
+/**
+ * Login form component.
+ */
 const LoginForm: React.FC = () => {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
+
+  /**
+   * Login request using the `useRequest` hook.
+   */
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
@@ -36,6 +43,11 @@ const LoginForm: React.FC = () => {
       }
     }
   )
+
+  /**
+   * Handles form submission.
+   * @param e - The form event.
+   */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     login()
@@ -90,11 +102,19 @@ const LoginForm: React.FC = () => {
             </Col>
           </Form.Group>
         </Form>
+        <div className='text-center mt-3'>
+          <a href='/ChangePasswordForm'>Change Password</a> {/* Link to change password page */}
+        </div>
       </Col>
     </>
   )
 }
 
+
+
+/**
+ * Index page component.
+ */
 const Index: React.FC = () => (
   <PageContainer>
     <LoginForm />

@@ -557,6 +557,27 @@ export class Api<
         ...params
       }),
 
+      /**
+       * @description Request to change user's password.
+       *
+       * @tags Auth
+       * @name V1ChangePassword
+       * @summary change password
+       * @request PUT:/api/v1/auth/change-password
+       */
+      v1ChangePassword: (
+       passwords: { oldPassword: string, newPassword: string },
+      params: RequestParams = {}
+    ) =>
+      this.request<void, SchemaErrorResponse>({
+      path: `/api/v1/auth/change-password`,
+      method: 'PUT',
+      body: passwords, // Send oldPassword and newPassword in the request body
+      type: ContentType.Json,
+      format: 'json',
+      ...params
+    }),
+  
     /**
      * @description Clean cookies
      *

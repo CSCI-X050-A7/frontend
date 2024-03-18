@@ -2,13 +2,14 @@ import { ProtectedRoute } from 'components/ProtectedRoute'
 import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
-import MovieCreate from 'pages/MovieCreate'
+import MovieCreate from 'pages/MovieManage'
 import NotFound from 'pages/NotFound'
 import Register from 'pages/Register'
 import RegisterConfirm from 'pages/RegisterConfirm'
 import SelectMovie from 'pages/MovieSelect'
 import SelectSeat from 'pages/MovieSeatSelect'
 import type { RouteObject } from 'react-router-dom'
+import ChangePasswordForm from 'pages/ChangePasswordForm'
 
 const children: RouteObject[] = [
   {
@@ -52,7 +53,12 @@ const children: RouteObject[] = [
   {
     path: '*',
     element: <NotFound />
+  },
+  {
+    path: '/ChangePasswordForm',
+    element: <ChangePasswordForm />
   }
+
 ]
 
 export default children
