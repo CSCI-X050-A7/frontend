@@ -107,16 +107,24 @@ const RegistrationForm = () => {
         navigate('/register/confirm')
       },
       onError: err => {
-        // TODO: if status is 409, tell user that email/username is already registered
-        // FIX: error.message does not work?
-        setError(err.message || 'Registration failed. Please try again.')
+        // eslint-disable-next-line
+        console.log(err)
+        if (err.status === 409) {
+          setError(
+            'This email or username is already registered. Please try again.'
+          )
+        } else if (err.status === 400) {
+          setError('Invalid input. Please try again.')
+        } else {
+          setError('Registration failed. Please try again.')
+        }
       }
     }
   )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    registerUser()
     e.preventDefault()
+    registerUser()
   }
 
   return (
