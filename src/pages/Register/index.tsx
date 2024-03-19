@@ -1,5 +1,6 @@
 import './style.module.css'
 import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
@@ -107,16 +108,13 @@ const RegistrationForm = () => {
         navigate('/register/confirm')
       },
       onError: err => {
-        // eslint-disable-next-line
-        console.log(err)
-        if (err.status === 409) {
+        setError('Registration failed. Please try again.')
+        if ((err as ErrorResponse).status === 409) {
           setError(
             'This email or username is already registered. Please try again.'
           )
-        } else if (err.status === 400) {
+        } else if ((err as ErrorResponse).status === 400) {
           setError('Invalid input. Please try again.')
-        } else {
-          setError('Registration failed. Please try again.')
         }
       }
     }

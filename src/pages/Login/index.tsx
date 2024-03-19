@@ -1,8 +1,9 @@
 import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useAuth } from 'hooks/useAuth'
 import { useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { Alert, Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { Navigate, useSearchParams } from 'react-router-dom'
@@ -11,6 +12,7 @@ import Backend from 'utils/service'
 
 const LoginForm: React.FC = () => {
   const { user } = useAuth()
+  const [error, setError] = useState('')
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
@@ -33,6 +35,9 @@ const LoginForm: React.FC = () => {
         if (res.data.redirect_url) {
           window.location.href = res.data.redirect_url
         }
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -49,6 +54,7 @@ const LoginForm: React.FC = () => {
         <h1>Login</h1>
       </div>
       <Col xs={12} md={8} lg={6} className='mx-auto mt-3'>
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
         <Form onSubmit={handleSubmit} validated>
           <Form.Group as={Row} className='mb-3' controlId='formBasicEmail'>
             <Form.Label className='text-sm-end' column sm={2}>
