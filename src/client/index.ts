@@ -12,6 +12,8 @@
 export interface SchemaAuth {
   /** @default "123456" */
   password?: string
+  /** @default false */
+  remember?: boolean
   /** @default "demo" */
   username?: string
 }
@@ -518,7 +520,7 @@ export class Api<
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaUserListResponse[], SchemaErrorResponse>({
+      this.request<SchemaUserListResponse, SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
         method: 'GET',
         query: query,
