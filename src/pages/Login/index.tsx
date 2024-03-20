@@ -1,8 +1,9 @@
 import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useAuth } from 'hooks/useAuth'
 import { useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { Alert, Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { Navigate, useSearchParams } from 'react-router-dom'
@@ -11,6 +12,7 @@ import Backend from 'utils/service'
 
 const LoginForm: React.FC = () => {
   const { user } = useAuth()
+  const [error, setError] = useState('')
   const [searchParams] = useSearchParams()
   const defUsername = localStorage.getItem('currentUsername')
   const [username, setUsername] = useState(defUsername ?? '')
@@ -46,6 +48,9 @@ const LoginForm: React.FC = () => {
         if (res.data.redirect_url) {
           window.location.href = res.data.redirect_url
         }
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -54,7 +59,11 @@ const LoginForm: React.FC = () => {
     login()
   }
   return user ? (
-    <Navigate to='/' />
+    user.is_admin ? (
+      <Navigate to='/admin' />
+    ) : (
+      <Navigate to='/' />
+    )
   ) : (
     <>
       <div className='text-center'>
@@ -115,6 +124,7 @@ const LoginForm: React.FC = () => {
             </Col>
           </Form.Group>
         </Form>
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
       </Col>
     </>
   )
