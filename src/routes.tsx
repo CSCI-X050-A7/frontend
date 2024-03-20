@@ -15,6 +15,9 @@ import PromoManage from 'pages/PromoManage'
 import Register from 'pages/Register'
 import RegisterConfirmation from 'pages/RegisterConfirmation'
 import UserManage from 'pages/UserManage'
+import ForgotPassword from 'pages/ForgotPassword'
+import ResetPassword from 'pages/ResetPassword'
+import ChangePassword from 'pages/ChangePassword'
 import type { RouteObject } from 'react-router-dom'
 
 const children: RouteObject[] = [
@@ -58,6 +61,10 @@ const children: RouteObject[] = [
     path: '/',
     element: <Main />
   },
+  {
+    path: '/',
+    element: <Main />
+  },
   // {
   //   element: <ProtectedRoute />,
   //   children: [
@@ -79,6 +86,18 @@ const children: RouteObject[] = [
   {
     path: '*',
     element: <NotFound />
+  },
+  {
+    path: '/resetPassword',
+    element: <ResetPassword />
+  },
+  {
+    path: '/forgotPassword',
+    element: <ForgotPassword />
+  },
+  {
+    path: '/changePassword',
+    element: <ChangePassword />
   },
   {
     path: '/order/confirm',

@@ -209,6 +209,12 @@ export interface SchemaUser {
   username?: string
 }
 
+export interface SchemaUserChangePassword {
+  currentPassword?: string
+  newPassword?: string
+  username?: string
+}
+
 export interface SchemaUserDetail {
   address?: string
   address2?: string
@@ -238,6 +244,11 @@ export interface SchemaUserListResponse {
   data?: SchemaUser[]
   limit?: number
   offset?: number
+}
+
+export interface SchemaUserResetPassword {
+  newPassword?: string
+  username?: string
 }
 
 export type QueryParamsType = Record<string | number, any>
@@ -518,7 +529,7 @@ export class Api<
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaUserListResponse[], SchemaErrorResponse>({
+      this.request<SchemaUserListResponse, SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
         method: 'GET',
         query: query,
@@ -641,6 +652,56 @@ export class Api<
       }),
 
     /**
+     * @description Change the user's password.
+     *
+     * @tags Auth
+     * @name V1AuthChangepasswordCreate
+     * @summary change password
+     * @request POST:/api/v1/auth/changepassword
+     */
+    v1AuthChangepasswordCreate: (
+      changePassword: SchemaUserChangePassword,
+      query?: {
+        /** Redirect url after login */
+        redirect_url?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaUserChangePassword, SchemaErrorResponse>({
+        path: `/api/v1/auth/changepassword`,
+        method: 'POST',
+        query: query,
+        body: changePassword,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Initiate the password reset process.
+     *
+     * @tags Auth
+     * @name V1AuthForgotpasswordCreate
+     * @summary forgot password
+     * @request POST:/api/v1/auth/forgotpassword
+     */
+    v1AuthForgotpasswordCreate: (
+      query?: {
+        /** Email */
+        email?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/auth/forgotpassword`,
+        method: 'POST',
+        query: query,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
      * @description Get current JWT.
      *
      * @tags Auth
@@ -720,6 +781,32 @@ export class Api<
         path: `/api/v1/auth/register`,
         method: 'POST',
         body: register,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Reset the user's password.
+     *
+     * @tags Auth
+     * @name V1AuthResetpasswordCreate
+     * @summary reset password
+     * @request POST:/api/v1/auth/resetpassword
+     */
+    v1AuthResetpasswordCreate: (
+      resetPassword: SchemaUserResetPassword,
+      query?: {
+        /** Redirect url after login */
+        redirect_url?: string
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaUserResetPassword, SchemaErrorResponse>({
+        path: `/api/v1/auth/resetpassword`,
+        method: 'POST',
+        query: query,
+        body: resetPassword,
         type: ContentType.Json,
         format: 'json',
         ...params

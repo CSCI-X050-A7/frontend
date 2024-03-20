@@ -9,42 +9,38 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { DOMAIN_HOST } from 'utils/constants'
 import Backend from 'utils/service'
 
-const LoginForm: React.FC = () => {
+const ResetForm: React.FC = () => {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
-  const [username, setUsername] = useState('demo')
-  const [password, setPassword] = useState('123456')
+  const [username, setUsername] = useState('')
+  const [newPassword, setPassword] = useState('')
   const navigate = useNavigate();
-  const { run: login } = useRequest(
+const { run: resetPassword } = useRequest(
     async () => {
-      const from = searchParams.get('from') ?? '/'
-      return Backend.auth.v1AuthLoginCreate(
-        {
-          username,
-          password
-        },
-        {
-          redirect_url: `${DOMAIN_HOST}${from}`
-        }
-      )
+        const from = searchParams.get('from') ?? '/'
+        return Backend.auth.v1AuthResetpasswordCreate(
+            ({
+                username,
+                newPassword,
+            }),
+            {
+                redirect_url: `${DOMAIN_HOST}${from}`
+            }
+        )
     },
     {
-      manual: true,
-      onSuccess: res => {
-        if (res.data.redirect_url) {
-          window.location.href = res.data.redirect_url
+        manual: true,
+        onSuccess: () => {
+                navigate('/login') // Navigate to the Login page
+            
         }
-      }
     }
-  )
+)
 
-  const handleForgotPassword = () => {
-    navigate('/forgotPassword'); // Navigate to the Forgot Password page
-  };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    login()
-  }
+    resetPassword()
+}
 
  
   return user ? (
@@ -52,7 +48,7 @@ const LoginForm: React.FC = () => {
   ) : (
     <>
       <div className='text-center'>
-        <h1>Login</h1>
+        <h1>Reset Password</h1>
       </div>
       <Col xs={12} md={8} lg={6} className='mx-auto mt-3'>
         <Form onSubmit={handleSubmit} validated>
@@ -74,14 +70,14 @@ const LoginForm: React.FC = () => {
           </Form.Group>
           <Form.Group as={Row} className='mb-3' controlId='formBasicPassword'>
             <Form.Label className='text-sm-end' column sm={2}>
-              Password
+              New Password
             </Form.Label>
             <Col sm={10}>
               <Form.Control
                 required
                 type='password'
                 placeholder='Password'
-                defaultValue={password}
+                defaultValue={newPassword}
                 onChange={e => {
                   setPassword(e.target.value)
                 }}
@@ -93,9 +89,6 @@ const LoginForm: React.FC = () => {
               <Button variant='primary' type='submit'>
                 Submit
               </Button>
-              <Button variant='link' onClick={handleForgotPassword}>
-                Forgot Password
-              </Button>
             </Col>
           </Form.Group>
         </Form>
@@ -106,7 +99,7 @@ const LoginForm: React.FC = () => {
 
 const Index: React.FC = () => (
   <PageContainer>
-    <LoginForm />
+    <ResetForm />
   </PageContainer>
 )
 
