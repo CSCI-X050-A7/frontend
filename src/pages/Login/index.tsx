@@ -14,7 +14,7 @@ const LoginForm: React.FC = () => {
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
@@ -39,14 +39,13 @@ const LoginForm: React.FC = () => {
   )
 
   const handleForgotPassword = () => {
-    navigate('/forgotPassword'); // Navigate to the Forgot Password page
-  };
+    navigate('/forgotPassword') // Navigate to the Forgot Password page
+  }
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     login()
   }
 
- 
   return user ? (
     <Navigate to='/' />
   ) : (

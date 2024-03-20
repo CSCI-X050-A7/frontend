@@ -4,13 +4,13 @@ import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
 import { Form, Button, Col, Row, Accordion } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import Backend from 'utils/service'
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 
 const UserProfileForm: React.FC = () => {
   // TODO: submit update user
   const { run: submit } = useRequest(async () => null)
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     submit()
@@ -21,7 +21,6 @@ const UserProfileForm: React.FC = () => {
       setUser(res.data)
     }
   })
-
 
   return (
     <>
@@ -41,7 +40,10 @@ const UserProfileForm: React.FC = () => {
               />
             </Form.Group>
             <Form.Group as={Col} controlId='formGridChangePassword'>
-              <Button variant='primary' onClick={() => navigate('/changePassword')}>
+              <Button
+                variant='primary'
+                onClick={() => navigate('/changePassword')}
+              >
                 Change Password
               </Button>
             </Form.Group>

@@ -115,8 +115,8 @@ const RegistrationForm = () => {
   )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    registerUser()
     e.preventDefault()
+    registerUser()
   }
 
   return (

@@ -1,28 +1,19 @@
-
-import PageContainer from 'components/PageContainer';
-import { useState } from 'react';
-import { Col, Row, Form, Button } from 'react-bootstrap';
-//import { useNavigate } from 'react-router-dom';
+import { useRequest } from 'ahooks'
+import PageContainer from 'components/PageContainer'
+import { useState } from 'react'
+import { Col, Row, Form, Button } from 'react-bootstrap'
 import Backend from 'utils/service'
 
 const ForgotPassword: React.FC = () => {
-  const [email, setEmail] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    try {
-      // Call the v1AuthForgotpasswordCreate function and pass the email as an object
-      await Backend.auth.v1AuthForgotpasswordCreate({ email });
-      
-      // Log the email and navigate to the confirmation page
-
-      // navigate('/password-reset-sent');
-    } catch (error) {
-      // Handle any errors that occur during the API call
-      
-    }
-  };
+  const [email, setEmail] = useState('')
+  const { run } = useRequest(
+    async () => Backend.auth.v1AuthForgotpasswordCreate({ email }),
+    { manual: true, onSuccess: () => {} }
+  )
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    run()
+  }
 
   return (
     <PageContainer>
@@ -41,7 +32,7 @@ const ForgotPassword: React.FC = () => {
                 type='email'
                 placeholder='Enter your email'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -55,7 +46,7 @@ const ForgotPassword: React.FC = () => {
         </Form>
       </Col>
     </PageContainer>
-  );
-};
+  )
+}
 
-export default ForgotPassword;
+export default ForgotPassword
