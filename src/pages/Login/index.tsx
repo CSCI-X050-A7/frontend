@@ -14,13 +14,15 @@ const LoginForm: React.FC = () => {
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
+  const [remember, setRemember] = useState(false)
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
       return Backend.auth.v1AuthLoginCreate(
         {
           username,
-          password
+          password,
+          remember
         },
         {
           redirect_url: `${DOMAIN_HOST}${from}`
@@ -82,9 +84,22 @@ const LoginForm: React.FC = () => {
               />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} className='mb-3'>
-            <Col sm={{ span: 10, offset: 2 }}>
-              <Button variant='primary' type='submit'>
+            <Col sm={{ span: 4, offset: 2 }}>
+              <Form.Check
+                type='checkbox'
+                label='Remember me'
+                onChange={() => {
+                  setRemember(!remember)
+                }}
+                name='rememberme'
+              />
+              <Button
+                style={{ marginTop: '10px' }}
+                variant='primary'
+                type='submit'
+              >
                 Submit
               </Button>
             </Col>
