@@ -12,8 +12,9 @@ import Backend from 'utils/service'
 const LoginForm: React.FC = () => {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
-  const [username, setUsername] = useState('demo')
-  const [password, setPassword] = useState('123456')
+  const defUsername = localStorage.getItem('currentUsername')
+  const [username, setUsername] = useState(defUsername ?? '')
+  const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const { run: login } = useRequest(
     async () => {
@@ -32,6 +33,16 @@ const LoginForm: React.FC = () => {
     {
       manual: true,
       onSuccess: res => {
+        if (remember) {
+          Backend.user.v1UsersMeList().then(userData => {
+            localStorage.setItem(
+              'currentUsername',
+              userData.data.username ?? ''
+            )
+          })
+        } else {
+          localStorage.setItem('currentUsername', '')
+        }
         if (res.data.redirect_url) {
           window.location.href = res.data.redirect_url
         }
@@ -42,7 +53,6 @@ const LoginForm: React.FC = () => {
     e.preventDefault()
     login()
   }
-
   return user ? (
     <Navigate to='/' />
   ) : (
@@ -61,7 +71,7 @@ const LoginForm: React.FC = () => {
                 required
                 type='text'
                 placeholder='Username'
-                defaultValue={username}
+                defaultValue={defUsername ?? ''}
                 onChange={e => {
                   setUsername(e.target.value)
                 }}
