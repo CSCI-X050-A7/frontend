@@ -842,7 +842,7 @@ export class Api<
      *
      * @tags User
      * @name V1UsersMeList
-     * @summary get a user me
+     * @summary get a user me!!
      * @request GET:/api/v1/users/me
      * @secure
      */
@@ -866,12 +866,10 @@ export class Api<
      * @secure
      */
     v1UserUpdate: (
-      id: string,
       updateUser: SchemaUpdateUser,
       params: RequestParams = {}
-    ) =>
-      this.request<SchemaUpdateUser, SchemaErrorResponse>({
-        path: `/api/v1/users/${id}`,
+    ) => this.request<SchemaUpdateUser, SchemaErrorResponse>({
+        path: `/api/v1/users/me`,
         method: 'PUT',
         body: updateUser,
         secure: true,
