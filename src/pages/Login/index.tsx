@@ -14,7 +14,6 @@ const LoginForm: React.FC = () => {
   const { user } = useAuth()
   const [error, setError] = useState('')
   const [searchParams] = useSearchParams()
-  const [error, setError] = useState('')
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
   const [remember, setRemember] = useState(false)
@@ -61,7 +60,6 @@ const LoginForm: React.FC = () => {
         <h1>Login</h1>
       </div>
       <Col xs={12} md={8} lg={6} className='mx-auto mt-3'>
-        {error ? <Alert variant='danger'>{error}</Alert> : null}
         <Form onSubmit={handleSubmit} validated>
           <Form.Group as={Row} className='mb-3' controlId='formBasicEmail'>
             <Form.Label className='text-sm-end' column sm={2}>
