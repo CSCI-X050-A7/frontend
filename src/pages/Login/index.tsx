@@ -14,15 +14,18 @@ const LoginForm: React.FC = () => {
   const { user } = useAuth()
   const [error, setError] = useState('')
   const [searchParams] = useSearchParams()
+  const [error, setError] = useState('')
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
+  const [remember, setRemember] = useState(false)
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
       return Backend.auth.v1AuthLoginCreate(
         {
           username,
-          password
+          password,
+          remember
         },
         {
           redirect_url: `${DOMAIN_HOST}${from}`
@@ -47,7 +50,11 @@ const LoginForm: React.FC = () => {
   }
 
   return user ? (
-    <Navigate to='/' />
+    user.is_admin ? (
+      <Navigate to='/admin' />
+    ) : (
+      <Navigate to='/' />
+    )
   ) : (
     <>
       <div className='text-center'>
@@ -88,14 +95,28 @@ const LoginForm: React.FC = () => {
               />
             </Col>
           </Form.Group>
+
           <Form.Group as={Row} className='mb-3'>
-            <Col sm={{ span: 10, offset: 2 }}>
-              <Button variant='primary' type='submit'>
+            <Col sm={{ span: 4, offset: 2 }}>
+              <Form.Check
+                type='checkbox'
+                label='Remember me'
+                onChange={() => {
+                  setRemember(!remember)
+                }}
+                name='rememberme'
+              />
+              <Button
+                style={{ marginTop: '10px' }}
+                variant='primary'
+                type='submit'
+              >
                 Submit
               </Button>
             </Col>
           </Form.Group>
         </Form>
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
       </Col>
     </>
   )
