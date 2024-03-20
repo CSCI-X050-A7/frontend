@@ -1,25 +1,63 @@
 import { useRequest } from 'ahooks'
-import type { SchemaUserDetail } from 'client'
+import type { SchemaUpdateUser, SchemaUserDetail } from 'client'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
 import { Form, Button, Col, Row, Accordion } from 'react-bootstrap'
 import Backend from 'utils/service'
 
-const UserProfileForm: React.FC = () => {
-  // TODO: submit update user
-  const { run: submit } = useRequest(async () => null)
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    submit()
-  }
-  const [user, setUser] = useState<SchemaUserDetail>()
-  const { loading } = useRequest(async () => Backend.user.v1UsersMeList(), {
-    onSuccess: res => {
-      setUser(res.data)
+const UserProfileForm: React.FC<{
+  key: string
+  updateUser: SchemaUpdateUser
+  refresh: () => void
+}>= ({ key, updateUser, refresh }) => {
+  const [show, setShow] = useState(false)
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+  const [address, setAddress] = useState(updateUser.address)
+  const [address2,setAddress2] = useState(updateUser.address2)
+  const [card_address,setCard_address] = useState(updateUser.card_address)
+  const [card_address2,setCard_address2] = useState(updateUser.card_address2)
+  const [card_city, setCard_city] = useState(updateUser.card_city)
+  const [card_expiration, setCard_expiration] = useState(updateUser.card_expiration)
+  const [card_number, setCard_number] = useState(updateUser.card_number)
+  const [card_state, setCard_state] = useState(updateUser.card_state)
+  const [card_type, setCard_type] = useState(updateUser.card_type)
+  const [card_zip, setCard_zip] = useState(updateUser.card_zip)
+  const [city, setCity] = useState(updateUser.city)
+  const [name, setName] = useState(updateUser.name)
+  const [need_promotion, setNeed_promotion] = useState(updateUser.need_promotion)
+  const { run: submit } = useRequest(
+    async () => {
+      Backend.user.v1UserUpdate(updateUser.username, {
+        address,
+        address2,
+        card_address,
+        card_address2,
+        card_city,
+        card_expiration,
+        card_number,
+        card_state,
+        card_type,
+        card_zip,
+        city,
+        name,
+        need_promotion,
+        password: '',
+        phone: '',
+        state: '',
+        username: '',
+        zip: ''
+      })
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        refresh()
+        handleClose()
+      }
     }
-  })
-
+  )
   return (
     <>
       <div className='text-center'>

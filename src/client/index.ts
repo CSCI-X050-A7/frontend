@@ -854,7 +854,31 @@ export class Api<
         type: ContentType.Json,
         format: 'json',
         ...params
-      })
+      }),
+
+       /**
+     * @description a user me.
+     *
+     * @tags User
+     * @name v1UserUpdate
+     * @summary update user information
+     * @request PUT:/api/v1/users/me
+     * @secure
+     */
+    v1UserUpdate: (
+      id: string,
+      updateUser: SchemaUpdateUser,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaUpdateUser, SchemaErrorResponse>({
+        path: `/api/v1/users/${id}`,
+        method: 'PUT',
+        body: updateUser,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
   }
   misc = {
     /**
