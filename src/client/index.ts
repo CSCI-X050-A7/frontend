@@ -160,11 +160,6 @@ export interface SchemaUpdateUser {
   /** @maxLength 100 */
   name: string
   need_promotion?: boolean
-  /**
-   * @minLength 8
-   * @maxLength 100
-   */
-  password: string
   /** @maxLength 20 */
   phone: string
   /** @maxLength 100 */
@@ -939,6 +934,26 @@ export class Api<
       this.request<SchemaUserDetail, SchemaErrorResponse>({
         path: `/api/v1/users/me`,
         method: 'GET',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description update user info.
+     *
+     * @tags User
+     * @name V1UsersMeUpdate
+     * @summary update user info.
+     * @request PUT:/api/v1/users/me
+     * @secure
+     */
+    v1UsersMeUpdate: (user: SchemaUpdateUser, params: RequestParams = {}) =>
+      this.request<SchemaUserDetail, SchemaErrorResponse>({
+        path: `/api/v1/users/me`,
+        method: 'PUT',
+        body: user,
         secure: true,
         type: ContentType.Json,
         format: 'json',

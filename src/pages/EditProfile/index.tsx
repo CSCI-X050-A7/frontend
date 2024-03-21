@@ -1,24 +1,120 @@
 import { useRequest } from 'ahooks'
-import type { SchemaUserDetail } from 'client'
+import type { SchemaUpdateUser, SchemaUserDetail } from 'client'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
-import { Form, Button, Col, Row, Accordion } from 'react-bootstrap'
+import { Form, Button, Col, Row, Accordion, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import Backend from 'utils/service'
 
 const UserProfileForm: React.FC = () => {
-  // TODO: submit update user
   const navigate = useNavigate()
-  const { run: submit } = useRequest(async () => null)
+  const [success, setSuccess] = useState('')
+  const [error, setError] = useState('')
+  const [form, setForm] = useState<SchemaUserDetail>({
+    email: '',
+    name: '',
+    username: '',
+    address: '',
+    address2: '',
+    phone: '',
+    need_promotion: false,
+    city: '',
+    state: '',
+    zip: '',
+    card_address: '',
+    card_address2: '',
+    card_city: '',
+    card_state: '',
+    card_zip: '',
+    card_type: '',
+    card_number: '',
+    card_expiration: ''
+  })
+  const usStates = [
+    'AL',
+    'AK',
+    'AZ',
+    'AR',
+    'CA',
+    'CO',
+    'CT',
+    'DE',
+    'FL',
+    'GA',
+    'HI',
+    'ID',
+    'IL',
+    'IN',
+    'IA',
+    'KS',
+    'KY',
+    'LA',
+    'ME',
+    'MD',
+    'MA',
+    'MI',
+    'MN',
+    'MS',
+    'MO',
+    'MT',
+    'NE',
+    'NV',
+    'NH',
+    'NJ',
+    'NM',
+    'NY',
+    'NC',
+    'ND',
+    'OH',
+    'OK',
+    'OR',
+    'PA',
+    'RI',
+    'SC',
+    'SD',
+    'TN',
+    'TX',
+    'UT',
+    'VT',
+    'VA',
+    'WA',
+    'WV',
+    'WI',
+    'WY'
+  ]
+  const handleChange = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const { name, value } = event.target as { name?: string; value: unknown }
+    if (name === 'need_promotion') {
+      setForm(changeForm => ({
+        ...changeForm,
+        need_promotion: !changeForm.need_promotion
+      }))
+    } else if (typeof name === 'string') {
+      setForm(changeForm => ({ ...changeForm, [name]: value }))
+    }
+  }
+  const { run: submit } = useRequest(
+    async () => Backend.user.v1UsersMeUpdate(form as SchemaUpdateUser),
+    {
+      manual: true,
+      onSuccess: () => {
+        setSuccess('Done!')
+      },
+      onError: () => {
+        setError('Update profile failed. Please try again.')
+      }
+    }
+  )
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     submit()
   }
-  const [user, setUser] = useState<SchemaUserDetail>()
   const { loading } = useRequest(async () => Backend.user.v1UsersMeList(), {
     onSuccess: res => {
-      setUser(res.data)
+      setForm(res.data)
     }
   })
 
@@ -33,9 +129,10 @@ const UserProfileForm: React.FC = () => {
             <Form.Group as={Col} controlId='formGridEmail'>
               <Form.Label className='required'>Email</Form.Label>
               <Form.Control
+                name='email'
                 type='email'
                 placeholder='Enter email'
-                value={user?.email ?? ''}
+                value={form.email}
                 disabled
               />
             </Form.Group>
@@ -54,163 +151,86 @@ const UserProfileForm: React.FC = () => {
             <Form.Group as={Col} controlId='formGridName'>
               <Form.Label className='required'>Name</Form.Label>
               <Form.Control
+                name='name'
                 required
-                value={user?.name ?? ''}
-                onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
-                    name: e.target.value
-                  }))
-                }}
+                value={form.name}
+                onChange={handleChange}
               />
             </Form.Group>
 
             <Form.Group as={Col} controlId='formGridPhone'>
               <Form.Label className='required'>Phone</Form.Label>
               <Form.Control
+                name='phone'
                 required
-                value={user?.phone ?? ''}
-                onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
-                    phone: e.target.value
-                  }))
-                }}
+                value={form.phone}
+                onChange={handleChange}
               />
             </Form.Group>
           </Row>
           <Form.Group className='mb-3' controlId='formGridAddress1'>
             <Form.Label className='required'>Address</Form.Label>
             <Form.Control
+              name='address'
               placeholder='1234 Main St'
               required
-              value={user?.address ?? ''}
-              onChange={e => {
-                setUser(prevUser => ({
-                  ...prevUser,
-                  address: e.target.value
-                }))
-              }}
+              value={form.address}
+              onChange={handleChange}
             />
           </Form.Group>
           <Form.Group className='mb-3' controlId='formGridAddress2'>
             <Form.Label className='required'>Address 2</Form.Label>
             <Form.Control
+              name='address2'
               placeholder='Apartment, studio, or floor'
-              value={user?.address2 ?? ''}
-              onChange={e => {
-                setUser(prevUser => ({
-                  ...prevUser,
-                  address2: e.target.value
-                }))
-              }}
+              value={form.address2}
+              onChange={handleChange}
             />
           </Form.Group>
           <Row className='mb-3'>
             <Form.Group as={Col} controlId='formGridCity'>
               <Form.Label className='required'>City</Form.Label>
               <Form.Control
+                name='city'
                 required
-                value={user?.city ?? ''}
-                onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
-                    city: e.target.value
-                  }))
-                }}
+                value={form.city}
+                onChange={handleChange}
               />
             </Form.Group>
             <Form.Group as={Col} controlId='formGridState'>
               <Form.Label className='required'>State</Form.Label>
               <Form.Select
-                defaultValue='GA'
-                required
-                value={user?.state ?? ''}
-                onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
-                    state: e.target.value
-                  }))
-                }}
+                name='state'
+                defaultValue='Choose...'
+                onChange={handleChange}
+                value={form.state}
               >
-                <option value='AL'>Alabama</option>
-                <option value='AK'>Alaska</option>
-                <option value='AZ'>Arizona</option>
-                <option value='AR'>Arkansas</option>
-                <option value='CA'>California</option>
-                <option value='CO'>Colorado</option>
-                <option value='CT'>Connecticut</option>
-                <option value='DE'>Delaware</option>
-                <option value='DC'>District Of Columbia</option>
-                <option value='FL'>Florida</option>
-                <option value='GA'>Georgia</option>
-                <option value='HI'>Hawaii</option>
-                <option value='ID'>Idaho</option>
-                <option value='IL'>Illinois</option>
-                <option value='IN'>Indiana</option>
-                <option value='IA'>Iowa</option>
-                <option value='KS'>Kansas</option>
-                <option value='KY'>Kentucky</option>
-                <option value='LA'>Louisiana</option>
-                <option value='ME'>Maine</option>
-                <option value='MD'>Maryland</option>
-                <option value='MA'>Massachusetts</option>
-                <option value='MI'>Michigan</option>
-                <option value='MN'>Minnesota</option>
-                <option value='MS'>Mississippi</option>
-                <option value='MO'>Missouri</option>
-                <option value='MT'>Montana</option>
-                <option value='NE'>Nebraska</option>
-                <option value='NV'>Nevada</option>
-                <option value='NH'>New Hampshire</option>
-                <option value='NJ'>New Jersey</option>
-                <option value='NM'>New Mexico</option>
-                <option value='NY'>New York</option>
-                <option value='NC'>North Carolina</option>
-                <option value='ND'>North Dakota</option>
-                <option value='OH'>Ohio</option>
-                <option value='OK'>Oklahoma</option>
-                <option value='OR'>Oregon</option>
-                <option value='PA'>Pennsylvania</option>
-                <option value='RI'>Rhode Island</option>
-                <option value='SC'>South Carolina</option>
-                <option value='SD'>South Dakota</option>
-                <option value='TN'>Tennessee</option>
-                <option value='TX'>Texas</option>
-                <option value='UT'>Utah</option>
-                <option value='VT'>Vermont</option>
-                <option value='VA'>Virginia</option>
-                <option value='WA'>Washington</option>
-                <option value='WV'>West Virginia</option>
-                <option value='WI'>Wisconsin</option>
-                <option value='WY'>Wyoming</option>
+                <option>Choose...</option>
+                {usStates.map((state, index) => (
+                  <option key={index} value={state}>
+                    {' '}
+                    {state}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
             <Form.Group as={Col} md={3} controlId='formGridZip'>
               <Form.Label className='required'>Zip</Form.Label>
               <Form.Control
+                name='zip'
                 required
-                value={user?.zip ?? ''}
-                onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
-                    zip: e.target.value
-                  }))
-                }}
+                value={form.zip}
+                onChange={handleChange}
               />
             </Form.Group>
           </Row>
           <Row className='mb-3'>
             <Form.Check
+              name='need_promotion'
               type='checkbox'
               label='Email me promotion'
-              checked={user?.need_promotion ?? false}
-              onChange={e => {
-                setUser(prevUser => ({
-                  ...prevUser,
-                  need_promotion: e.target.checked
-                }))
-              }}
+              checked={form.need_promotion ?? false}
+              onChange={handleChange}
             />
           </Row>
           <Accordion>
@@ -221,13 +241,9 @@ const UserProfileForm: React.FC = () => {
                   <Form.Group as={Col} md={3} controlId='formGridEmail'>
                     <Form.Label>Card Type</Form.Label>
                     <Form.Select
-                      value={user?.card_type ?? ''}
-                      onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
-                          card_type: e.target.value
-                        }))
-                      }}
+                      name='card_type'
+                      value={form.card_type}
+                      onChange={handleChange}
                     >
                       <option value=''>Select card type</option>
                       <option value='Visa'>Visa</option>
@@ -240,157 +256,93 @@ const UserProfileForm: React.FC = () => {
                   <Form.Group as={Col} md={6} controlId='formGridCardNumber'>
                     <Form.Label>Card Number</Form.Label>
                     <Form.Control
-                      value={user?.card_number ?? ''}
-                      onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
-                          card_number: e.target.value
-                        }))
-                      }}
+                      name='card_number'
+                      value={form.card_number}
+                      onChange={handleChange}
                     />
                   </Form.Group>
                   <Form.Group as={Col} md={3} controlId='formGridCardExp'>
                     <Form.Label>Card Expiration</Form.Label>
                     <Form.Control
+                      name='card_expiration'
                       type='text'
                       placeholder='01/28'
-                      value={user?.card_expiration ?? ''}
-                      onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
-                          card_expiration: e.target.value
-                        }))
-                      }}
+                      value={form.card_expiration}
+                      onChange={handleChange}
                     />
                   </Form.Group>
                 </Row>
                 <Form.Group className='mb-3' controlId='formGridAddress1'>
                   <Form.Label>Address</Form.Label>
                   <Form.Control
+                    name='card_address'
                     placeholder='1234 Main St'
-                    value={user?.card_address ?? ''}
-                    onChange={e => {
-                      setUser(prevUser => ({
-                        ...prevUser,
-                        card_address: e.target.value
-                      }))
-                    }}
+                    value={form.card_address}
+                    onChange={handleChange}
                   />
                 </Form.Group>
                 <Form.Group className='mb-3' controlId='formGridAddress2'>
                   <Form.Label>Address 2</Form.Label>
                   <Form.Control
+                    name='card_address2'
                     placeholder='Apartment, studio, or floor'
-                    value={user?.card_address2 ?? ''}
-                    onChange={e => {
-                      setUser(prevUser => ({
-                        ...prevUser,
-                        card_address2: e.target.value
-                      }))
-                    }}
+                    value={form.card_address2}
+                    onChange={handleChange}
                   />
                 </Form.Group>
                 <Row className='mb-3'>
                   <Form.Group as={Col} controlId='formGridCity'>
                     <Form.Label>City</Form.Label>
                     <Form.Control
-                      value={user?.card_city ?? ''}
-                      onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
-                          card_city: e.target.value
-                        }))
-                      }}
+                      name='card_city'
+                      value={form.card_city}
+                      onChange={handleChange}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId='formGridState'>
                     <Form.Label>State</Form.Label>
                     <Form.Select
-                      defaultValue='GA'
-                      required
-                      value={user?.card_state ?? ''}
-                      onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
-                          card_state: e.target.value
-                        }))
-                      }}
+                      name='card_state'
+                      defaultValue='Choose...'
+                      onChange={handleChange}
+                      value={form.card_state}
                     >
-                      <option value='AL'>Alabama</option>
-                      <option value='AK'>Alaska</option>
-                      <option value='AZ'>Arizona</option>
-                      <option value='AR'>Arkansas</option>
-                      <option value='CA'>California</option>
-                      <option value='CO'>Colorado</option>
-                      <option value='CT'>Connecticut</option>
-                      <option value='DE'>Delaware</option>
-                      <option value='DC'>District Of Columbia</option>
-                      <option value='FL'>Florida</option>
-                      <option value='GA'>Georgia</option>
-                      <option value='HI'>Hawaii</option>
-                      <option value='ID'>Idaho</option>
-                      <option value='IL'>Illinois</option>
-                      <option value='IN'>Indiana</option>
-                      <option value='IA'>Iowa</option>
-                      <option value='KS'>Kansas</option>
-                      <option value='KY'>Kentucky</option>
-                      <option value='LA'>Louisiana</option>
-                      <option value='ME'>Maine</option>
-                      <option value='MD'>Maryland</option>
-                      <option value='MA'>Massachusetts</option>
-                      <option value='MI'>Michigan</option>
-                      <option value='MN'>Minnesota</option>
-                      <option value='MS'>Mississippi</option>
-                      <option value='MO'>Missouri</option>
-                      <option value='MT'>Montana</option>
-                      <option value='NE'>Nebraska</option>
-                      <option value='NV'>Nevada</option>
-                      <option value='NH'>New Hampshire</option>
-                      <option value='NJ'>New Jersey</option>
-                      <option value='NM'>New Mexico</option>
-                      <option value='NY'>New York</option>
-                      <option value='NC'>North Carolina</option>
-                      <option value='ND'>North Dakota</option>
-                      <option value='OH'>Ohio</option>
-                      <option value='OK'>Oklahoma</option>
-                      <option value='OR'>Oregon</option>
-                      <option value='PA'>Pennsylvania</option>
-                      <option value='RI'>Rhode Island</option>
-                      <option value='SC'>South Carolina</option>
-                      <option value='SD'>South Dakota</option>
-                      <option value='TN'>Tennessee</option>
-                      <option value='TX'>Texas</option>
-                      <option value='UT'>Utah</option>
-                      <option value='VT'>Vermont</option>
-                      <option value='VA'>Virginia</option>
-                      <option value='WA'>Washington</option>
-                      <option value='WV'>West Virginia</option>
-                      <option value='WI'>Wisconsin</option>
-                      <option value='WY'>Wyoming</option>
+                      <option>Choose...</option>
+                      {usStates.map((state, index) => (
+                        <option key={index} value={state}>
+                          {' '}
+                          {state}
+                        </option>
+                      ))}
                     </Form.Select>
                   </Form.Group>
                   <Form.Group as={Col} md={3} controlId='formGridZip'>
                     <Form.Label>Zip</Form.Label>
                     <Form.Control
-                      value={user?.card_zip ?? ''}
-                      onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
-                          card_zip: e.target.value
-                        }))
-                      }}
+                      name='card_zip'
+                      value={form.card_zip}
+                      onChange={handleChange}
                     />
                   </Form.Group>
                 </Row>
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
-
           <Form.Group as={Row} className='mt-3'>
             <Button variant='primary' type='submit' disabled={loading}>
               Submit
             </Button>
           </Form.Group>
+          {success ? (
+            <Alert variant='success' className='mt-3'>
+              {success}
+            </Alert>
+          ) : null}
+          {error ? (
+            <Alert variant='danger' className='mt-3'>
+              {error}
+            </Alert>
+          ) : null}
         </Form>
       </Col>
     </>
