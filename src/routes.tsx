@@ -15,6 +15,7 @@ import PromoManage from 'pages/PromoManage'
 import Register from 'pages/Register'
 import RegisterConfirmation from 'pages/RegisterConfirmation'
 import UserManage from 'pages/UserManage'
+import EditProfileConfirmation from 'pages/EditProfileConfirmation'
 import type { RouteObject } from 'react-router-dom'
 
 const children: RouteObject[] = [
@@ -37,6 +38,10 @@ const children: RouteObject[] = [
   {
     path: '/profile/edit',
     element: <EditProfile />
+  },
+  {
+    path: '/edit/confirmation',
+    element: <EditProfileConfirmation />
   },
   {
     path: '/register/confirm',

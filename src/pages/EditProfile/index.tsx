@@ -2,62 +2,116 @@ import { useRequest } from 'ahooks'
 import type { SchemaUpdateUser, SchemaUserDetail } from 'client'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Button, Col, Row, Accordion } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 import Backend from 'utils/service'
 
-const UserProfileForm: React.FC<{
-  key: string
-  updateUser: SchemaUpdateUser
-  refresh: () => void
-}>= ({ key, updateUser, refresh }) => {
-  const [show, setShow] = useState(false)
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
-  const [address, setAddress] = useState(updateUser.address)
-  const [address2,setAddress2] = useState(updateUser.address2)
-  const [card_address,setCard_address] = useState(updateUser.card_address)
-  const [card_address2,setCard_address2] = useState(updateUser.card_address2)
-  const [card_city, setCard_city] = useState(updateUser.card_city)
-  const [card_expiration, setCard_expiration] = useState(updateUser.card_expiration)
-  const [card_number, setCard_number] = useState(updateUser.card_number)
-  const [card_state, setCard_state] = useState(updateUser.card_state)
-  const [card_type, setCard_type] = useState(updateUser.card_type)
-  const [card_zip, setCard_zip] = useState(updateUser.card_zip)
-  const [city, setCity] = useState(updateUser.city)
-  const [name, setName] = useState(updateUser.name)
-  const [need_promotion, setNeed_promotion] = useState(updateUser.need_promotion)
-  const { run: submit } = useRequest(
-    async () => {
-      Backend.user.v1UserUpdate(updateUser.username, {
-        address,
-        address2,
-        card_address,
-        card_address2,
-        card_city,
-        card_expiration,
-        card_number,
-        card_state,
-        card_type,
-        card_zip,
-        city,
-        name,
-        need_promotion,
-        password: '',
-        phone: '',
-        state: '',
-        username: '',
-        zip: ''
-      })
-    },
+const EditProfileForm = () => {
+  const navigate = useNavigate()
+  const { run: submit } = useRequest(async () => null)
+  const { loading } = useRequest(async () => Backend.user.v1UsersMeList(), {
+    onSuccess: res => {
+      setForm((prevForm: SchemaUpdateUser) => ({
+        ...prevForm,
+        ...res.data,
+      }));
+    }
+  })
+  const [error, setError] = useState('')
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    updateUser()
+  }
+  const [form, setForm] = useState<SchemaUpdateUser>({
+    address: '',
+    address2: '',
+    card_address: '',
+    card_address2: '',
+    card_city: '',
+    card_expiration: '',
+    card_number: '',
+    card_state: '',
+    card_type: '',
+    card_zip: '',
+    city: '',
+    name: '',
+    need_promotion: false,
+    password: '', 
+    phone: '', 
+    state: '', 
+    username: '', 
+    zip: '',
+  })
+
+  const handleChange = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const { name, value } = event.target as { name?: string; value: unknown }
+    if (name === 'need_promotion') {
+      setForm((changeForm: SchemaUpdateUser) => ({
+        ...changeForm,
+        need_promotion: !changeForm.need_promotion
+      }))
+    } else if (typeof name === 'string') {
+      setForm((changeForm: SchemaUpdateUser) => ({ ...changeForm, [name]: value }))
+    }
+  }
+
+  //get user information from backend and set it to form
+  const [userDetails, setUserDetails] = useState<SchemaUserDetail | null>(null);
+
+  useEffect(() => {
+    async function fetchUserDetails() {
+      try {
+        const response = await Backend.user.v1UsersMeList();
+        const details: SchemaUserDetail = response.data; 
+        setUserDetails(details);
+
+        //make the two schemas compatible, so UpdateUser is populated with the user's details
+        const formCompatible: Partial<SchemaUpdateUser> = {
+          address: details.address,
+          address2: details.address2,
+          card_address: details.card_address,
+          card_address2: details.card_address2,
+          card_city: details.card_city, 
+          card_expiration: details.card_expiration,
+          card_number: details.card_number,
+          card_state: details.card_state,
+          card_type: details.card_type, 
+          card_zip: details.card_zip,
+          city: details.city,
+          name: details.name,
+          need_promotion: details.need_promotion,
+          password: form.password,
+          phone: details.phone,
+          state: details.state,
+          username: details.username,
+          zip: details.zip
+        };
+        setForm(formCompatible as SchemaUpdateUser);
+      } catch (error) {
+        console.error('Failed to fetch user details:', error);
+      }
+    }
+    fetchUserDetails();
+  }, []);
+
+  const { run: updateUser } = useRequest(
+    async () => Backend.user.v1UserUpdate(form),
     {
       manual: true,
       onSuccess: () => {
-        refresh()
-        handleClose()
+        navigate('/edit/confirmation')
+      },
+      onError: err => {
+        // TODO: if status is 409, tell user that email/username is already registered
+        // FIX: error.message does not work?
+        setError(err.message || 'Edits to profile not saved. Please try again.')
       }
     }
-  )
+  ) //runRequest
+
   return (
     <>
       <div className='text-center'>
@@ -71,7 +125,7 @@ const UserProfileForm: React.FC<{
               <Form.Control
                 type='email'
                 placeholder='Enter email'
-                value={user?.email ?? ''}
+                value={userDetails?.email ?? ''}
                 disabled
               />
             </Form.Group>
@@ -80,9 +134,10 @@ const UserProfileForm: React.FC<{
               <Form.Control
                 type='password'
                 placeholder='Password'
+                value='********'
                 onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
+                  setForm(prevForm => ({
+                    ...prevForm,
                     password: e.target.value
                   }))
                 }}
@@ -94,10 +149,10 @@ const UserProfileForm: React.FC<{
               <Form.Label className='required'>Name</Form.Label>
               <Form.Control
                 required
-                value={user?.name ?? ''}
+                value={form.name ?? ''}
                 onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
+                  setForm(prevForm => ({
+                    ...prevForm,
                     name: e.target.value
                   }))
                 }}
@@ -108,10 +163,10 @@ const UserProfileForm: React.FC<{
               <Form.Label className='required'>Phone</Form.Label>
               <Form.Control
                 required
-                value={user?.phone ?? ''}
+                value={form.phone ?? ''}
                 onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
+                  setForm(prevForm => ({
+                    ...prevForm,
                     phone: e.target.value
                   }))
                 }}
@@ -123,10 +178,10 @@ const UserProfileForm: React.FC<{
             <Form.Control
               placeholder='1234 Main St'
               required
-              value={user?.address ?? ''}
+              value={form.address ?? ''}
               onChange={e => {
-                setUser(prevUser => ({
-                  ...prevUser,
+                setForm(prevForm => ({
+                  ...prevForm,
                   address: e.target.value
                 }))
               }}
@@ -136,10 +191,10 @@ const UserProfileForm: React.FC<{
             <Form.Label className='required'>Address 2</Form.Label>
             <Form.Control
               placeholder='Apartment, studio, or floor'
-              value={user?.address2 ?? ''}
+              value={form.address2 ?? ''}
               onChange={e => {
-                setUser(prevUser => ({
-                  ...prevUser,
+                setForm(prevForm => ({
+                  ...prevForm,
                   address2: e.target.value
                 }))
               }}
@@ -150,10 +205,10 @@ const UserProfileForm: React.FC<{
               <Form.Label className='required'>City</Form.Label>
               <Form.Control
                 required
-                value={user?.city ?? ''}
+                value={form.city ?? ''}
                 onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
+                  setForm(prevForm => ({
+                    ...prevForm,
                     city: e.target.value
                   }))
                 }}
@@ -164,10 +219,10 @@ const UserProfileForm: React.FC<{
               <Form.Select
                 defaultValue='GA'
                 required
-                value={user?.state ?? ''}
+                value={form.state ?? ''}
                 onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
+                  setForm(prevForm => ({
+                    ...prevForm,
                     state: e.target.value
                   }))
                 }}
@@ -229,10 +284,10 @@ const UserProfileForm: React.FC<{
               <Form.Label className='required'>Zip</Form.Label>
               <Form.Control
                 required
-                value={user?.zip ?? ''}
+                value={form.zip ?? ''}
                 onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
+                  setForm(prevForm => ({
+                    ...prevForm,
                     zip: e.target.value
                   }))
                 }}
@@ -243,10 +298,10 @@ const UserProfileForm: React.FC<{
             <Form.Check
               type='checkbox'
               label='Email me promotion'
-              checked={user?.need_promotion ?? false}
+              checked={form.need_promotion ?? false}
               onChange={e => {
-                setUser(prevUser => ({
-                  ...prevUser,
+                setForm(prevForm => ({
+                  ...prevForm,
                   need_promotion: e.target.checked
                 }))
               }}
@@ -260,10 +315,10 @@ const UserProfileForm: React.FC<{
                   <Form.Group as={Col} md={3} controlId='formGridEmail'>
                     <Form.Label>Card Type</Form.Label>
                     <Form.Select
-                      value={user?.card_type ?? ''}
+                      value={form.card_type ?? ''}
                       onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
+                        setForm(prevForm => ({
+                          ...prevForm,
                           card_type: e.target.value
                         }))
                       }}
@@ -279,10 +334,10 @@ const UserProfileForm: React.FC<{
                   <Form.Group as={Col} md={6} controlId='formGridCardNumber'>
                     <Form.Label>Card Number</Form.Label>
                     <Form.Control
-                      value={user?.card_number ?? ''}
+                      value={form.card_number ?? ''}
                       onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
+                        setForm(prevForm => ({
+                          ...prevForm,
                           card_number: e.target.value
                         }))
                       }}
@@ -293,10 +348,10 @@ const UserProfileForm: React.FC<{
                     <Form.Control
                       type='text'
                       placeholder='01/28'
-                      value={user?.card_expiration ?? ''}
+                      value={form.card_expiration ?? ''}
                       onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
+                        setForm(prevForm => ({
+                          ...prevForm,
                           card_expiration: e.target.value
                         }))
                       }}
@@ -307,10 +362,10 @@ const UserProfileForm: React.FC<{
                   <Form.Label>Address</Form.Label>
                   <Form.Control
                     placeholder='1234 Main St'
-                    value={user?.card_address ?? ''}
+                    value={form.card_address ?? ''}
                     onChange={e => {
-                      setUser(prevUser => ({
-                        ...prevUser,
+                      setForm(prevForm => ({
+                        ...prevForm,
                         card_address: e.target.value
                       }))
                     }}
@@ -320,10 +375,10 @@ const UserProfileForm: React.FC<{
                   <Form.Label>Address 2</Form.Label>
                   <Form.Control
                     placeholder='Apartment, studio, or floor'
-                    value={user?.card_address2 ?? ''}
+                    value={form.card_address2 ?? ''}
                     onChange={e => {
-                      setUser(prevUser => ({
-                        ...prevUser,
+                      setForm(prevForm => ({
+                        ...prevForm,
                         card_address2: e.target.value
                       }))
                     }}
@@ -333,10 +388,10 @@ const UserProfileForm: React.FC<{
                   <Form.Group as={Col} controlId='formGridCity'>
                     <Form.Label>City</Form.Label>
                     <Form.Control
-                      value={user?.card_city ?? ''}
+                      value={form.card_city ?? ''}
                       onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
+                        setForm(prevForm => ({
+                          ...prevForm,
                           card_city: e.target.value
                         }))
                       }}
@@ -347,10 +402,10 @@ const UserProfileForm: React.FC<{
                     <Form.Select
                       defaultValue='GA'
                       required
-                      value={user?.card_state ?? ''}
+                      value={form.card_state ?? ''}
                       onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
+                        setForm(prevForm => ({
+                          ...prevForm,
                           card_state: e.target.value
                         }))
                       }}
@@ -411,10 +466,10 @@ const UserProfileForm: React.FC<{
                   <Form.Group as={Col} md={3} controlId='formGridZip'>
                     <Form.Label>Zip</Form.Label>
                     <Form.Control
-                      value={user?.card_zip ?? ''}
+                      value={form.card_zip ?? ''}
                       onChange={e => {
-                        setUser(prevUser => ({
-                          ...prevUser,
+                        setForm(prevForm => ({
+                          ...prevForm,
                           card_zip: e.target.value
                         }))
                       }}
@@ -426,7 +481,7 @@ const UserProfileForm: React.FC<{
           </Accordion>
 
           <Form.Group as={Row} className='mt-3'>
-            <Button variant='primary' type='submit' disabled={loading}>
+            <Button variant='primary' type='submit'  disabled={loading}>
               Submit
             </Button>
           </Form.Group>
@@ -438,7 +493,7 @@ const UserProfileForm: React.FC<{
 
 const Index: React.FC = () => (
   <PageContainer>
-    <UserProfileForm />
+    <EditProfileForm />
   </PageContainer>
 )
 
