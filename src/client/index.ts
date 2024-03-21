@@ -855,25 +855,29 @@ export class Api<
         format: 'json',
         ...params
       }),
-          /**
-     * @description user information gets updated
+
+    /**
+     * @description update user info.
      *
      * @tags User
-     * @name V1UserUpdate
-     * @summary get a user me
+     * @name V1UsersMeUpdate
+     * @summary update user info.
      * @request PUT:/api/v1/users/me
      * @secure
      */
-    v1UserUpdate: (updateUser: SchemaUpdateUser, params: RequestParams = {}) =>
-    this.request<SchemaUpdateUser, SchemaErrorResponse>({
-      path: `/api/v1/users/me`,
-      method: 'PUT',
-      body: updateUser,
-      secure: true,
-      type: ContentType.Json,
-      format: 'json',
-      ...params
-    })
+    v1UsersMeUpdate: (
+      userUpdate: SchemaUpdateUser,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaUserDetail, SchemaErrorResponse>({
+        path: `/api/v1/users/me`,
+        method: 'PUT',
+        body: userUpdate,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
   }
   misc = {
     /**

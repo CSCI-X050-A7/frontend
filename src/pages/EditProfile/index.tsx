@@ -59,14 +59,12 @@ const EditProfileForm = () => {
 
   //get user information from backend and set it to form
   const [userDetails, setUserDetails] = useState<SchemaUserDetail | null>(null);
-
   useEffect(() => {
     async function fetchUserDetails() {
       try {
         const response = await Backend.user.v1UsersMeList();
         const details: SchemaUserDetail = response.data; 
         setUserDetails(details);
-
         //make the two schemas compatible, so UpdateUser is populated with the user's details
         const formCompatible: Partial<SchemaUpdateUser> = {
           address: details.address,
@@ -97,7 +95,7 @@ const EditProfileForm = () => {
   }, []);
 
   const { run: updateUser } = useRequest(
-    async () => Backend.user.v1UserUpdate(form),
+    async () => Backend.user.v1UsersMeUpdate(form),
     {
       manual: true,
       onSuccess: () => {
@@ -126,19 +124,15 @@ const EditProfileForm = () => {
                 disabled
               />
             </Form.Group>
-            <Form.Group as={Col} controlId='formGridPassword'>
-              <Form.Label className='required'>Password</Form.Label>
-              <Form.Control
-                type='password'
-                placeholder='Password'
-                value='********'
-                onChange={e => {
-                  setForm(prevForm => ({
-                    ...prevForm,
-                    password: e.target.value
-                  }))
-                }}
-              />
+            <Form.Group as={Col} controlId='formGridEmail'>
+              <Form.Label>Password</Form.Label>
+              <Button
+                type='button'
+                className='form-control'
+                onClick={() => navigate('/changePassword', { replace: true })}
+              >
+                Change Password
+              </Button>
             </Form.Group>
           </Row>
           <Row className='mb-3'>
@@ -146,7 +140,7 @@ const EditProfileForm = () => {
               <Form.Label className='required'>Name</Form.Label>
               <Form.Control
                 required
-                value={form.name ?? ''}
+                value={form.name}
                 onChange={e => {
                   setForm(prevForm => ({
                     ...prevForm,
