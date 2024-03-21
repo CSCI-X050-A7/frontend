@@ -15,6 +15,9 @@ import OrderSummary from 'pages/OrderSummary'
 import PromoManage from 'pages/PromoManage'
 import Register from 'pages/Register'
 import RegisterConfirmation from 'pages/RegisterConfirmation'
+import ForgotPassword from 'pages/ForgotPassword'
+import ResetPassword from 'pages/ResetPassword'
+import ChangePassword from 'pages/ChangePassword'
 import UserManage from 'pages/UserManage'
 import type { RouteObject } from 'react-router-dom'
 
@@ -30,6 +33,18 @@ const children: RouteObject[] = [
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/forgotPassword',
+    element: <ForgotPassword />
+  },
+  {
+    path: '/resetPassword',
+    element: <ResetPassword />
+  },
+  {
+    path: '/changePassword',
+    element: <ChangePassword />
   },
   {
     path: '/activate',
