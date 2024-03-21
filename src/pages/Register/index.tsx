@@ -238,6 +238,7 @@ const RegistrationForm = () => {
                 defaultValue='Choose...'
                 onChange={handleChange}
                 name='state'
+                value={form.state}
               >
                 <option>Choose...</option>
                 {usStates.map((state, index) => (
@@ -352,6 +353,7 @@ const RegistrationForm = () => {
                       defaultValue='Choose...'
                       onChange={handleChange}
                       name='card_state'
+                      value={form.card_state}
                     >
                       <option>Choose...</option>
                       {usStates.map((state, index) => (
