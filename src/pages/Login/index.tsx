@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Alert, Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Navigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useSearchParams,useNavigate } from 'react-router-dom'
 import { DOMAIN_HOST } from 'utils/constants'
 import Backend from 'utils/service'
 
@@ -17,6 +17,7 @@ const LoginForm: React.FC = () => {
   const [username, setUsername] = useState('demo')
   const [password, setPassword] = useState('123456')
   const [remember, setRemember] = useState(false)
+  const navigate = useNavigate()
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
@@ -24,7 +25,7 @@ const LoginForm: React.FC = () => {
         {
           username,
           password,
-          remember
+          // remember
         },
         {
           redirect_url: `${DOMAIN_HOST}${from}`
@@ -48,6 +49,11 @@ const LoginForm: React.FC = () => {
     login()
   }
 
+  
+  const handleForgotPassword = () => {
+    navigate('/forgotPassword'); // Navigate to the Forgot Password page
+  };
+  
   return user ? (
     user.is_admin ? (
       <Navigate to='/admin' />
@@ -104,6 +110,9 @@ const LoginForm: React.FC = () => {
                 }}
                 name='rememberme'
               />
+              <Button variant='link' onClick={handleForgotPassword}>
+                Forgot Password
+              </Button>
               <Button
                 style={{ marginTop: '10px' }}
                 variant='primary'

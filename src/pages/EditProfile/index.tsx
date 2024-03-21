@@ -5,9 +5,11 @@ import type React from 'react'
 import { useState } from 'react'
 import { Form, Button, Col, Row, Accordion } from 'react-bootstrap'
 import Backend from 'utils/service'
+import { Navigate, useSearchParams,useNavigate } from 'react-router-dom'
 
 const UserProfileForm: React.FC = () => {
   // TODO: submit update user
+  const navigate = useNavigate()
   const { run: submit } = useRequest(async () => null)
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -19,6 +21,11 @@ const UserProfileForm: React.FC = () => {
       setUser(res.data)
     }
   })
+
+  
+  const handleForgotPassword = () => {
+    navigate('/changePassword'); // Navigate to the Forgot Password page
+  };
 
   return (
     <>
@@ -37,19 +44,10 @@ const UserProfileForm: React.FC = () => {
                 disabled
               />
             </Form.Group>
-            <Form.Group as={Col} controlId='formGridPassword'>
-              <Form.Label className='required'>Password</Form.Label>
-              <Form.Control
-                type='password'
-                placeholder='Password'
-                onChange={e => {
-                  setUser(prevUser => ({
-                    ...prevUser,
-                    password: e.target.value
-                  }))
-                }}
-              />
-            </Form.Group>
+            <Button variant='link' onClick={handleForgotPassword}>
+                CHANGE PASSWORD
+              </Button>
+
           </Row>
           <Row className='mb-3'>
             <Form.Group as={Col} controlId='formGridName'>
