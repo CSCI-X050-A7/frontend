@@ -12,6 +12,8 @@
 export interface SchemaAuth {
   /** @default "123456" */
   password?: string
+  /** @default false */
+  remember?: boolean
   /** @default "demo" */
   username?: string
 }
