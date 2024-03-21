@@ -24,7 +24,7 @@ const UserProfileForm: React.FC = () => {
 
   
   const handleForgotPassword = () => {
-    navigate('/changePassword'); // Navigate to the Forgot Password page
+    navigate('/changePassword')
   };
 
   return (

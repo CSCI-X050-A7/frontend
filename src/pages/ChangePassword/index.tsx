@@ -46,7 +46,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
  
   return user ? (
-    <Navigate to='/login' />
+    <Navigate to='/' />
   ) : (
     <>
       <div className='text-center'>

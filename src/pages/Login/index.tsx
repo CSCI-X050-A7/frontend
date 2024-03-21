@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Alert, Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Navigate, useSearchParams,useNavigate } from 'react-router-dom'
+import { Navigate, useSearchParams,useNavigate,Link} from 'react-router-dom'
 import { DOMAIN_HOST } from 'utils/constants'
 import Backend from 'utils/service'
 
@@ -113,6 +113,16 @@ const LoginForm: React.FC = () => {
               <Button variant='link' onClick={handleForgotPassword}>
                 Forgot Password
               </Button>
+              
+
+              <Link to='/changePassword'>
+                <Button
+                  type='button'
+                  className='btn btn-danger my-1 mx-0 mx-lg-1'
+                >
+                  Change Password
+                </Button>
+              </Link>
               <Button
                 style={{ marginTop: '10px' }}
                 variant='primary'
