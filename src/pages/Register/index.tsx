@@ -214,7 +214,6 @@ const RegistrationForm = () => {
               name='address2'
               type='address2'
               placeholder='Apartment, studio, or floor'
-              required
               value={form.address2}
               onChange={handleChange}
             />
@@ -296,7 +295,6 @@ const RegistrationForm = () => {
                     <Form.Control
                       name='card_number'
                       type='card_number'
-                      required
                       value={form.card_number}
                       onChange={handleChange}
                     />
@@ -307,7 +305,6 @@ const RegistrationForm = () => {
                     <Form.Control
                       name='card_expiration'
                       type='card_expiration'
-                      required
                       placeholder='01/28'
                       value={form.card_expiration}
                       onChange={handleChange}
@@ -320,7 +317,6 @@ const RegistrationForm = () => {
                   <Form.Control
                     name='card_address'
                     type='card_address'
-                    required
                     placeholder='1234 Main St'
                     value={form.card_address}
                     onChange={handleChange}
@@ -332,7 +328,6 @@ const RegistrationForm = () => {
                   <Form.Control
                     name='card_address2'
                     type='card_address2'
-                    required
                     placeholder='Apartment, studio, or floor'
                     value={form.card_address2}
                     onChange={handleChange}
@@ -345,7 +340,6 @@ const RegistrationForm = () => {
                     <Form.Control
                       name='card_city'
                       type='card_city'
-                      required
                       placeholder='City'
                       value={form.card_city}
                       onChange={handleChange}
