@@ -13,36 +13,34 @@ const ResetForm: React.FC = () => {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('')
-  const [newPassword, setPassword] = useState('')
-  const navigate = useNavigate();
-const { run: resetPassword } = useRequest(
+  const [newPassword, setNewPassword] = useState('')
+  const navigate = useNavigate()
+  const { run: resetPassword } = useRequest(
     async () => {
-        const from = searchParams.get('from') ?? '/'
-        return Backend.auth.v1AuthResetpasswordCreate(
-            ({
-                username,
-                newPassword,
-            }),
-            {
-                redirect_url: `${DOMAIN_HOST}${from}`
-            }
-        )
+      const from = searchParams.get('from') ?? '/'
+      return Backend.auth.v1AuthResetpasswordCreate(
+        {
+          username,
+          newPassword
+        },
+        {
+          redirect_url: `${DOMAIN_HOST}${from}`
+        }
+      )
     },
     {
-        manual: true,
-        onSuccess: () => {
-                navigate('/login') // Navigate to the Login page
-            
-        }
+      manual: true,
+      onSuccess: () => {
+        navigate('/login') // Navigate to the Login page
+      }
     }
-)
+  )
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     resetPassword()
-}
+  }
 
- 
   return user ? (
     <Navigate to='/' />
   ) : (
@@ -79,7 +77,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                 placeholder='Password'
                 defaultValue={newPassword}
                 onChange={e => {
-                  setPassword(e.target.value)
+                  setNewPassword(e.target.value)
                 }}
               />
             </Col>

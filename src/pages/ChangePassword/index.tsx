@@ -13,41 +13,37 @@ const ChangeForm: React.FC = () => {
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
   const [username, setUsername] = useState('')
-  const [currentPassword, setCurrent] = useState('')
-  const [newPassword, setPassword] = useState('')
-  const navigate = useNavigate();
-const { run: changePasssword } = useRequest(
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const navigate = useNavigate()
+  const { run: changePasssword } = useRequest(
     async () => {
-        const from = searchParams.get('from') ?? '/'
-        return Backend.auth.v1AuthChangepasswordCreate(
-            ({
-                username,
-                currentPassword,
-                newPassword,
-            }),
-            {
-                redirect_url: `${DOMAIN_HOST}${from}`
-            }
-        )
+      const from = searchParams.get('from') ?? '/'
+      return Backend.auth.v1AuthChangepasswordCreate(
+        {
+          username,
+          currentPassword,
+          newPassword
+        },
+        {
+          redirect_url: `${DOMAIN_HOST}${from}`
+        }
+      )
     },
     {
-        manual: true,
-        onSuccess: () => {
-                navigate('/login') // Navigate to the Home page
-            
-        }
+      manual: true,
+      onSuccess: () => {
+        navigate('/logout') // Navigate to the login page
+      }
     }
-)
+  )
 
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     changePasssword()
-}
+  }
 
- 
   return user ? (
-    <Navigate to='/' />
-  ) : (
     <>
       <div className='text-center'>
         <h1>Reset Password</h1>
@@ -70,22 +66,22 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
               />
             </Col>
           </Form.Group>
-            <Form.Group as={Row} className='mb-3' controlId='formBasicPassword'>
+          <Form.Group as={Row} className='mb-3' controlId='formBasicPassword'>
             <Form.Label className='text-sm-end' column sm={2}>
               Current Password
             </Form.Label>
             <Col sm={10}>
               <Form.Control
-              required
-              type='password'
-              placeholder='Current Password'
-              defaultValue={currentPassword}
-              onChange={e => {
-                setCurrent(e.target.value)
-              }}
+                required
+                type='password'
+                placeholder='Current Password'
+                defaultValue={currentPassword}
+                onChange={e => {
+                  setCurrentPassword(e.target.value)
+                }}
               />
             </Col>
-            </Form.Group>
+          </Form.Group>
           <Form.Group as={Row} className='mb-3' controlId='formBasicPassword'>
             <Form.Label className='text-sm-end' column sm={2}>
               New Password
@@ -97,7 +93,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
                 placeholder='Password'
                 defaultValue={newPassword}
                 onChange={e => {
-                  setPassword(e.target.value)
+                  setNewPassword(e.target.value)
                 }}
               />
             </Col>
@@ -112,6 +108,8 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         </Form>
       </Col>
     </>
+  ) : (
+    <Navigate to='/' />
   )
 }
 
