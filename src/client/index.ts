@@ -518,7 +518,7 @@ export class Api<
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaUserListResponse[], SchemaErrorResponse>({
+      this.request<SchemaUserListResponse, SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
         method: 'GET',
         query: query,
@@ -842,7 +842,7 @@ export class Api<
      *
      * @tags User
      * @name V1UsersMeList
-     * @summary get a user me!!
+     * @summary get a user me
      * @request GET:/api/v1/users/me
      * @secure
      */
@@ -855,28 +855,25 @@ export class Api<
         format: 'json',
         ...params
       }),
-
-       /**
-     * @description a user me.
+          /**
+     * @description user information gets updated
      *
      * @tags User
-     * @name v1UserUpdate
-     * @summary update user information
+     * @name V1UserUpdate
+     * @summary get a user me
      * @request PUT:/api/v1/users/me
      * @secure
      */
-    v1UserUpdate: (
-      updateUser: SchemaUpdateUser,
-      params: RequestParams = {}
-    ) => this.request<SchemaUpdateUser, SchemaErrorResponse>({
-        path: `/api/v1/users/me`,
-        method: 'PUT',
-        body: updateUser,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
+    v1UserUpdate: (updateUser: SchemaUpdateUser, params: RequestParams = {}) =>
+    this.request<SchemaUpdateUser, SchemaErrorResponse>({
+      path: `/api/v1/users/me`,
+      method: 'PUT',
+      body: updateUser,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params
+    })
   }
   misc = {
     /**

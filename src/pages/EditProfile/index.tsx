@@ -9,7 +9,6 @@ import Backend from 'utils/service'
 
 const EditProfileForm = () => {
   const navigate = useNavigate()
-  const { run: submit } = useRequest(async () => null)
   const { loading } = useRequest(async () => Backend.user.v1UsersMeList(), {
     onSuccess: res => {
       setForm((prevForm: SchemaUpdateUser) => ({
@@ -83,7 +82,7 @@ const EditProfileForm = () => {
           city: details.city,
           name: details.name,
           need_promotion: details.need_promotion,
-          password: form.password,
+          password: form? form.password : '',
           phone: details.phone,
           state: details.state,
           username: details.username,
@@ -92,7 +91,7 @@ const EditProfileForm = () => {
         setForm(formCompatible as SchemaUpdateUser);
       } catch (error) {
         console.error('Failed to fetch user details:', error);
-      }
+      };
     }
     fetchUserDetails();
   }, []);
@@ -105,8 +104,6 @@ const EditProfileForm = () => {
         navigate('/edit/confirmation')
       },
       onError: err => {
-        // TODO: if status is 409, tell user that email/username is already registered
-        // FIX: error.message does not work?
         setError(err.message || 'Edits to profile not saved. Please try again.')
       }
     }
