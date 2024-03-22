@@ -33,19 +33,21 @@ const LoginForm: React.FC = () => {
     {
       manual: true,
       onSuccess: res => {
-        if (remember) {
-          Backend.user.v1UsersMeList().then(userData => {
+        Backend.user.v1UsersMeList().then(userData => {
+          if (remember) {
             localStorage.setItem(
               'currentUsername',
               userData.data.username ?? ''
             )
-          })
-        } else {
-          localStorage.setItem('currentUsername', '')
-        }
-        if (res.data.redirect_url) {
-          window.location.href = res.data.redirect_url
-        }
+          } else {
+            localStorage.setItem('currentUsername', '')
+          }
+          if (userData.data.is_admin) {
+            window.location.href = `${DOMAIN_HOST}/admin`
+          } else if (res.data.redirect_url) {
+            window.location.href = res.data.redirect_url
+          }
+        })
       }
     }
   )
