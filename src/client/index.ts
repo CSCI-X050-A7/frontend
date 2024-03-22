@@ -748,7 +748,7 @@ export class Api<
      *
      * @tags Auth
      * @name V1AuthLogoutCreate
-     * @summary Logout
+     * @summary logout
      * @request POST:/api/v1/auth/logout
      * @secure
      */
