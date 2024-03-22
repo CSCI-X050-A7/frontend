@@ -14,8 +14,9 @@ const LoginForm: React.FC = () => {
   const { user } = useAuth()
   const [error, setError] = useState('')
   const [searchParams] = useSearchParams()
-  const [username, setUsername] = useState('demo')
-  const [password, setPassword] = useState('123456')
+  const defUsername = localStorage.getItem('currentUsername')
+  const [username, setUsername] = useState(defUsername ?? '')
+  const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
   const navigate = useNavigate()
   const { run: login } = useRequest(
@@ -35,9 +36,21 @@ const LoginForm: React.FC = () => {
     {
       manual: true,
       onSuccess: res => {
-        if (res.data.redirect_url) {
-          window.location.href = res.data.redirect_url
-        }
+        Backend.user.v1UsersMeList().then(userData => {
+          if (remember) {
+            localStorage.setItem(
+              'currentUsername',
+              userData.data.username ?? ''
+            )
+          } else {
+            localStorage.setItem('currentUsername', '')
+          }
+          if (userData.data.is_admin) {
+            window.location.href = `${DOMAIN_HOST}/admin`
+          } else if (res.data.redirect_url) {
+            window.location.href = res.data.redirect_url
+          }
+        })
       },
       onError: err => {
         setError((err as ErrorResponse).error.msg)
@@ -48,11 +61,9 @@ const LoginForm: React.FC = () => {
     e.preventDefault()
     login()
   }
-
   const handleForgotPassword = () => {
     navigate('/forgotPassword') // Navigate to the Forgot Password page
   }
-
   return user ? (
     user.is_admin ? (
       <Navigate to='/admin' />
@@ -75,7 +86,7 @@ const LoginForm: React.FC = () => {
                 required
                 type='text'
                 placeholder='Username'
-                defaultValue={username}
+                defaultValue={defUsername ?? ''}
                 onChange={e => {
                   setUsername(e.target.value)
                 }}
