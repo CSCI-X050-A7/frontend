@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { useRequest } from 'ahooks'
 import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
@@ -7,7 +6,7 @@ import { useState } from 'react'
 import { Alert, Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Navigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useSearchParams, useNavigate } from 'react-router-dom'
 import { DOMAIN_HOST } from 'utils/constants'
 import Backend from 'utils/service'
 
@@ -19,6 +18,7 @@ const LoginForm: React.FC = () => {
   const [username, setUsername] = useState(defUsername ?? '')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
+  const navigate = useNavigate()
   const { run: login } = useRequest(
     async () => {
       const from = searchParams.get('from') ?? '/'
@@ -51,12 +51,18 @@ const LoginForm: React.FC = () => {
             window.location.href = res.data.redirect_url
           }
         })
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     login()
+  }
+  const handleForgotPassword = () => {
+    navigate('/forgotPassword') // Navigate to the Forgot Password page
   }
   return user ? (
     user.is_admin ? (
@@ -114,6 +120,9 @@ const LoginForm: React.FC = () => {
                 }}
                 name='rememberme'
               />
+              <Button variant='link' onClick={handleForgotPassword}>
+                Forgot Password
+              </Button>
               <Button
                 style={{ marginTop: '10px' }}
                 variant='primary'
