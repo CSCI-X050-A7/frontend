@@ -25,8 +25,8 @@ const LoginForm: React.FC = () => {
       return Backend.auth.v1AuthLoginCreate(
         {
           username,
-          password,
-          remember
+          password
+          // remember
         },
         {
           redirect_url: `${DOMAIN_HOST}${from}`

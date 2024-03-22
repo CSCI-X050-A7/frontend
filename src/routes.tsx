@@ -1,8 +1,10 @@
 import { ProtectedRoute } from 'components/ProtectedRoute'
 import Activate from 'pages/Activate'
 import Admin from 'pages/Admin'
+import ChangePassword from 'pages/ChangePassword'
 import Checkout from 'pages/Checkout'
 import EditProfile from 'pages/EditProfile'
+import ForgotPassword from 'pages/ForgotPassword'
 import Login from 'pages/Login'
 import Logout from 'pages/Logout'
 import Main from 'pages/Main'
@@ -15,6 +17,7 @@ import OrderSummary from 'pages/OrderSummary'
 import PromoManage from 'pages/PromoManage'
 import Register from 'pages/Register'
 import RegisterConfirmation from 'pages/RegisterConfirmation'
+import ResetPassword from 'pages/ResetPassword'
 import UserManage from 'pages/UserManage'
 import type { RouteObject } from 'react-router-dom'
 
@@ -32,12 +35,16 @@ const children: RouteObject[] = [
     element: <Register />
   },
   {
-    path: '/activate',
-    element: <Activate />
+    path: '/forgotPassword',
+    element: <ForgotPassword />
   },
   {
-    path: '/profile/edit',
-    element: <EditProfile />
+    path: '/resetPassword',
+    element: <ResetPassword />
+  },
+  {
+    path: '/activate',
+    element: <Activate />
   },
   {
     path: '/register/confirm',
@@ -65,6 +72,14 @@ const children: RouteObject[] = [
       {
         path: '/admin/promo',
         element: <PromoManage />
+      },
+      {
+        path: '/profile/edit',
+        element: <EditProfile />
+      },
+      {
+        path: '/changePassword',
+        element: <ChangePassword />
       }
     ]
   },
