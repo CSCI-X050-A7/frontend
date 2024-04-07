@@ -20,6 +20,7 @@ const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
       <Card.Body>
         <Card.Title>{movie.title}</Card.Title>
         <Card.Text>
+          <p>Rating: {movie.rating_code}</p>
           <Card.Link href='#' onClick={handleShow}>
             Watch Trailer
           </Card.Link>
