@@ -65,12 +65,14 @@ const MovieList: React.FC<{ movies: SchemaMovie[] }> = ({ movies }) => (
   </Row>
 )
 
-const RunningMovieList: React.FC<{ search: string; category: string }> = ({
-  search,
-  category
-}) => {
+const RunningMovieList: React.FC<{
+  search: string
+  category: string
+  showTime: string
+}> = ({ search, category, showTime }) => {
   const { data, loading } = useRequest(
-    async () => Backend.movie.v1MoviesList({ running: true, search, category }),
+    async () =>
+      Backend.movie.v1MoviesList({ running: true, search, category, showTime }),
     { refreshDeps: [search, category], debounceWait: 200 }
   )
   return (
@@ -78,14 +80,20 @@ const RunningMovieList: React.FC<{ search: string; category: string }> = ({
   )
 }
 
-const ComingMovieList: React.FC<{ search: string; category: string }> = ({
-  search,
-  category
-}) => {
+const ComingMovieList: React.FC<{
+  search: string
+  category: string
+  showTime: string
+}> = ({ search, category, showTime }) => {
   const { data, loading } = useRequest(
     async () =>
-      Backend.movie.v1MoviesList({ running: false, search, category }),
-    { refreshDeps: [search, category], debounceWait: 200 }
+      Backend.movie.v1MoviesList({
+        running: false,
+        search,
+        category,
+        showTime
+      }),
+    { refreshDeps: [search, category, showTime], debounceWait: 200 }
   )
   return (
     !loading && (data?.data.data ? <MovieList movies={data.data.data} /> : null)
@@ -95,6 +103,7 @@ const ComingMovieList: React.FC<{ search: string; category: string }> = ({
 const Index: React.FC = () => {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
+  const [showTime, setShowTime] = useState('')
   return (
     <PageContainer>
       <div className='text-center mb-3'>
@@ -102,32 +111,48 @@ const Index: React.FC = () => {
         <p>
           Visit backend swagger: <a href='/swagger'>here</a>
         </p>
-        <Form.Control
-          type='text'
-          placeholder='Search'
-          onChange={e => setSearch(e.target.value)}
-        />
-        <Form.Select
-          defaultValue='Category'
-          onChange={e => setCategory(e.target.value)}
-        >
-          <option>Choose...</option>
-          <option>Action</option>
-          <option>Romance</option>
-          <option>Fantasy</option>
-          <option>Drama</option>
-          <option>Comedy</option>
-          <option>Horror</option>
-          <option>Adventure</option>
-          <option>Science Fiction</option>
-          <option>Family</option>
-          <option>Animation</option>
-          <option>Thriller</option>
-          <option>Crime</option>
-          <option>Mystery</option>
-          <option>Documentary</option>
-          <option>Music</option>
-        </Form.Select>
+        <Row>
+          <Col>
+            <Form.Control
+              type='text'
+              placeholder='Search'
+              onChange={e => setSearch(e.target.value)}
+            />
+          </Col>
+          <Col lg={2} xs={12}>
+            <Form.Select
+              defaultValue='Category'
+              onChange={e => setCategory(e.target.value)}
+            >
+              <option>All genres</option>
+              <option>Action</option>
+              <option>Romance</option>
+              <option>Fantasy</option>
+              <option>Drama</option>
+              <option>Comedy</option>
+              <option>Horror</option>
+              <option>Adventure</option>
+              <option>Science Fiction</option>
+              <option>Family</option>
+              <option>Animation</option>
+              <option>Thriller</option>
+              <option>Crime</option>
+              <option>Mystery</option>
+              <option>Documentary</option>
+              <option>Music</option>
+            </Form.Select>
+          </Col>
+          <Col lg={3} xs={12}>
+            <Form.Control
+              type='date'
+              placeholder='Show Time'
+              defaultValue={showTime}
+              onChange={e => {
+                setShowTime(e.target.value)
+              }}
+            />
+          </Col>
+        </Row>
       </div>
       <Row>
         <Col lg={6}>
@@ -135,7 +160,11 @@ const Index: React.FC = () => {
             <h1>Currently Running</h1>
           </div>
           <div className='movie-list-container'>
-            <RunningMovieList search={search} category={category} />
+            <RunningMovieList
+              search={search}
+              category={category}
+              showTime={showTime}
+            />
           </div>
         </Col>
         <Col lg={6}>
@@ -143,7 +172,11 @@ const Index: React.FC = () => {
             <h1>Coming Soon</h1>
           </div>
           <div className='movie-list-container'>
-            <ComingMovieList search={search} category={category} />
+            <ComingMovieList
+              search={search}
+              category={category}
+              showTime={showTime}
+            />
           </div>
         </Col>
       </Row>
