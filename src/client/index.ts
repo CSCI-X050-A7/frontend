@@ -82,6 +82,17 @@ export interface SchemaMovieListResponse {
   offset?: number
 }
 
+export interface SchemaOrder {
+  id?: string
+}
+
+export interface SchemaOrderListResponse {
+  count?: number
+  data?: SchemaOrder[]
+  limit?: number
+  offset?: number
+}
+
 export interface SchemaRegisterUser {
   /** @maxLength 150 */
   address: string
@@ -101,7 +112,6 @@ export interface SchemaRegisterUser {
   card_state?: string
   /** @maxLength 50 */
   card_type?: string
-  /** @maxLength 20 */
   card_zip?: string
   /** @maxLength 100 */
   city: string
@@ -115,7 +125,6 @@ export interface SchemaRegisterUser {
    * @maxLength 100
    */
   password: string
-  /** @maxLength 20 */
   phone: string
   /** @maxLength 100 */
   state: string
@@ -124,7 +133,6 @@ export interface SchemaRegisterUser {
    * @maxLength 50
    */
   username: string
-  /** @maxLength 20 */
   zip: string
 }
 
@@ -631,15 +639,15 @@ export class Api<
      * @request POST:/api/v1/auth/activate
      */
     v1AuthActivateCreate: (
-      query?: {
+      query: {
         /** id */
-        id?: string
+        id: string
         /** code */
-        code?: string
+        code: string
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaUser, SchemaErrorResponse>({
+      this.request<object, SchemaErrorResponse>({
         path: `/api/v1/auth/activate`,
         method: 'POST',
         query: query,
@@ -828,6 +836,8 @@ export class Api<
         search?: string
         /** the movie is running or not */
         running?: boolean
+        /** filter by category */
+        category?: string
       },
       params: RequestParams = {}
     ) =>
@@ -945,7 +955,7 @@ export class Api<
      *
      * @tags User
      * @name V1UsersMeUpdate
-     * @summary update user info.
+     * @summary update user info
      * @request PUT:/api/v1/users/me
      * @secure
      */
@@ -954,6 +964,25 @@ export class Api<
         path: `/api/v1/users/me`,
         method: 'PUT',
         body: user,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description a user's orders.
+     *
+     * @tags User
+     * @name V1UsersOrdersList
+     * @summary get a user's orders
+     * @request GET:/api/v1/users/orders
+     * @secure
+     */
+    v1UsersOrdersList: (params: RequestParams = {}) =>
+      this.request<SchemaOrderListResponse, SchemaErrorResponse>({
+        path: `/api/v1/users/orders`,
+        method: 'GET',
         secure: true,
         type: ContentType.Json,
         format: 'json',
