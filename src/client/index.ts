@@ -879,6 +879,10 @@ export class Api<
         search?: string
         /** the movie is running or not */
         running?: boolean
+        /** filter by category */
+        category?: string
+        /** filter by show time */
+        showTime?: string
       },
       params: RequestParams = {}
     ) =>
