@@ -30,7 +30,9 @@ const UserProfileForm: React.FC = () => {
     card_zip: '',
     card_type: '',
     card_number: '',
-    card_expiration: ''
+    card_expiration: '',
+    is_active: false,
+    is_admin: false
   })
   const usStates = [
     'AL',
@@ -230,7 +232,7 @@ const UserProfileForm: React.FC = () => {
               name='need_promotion'
               type='checkbox'
               label='Email me promotion'
-              checked={form.need_promotion ?? false}
+              checked={form.need_promotion}
               onChange={handleChange}
             />
           </Row>
