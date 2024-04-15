@@ -9,6 +9,49 @@
  * ---------------------------------------------------------------
  */
 
+export interface SchemaAdminUpdateUser {
+  /** @maxLength 150 */
+  address?: string
+  /** @maxLength 150 */
+  address2?: string
+  /** @maxLength 150 */
+  card_address?: string
+  /** @maxLength 150 */
+  card_address2?: string
+  /** @maxLength 100 */
+  card_city?: string
+  /** @maxLength 50 */
+  card_expiration?: string
+  /** @maxLength 50 */
+  card_number?: string
+  /** @maxLength 100 */
+  card_state?: string
+  /** @maxLength 50 */
+  card_type?: string
+  /** @maxLength 20 */
+  card_zip?: string
+  /** @maxLength 100 */
+  city?: string
+  /** @maxLength 150 */
+  email?: string
+  is_active?: boolean
+  is_admin?: boolean
+  /** @maxLength 100 */
+  name?: string
+  need_promotion?: boolean
+  /** @maxLength 20 */
+  phone?: string
+  /** @maxLength 100 */
+  state?: string
+  /**
+   * @minLength 3
+   * @maxLength 50
+   */
+  username?: string
+  /** @maxLength 20 */
+  zip?: string
+}
+
 export interface SchemaAuth {
   /** @default "123456" */
   password?: string
@@ -83,7 +126,7 @@ export interface SchemaMovieListResponse {
 }
 
 export interface SchemaOrder {
-  id?: string
+  id: string
 }
 
 export interface SchemaOrderListResponse {
@@ -144,7 +187,7 @@ export interface SchemaTokenResponse {
 
 export interface SchemaUpdateUser {
   /** @maxLength 150 */
-  address: string
+  address?: string
   /** @maxLength 150 */
   address2?: string
   /** @maxLength 150 */
@@ -164,21 +207,21 @@ export interface SchemaUpdateUser {
   /** @maxLength 20 */
   card_zip?: string
   /** @maxLength 100 */
-  city: string
+  city?: string
   /** @maxLength 100 */
-  name: string
+  name?: string
   need_promotion?: boolean
   /** @maxLength 20 */
-  phone: string
+  phone?: string
   /** @maxLength 100 */
-  state: string
+  state?: string
   /**
    * @minLength 3
    * @maxLength 50
    */
-  username: string
+  username?: string
   /** @maxLength 20 */
-  zip: string
+  zip?: string
 }
 
 export interface SchemaUpsertMovie {
@@ -221,32 +264,32 @@ export interface SchemaUserChangePassword {
 }
 
 export interface SchemaUserDetail {
-  address?: string
-  address2?: string
-  card_address?: string
-  card_address2?: string
-  card_city?: string
-  card_expiration?: string
-  card_number?: string
-  card_state?: string
-  card_type?: string
-  card_zip?: string
-  city?: string
-  email?: string
-  id?: string
-  is_active?: boolean
-  is_admin?: boolean
-  name?: string
-  need_promotion?: boolean
-  phone?: string
-  state?: string
-  username?: string
-  zip?: string
+  address: string
+  address2: string
+  card_address: string
+  card_address2: string
+  card_city: string
+  card_expiration: string
+  card_number: string
+  card_state: string
+  card_type: string
+  card_zip: string
+  city: string
+  email: string
+  id: string
+  is_active: boolean
+  is_admin: boolean
+  name: string
+  need_promotion: boolean
+  phone: string
+  state: string
+  username: string
+  zip: string
 }
 
-export interface SchemaUserListResponse {
+export interface SchemaUserDetailListResponse {
   count?: number
-  data?: SchemaUser[]
+  data?: SchemaUserDetail[]
   limit?: number
   offset?: number
 }
@@ -534,7 +577,7 @@ export class Api<
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaUserListResponse, SchemaErrorResponse>({
+      this.request<SchemaUserDetailListResponse, SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
         method: 'GET',
         query: query,
@@ -597,7 +640,7 @@ export class Api<
      */
     v1AdminUsersUpdate: (
       id: string,
-      updateuser: SchemaUpdateUser,
+      updateuser: SchemaAdminUpdateUser,
       params: RequestParams = {}
     ) =>
       this.request<SchemaUser, SchemaErrorResponse>({
