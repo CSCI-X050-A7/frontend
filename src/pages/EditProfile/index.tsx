@@ -12,6 +12,7 @@ const UserProfileForm: React.FC = () => {
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState<SchemaUserDetail>({
+    id: '',
     email: '',
     name: '',
     username: '',
