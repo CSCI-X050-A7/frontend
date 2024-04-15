@@ -80,31 +80,31 @@ const children: RouteObject[] = [
       {
         path: '/changePassword',
         element: <ChangePassword />
-      }
-    ]
-  },
-  {
-    path: '/movie/:movieId/book',
-    element: <MovieSelect />
-  },
+      },
+      {
+        path: '/movie/:movieId/book',
+        element: <MovieSelect />
+      },
 
-  {
-    path: '/movie/:movieId/seat',
-    element: <MovieSeatSelect />
+      {
+        path: '/movie/:movieId/seat',
+        element: <MovieSeatSelect />
+      },
+      {
+        path: '/order/confirm',
+        element: <OrderConfirmation />
+      },
+      {
+        path: '/order/summary',
+        element: <OrderSummary />
+      },
+      { path: '/order/checkout', element: <Checkout /> }
+    ]
   },
   {
     path: '*',
     element: <NotFound />
-  },
-  {
-    path: '/order/confirm',
-    element: <OrderConfirmation />
-  },
-  {
-    path: '/order/summary',
-    element: <OrderSummary />
-  },
-  { path: '/order/checkout', element: <Checkout /> }
+  }
 ]
 
 export default children

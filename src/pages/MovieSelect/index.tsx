@@ -1,5 +1,4 @@
 import PageContainer from 'components/PageContainer'
-import { useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -7,15 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 const Index: React.FC = () => {
   const navigate = useNavigate()
   const { movieId } = useParams()
-  const [hoveredMovie, setHoveredMovie] = useState<string | null>(null)
-
-  const handleMouseEnter = (title: string) => {
-    setHoveredMovie(title)
-  }
-
-  const handleMouseLeave = () => {
-    setHoveredMovie(null)
-  }
 
   const movies = [
     {
@@ -57,12 +47,7 @@ const Index: React.FC = () => {
 
       <div className='d-flex flex-wrap justify-content-around'>
         {movies.map((movie, index) => (
-          <Card
-            key={index}
-            style={{ width: '18rem', margin: '10px' }}
-            onMouseEnter={() => handleMouseEnter(movie.title)}
-            onMouseLeave={handleMouseLeave}
-          >
+          <Card key={index} style={{ width: '18rem', margin: '10px' }}>
             <Card.Img
               variant='top'
               src={movie.image}
@@ -75,21 +60,20 @@ const Index: React.FC = () => {
                 <br />
                 <strong>Length:</strong> {movie.length}
               </Card.Text>
-              {hoveredMovie === movie.title && (
-                <div>
-                  {movie.showTimes.map((time, timeIndex) => (
-                    <Button
-                      key={timeIndex}
-                      variant='primary'
-                      className='mt-auto'
-                      style={{ marginRight: '8px', marginBottom: '8px' }}
-                      onClick={() => navigate(`/movie/${movieId}/seat`)}
-                    >
-                      {time}
-                    </Button>
-                  ))}
-                </div>
-              )}
+              <div>
+                {movie.showTimes.map((time, timeIndex) => (
+                  <Button
+                    key={timeIndex}
+                    variant='primary'
+                    className='mx-1 my-1'
+                    onClick={() =>
+                      navigate(`/movie/${movieId}/seat?show=${time}`)
+                    }
+                  >
+                    {time}
+                  </Button>
+                ))}
+              </div>
             </Card.Body>
           </Card>
         ))}

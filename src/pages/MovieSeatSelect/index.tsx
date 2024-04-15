@@ -3,7 +3,7 @@ import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 interface Seat {
   id: string
@@ -21,6 +21,7 @@ enum TicketType {
 }
 
 const Index: React.FC = () => {
+  const [searchParams] = useSearchParams()
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([])
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>(
     TicketType.Adult
@@ -61,7 +62,7 @@ const Index: React.FC = () => {
     for (let row = 0; row < rows; row += 1) {
       const seatRow = seats.slice(row * seatsPerRow, (row + 1) * seatsPerRow)
       seatRows.push(
-        <div key={row} className='text-center'>
+        <div key={row} className='text-center w-100'>
           {seatRow.map(seat => (
             <Button
               type='button'
@@ -86,6 +87,7 @@ const Index: React.FC = () => {
     <PageContainer>
       <div className='text-center'>
         <h1>Select Seat</h1>
+        <h2>Show: {searchParams.get('show')}</h2>
       </div>
       <div className={`${styles.seatContainer} mt-3`}>{renderSeats()}</div>
       <Form>
@@ -122,8 +124,8 @@ const Index: React.FC = () => {
           ))}
         </p>
       </div>
-      <Link to='/order/summary'>
-        <Button>Confirm</Button>
+      <Link to='/order/summary' state={selectedSeats}>
+        <Button disabled={totalSelectedSeats === 0}>Confirm</Button>
       </Link>
     </PageContainer>
   )
