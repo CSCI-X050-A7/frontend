@@ -1,249 +1,259 @@
 /* eslint-disable react/prop-types */
+import { useRequest } from 'ahooks'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import type { SchemaPromotion } from 'client'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
-import { ListGroup, Button } from 'react-bootstrap'
-import Card from 'react-bootstrap/Card'
+import { Button, Card, Form, Modal, Table } from 'react-bootstrap'
+import Backend from 'utils/service'
 
-function UserList() {
-  const listyle = {
-    padding: '10px',
-    border: '1px solid #ccc',
-    marginBottom: '10px',
-    cursor: 'pointer'
-  }
-
-  const users = [
-    { username: 'demo', email: 'demo@example.com' },
-    { username: 'user2', email: 'user@example.com' }
-  ]
-
-  return (
-    <div style={{ maxHeight: '200px' }}>
-      <h2>User List</h2>
-      <ListGroup
-        style={{
-          paddingTop: '10px',
-          maxHeight: '200px',
-          overflowY: 'auto',
-          width: '350px'
-        }}
-      >
-        {users.map(user => (
-          <ListGroup.Item key={user.username} style={listyle}>
-            {user.email} : {user.username}
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
-    </div>
+const PromoRow: React.FC<{
+  key: string
+  promo: SchemaPromotion
+  refresh: () => void
+}> = ({ key, promo, refresh }) => {
+  const [show, setShow] = useState(false)
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+  const [promoTitle, setPromoTitle] = useState(promo.title)
+  const [description, setDescription] = useState(promo.description)
+  const [discount, setDiscount] = useState(promo.discount)
+  const [expiry, setExpiry] = useState(promo.expiry_date)
+  const [isExpired, setIsExpired] = useState(promo.is_expired)
+  const [affected, setAffected] = useState(promo.movie_affected)
+  const { run: update } = useRequest(
+    async () => {
+      Backend.promotion.v1PromotionsUpdate(promo.id, {
+        title: promoTitle,
+        description,
+        discount,
+        expiry_date: expiry,
+        is_expired: isExpired,
+        movie_affected: affected
+      })
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        refresh()
+        handleClose()
+      }
+    }
   )
-}
-
-const EditPromo: React.FC<{
-  onClose: () => void
-  selectedPromoTitle: string
-}> = ({ onClose, selectedPromoTitle }) => (
-  <Card
-    style={{
-      borderRadius: '10px',
-      padding: '20px',
-      marginBottom: '20px',
-      width: '300px'
-    }}
-  >
-    <h3 style={{ padding: '10px' }}>
-      {selectedPromoTitle === 'New Promo' ? 'Add ' : 'Edit: '}{' '}
-      {selectedPromoTitle}
-    </h3>
-    <input
-      type='text'
-      placeholder='Promo title'
-      style={{ marginBottom: '10px' }}
-    />
-    <input
-      type='text'
-      placeholder='Movie affected'
-      style={{ marginBottom: '10px' }}
-    />
-    <input
-      type='text'
-      placeholder='Discount percentage'
-      style={{ marginBottom: '10px' }}
-    />
-    <input
-      type='text'
-      placeholder='Date applicable'
-      style={{ marginBottom: '10px' }}
-    />
-
-    <div
-      style={{
-        padding: '10px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <Button
-        style={{ width: '80px', padding: '5px', margin: '0 5px' }}
-        variant='primary'
-        onClick={onClose}
-      >
-        Submit
-      </Button>
-      <Button
-        style={{ width: '80px', padding: '5px', margin: '0 5px' }}
-        variant='primary'
-        onClick={onClose}
-      >
-        Close
-      </Button>
-      <Button
-        style={{
-          width: '80px',
-          padding: '5px',
-          margin: '0 5px',
-          backgroundColor: 'red',
-          borderColor: 'red'
-        }}
-        variant='primary'
-        onClick={onClose}
-      >
-        {selectedPromoTitle === 'New Promo' ? 'Cancel ' : 'Delete'}
-      </Button>
-    </div>
-  </Card>
-)
-
-const LeftHalf: React.FC<{ onOpenTextInput: (promoTitle: string) => void }> = ({
-  onOpenTextInput
-}) => {
-  const listyle = {
-    padding: '10px',
-    border: '1px solid #ccc',
-    marginBottom: '10px',
-    cursor: 'pointer'
-  }
-  const promotions = [
-    { id: 1, title: 'Promo 1' },
-    { id: 2, title: 'Promo 2' },
-    { id: 3, title: 'Promo 3' },
-    { id: 4, title: 'Promo 4' },
-    { id: 5, title: 'Promo 5' },
-    { id: 6, title: 'Promo 6' },
-    { id: 7, title: 'Promo 7' },
-    { id: 8, title: 'Promo 8' }
-  ]
-
+  // TODO: add styles
   return (
-    <div style={{ display: 'flex', width: '75%', padding: '0px' }}>
-      <div style={{ paddingRight: '10px' }}>
-        <h3>Subscribed Users</h3>
-        <UserList />
-      </div>
-
-      <div
-        style={{
-          width: '50%',
-          padding: '0px',
-          paddingRight: '15px',
-          paddingLeft: '15px'
-        }}
-      >
-        <div
-          style={{
-            width: '450px',
-            display: 'flex',
-            padding: '0px',
-            paddingLeft: '27px'
-          }}
-        >
-          <h2>Active Promotions</h2>
-          <Button
-            style={{ marginLeft: '25px' }}
-            variant='primary'
-            onClick={() => onOpenTextInput('New Promo')}
-          >
-            + Add
+    <>
+      <tr className='align-middle' key={key}>
+        <td className='text-end'>
+          <Button variant='primary' onClick={handleShow}>
+            Edit
           </Button>
-        </div>
-        <div style={{ paddingLeft: '30px', paddingTop: '15px' }}>
-          <ListGroup
-            style={{ maxHeight: '400px', overflowY: 'auto', width: '350px' }}
-          >
-            {promotions.map(promo => (
-              <ListGroup.Item
-                key={promo.id}
-                style={listyle}
-                onClick={() => onOpenTextInput(promo.title)}
-              >
-                {promo.title}
-                <Button
-                  style={{ marginLeft: '185px' }}
-                  variant='primary'
-                  onClick={() => onOpenTextInput(promo.title)}
-                >
-                  Edit
-                </Button>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </div>
-      </div>
-    </div>
+        </td>
+      </tr>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Promo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className='mb-3'>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type='text'
+                value={promoTitle}
+                onChange={e => setPromoTitle(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type='text'
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                type='number'
+                value={discount}
+                // TODO: Fix type
+                onChange={e => setDiscount(Number(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Expiry Date</Form.Label>
+              <Form.Control
+                type='text'
+                value={expiry}
+                onChange={e => setExpiry(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Is Expired</Form.Label>
+              <Form.Check
+                type='checkbox'
+                // TODO: Fix type
+                checked={isExpired}
+                onChange={e => setIsExpired(e.target.checked)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Movie Affected</Form.Label>
+              <Form.Control
+                type='text'
+                value={affected}
+                onChange={e => setAffected(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant='primary' onClick={update}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   )
 }
-
-const RightHalf: React.FC<{
-  showTextInput: boolean
-  onCloseTextInput: () => void
-  selectedPromoTitle: string
-}> = ({ showTextInput, onCloseTextInput, selectedPromoTitle }) => (
-  <div style={{ width: '20%', padding: '50px', paddingLeft: '0px' }}>
-    {!showTextInput && (
-      <Card
-        style={{
-          borderRadius: '10px',
-          padding: '20px',
-          marginBottom: '20px',
-          width: '300px'
-        }}
-      >
-        <p>Add a new promotion, or select one to begin editing.</p>
-      </Card>
-    )}
-    {showTextInput ? (
-      <EditPromo
-        onClose={onCloseTextInput}
-        selectedPromoTitle={selectedPromoTitle}
-      />
-    ) : null}
-  </div>
-)
 
 const Index: React.FC = () => {
-  const [showTextInput, setShowTextInput] = useState<boolean>(false)
-  const [selectedPromoTitle, setSelectedPromoTitle] = useState<string>('')
-
-  const openTextInput = (promoTitle: string) => {
-    setSelectedPromoTitle(promoTitle)
-    setShowTextInput(true)
-  }
-
-  const closeTextInput = () => {
-    setShowTextInput(false)
-  }
-
+  const [show, setShow] = useState(false)
+  const handleClose = () => setShow(false)
+  const handleShow = () => setShow(true)
+  const [promoTitle, setPromoTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [discount, setDiscount] = useState<number>(0)
+  const [expiry, setExpiry] = useState('')
+  const [isExpired, setIsExpired] = useState(false)
+  const [affected, setAffected] = useState('')
+  const {
+    data,
+    loading,
+    run: refresh
+  } = useRequest(async () => Backend.promotion.v1PromotionsList())
+  const { run: create } = useRequest(
+    async () =>
+      Backend.promotion.v1PromotionsCreate({
+        title: promoTitle,
+        description,
+        discount,
+        expiry_date: expiry,
+        is_expired: isExpired,
+        movie_affected: affected
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        refresh()
+        handleClose()
+      }
+    }
+  )
   return (
     <PageContainer>
-      <div style={{ display: 'flex', padding: '20px' }}>
-        <LeftHalf onOpenTextInput={openTextInput} />
-        <RightHalf
-          showTextInput={showTextInput}
-          onCloseTextInput={closeTextInput}
-          selectedPromoTitle={selectedPromoTitle}
-        />
-      </div>
+      <Card>
+        <Card.Header>
+          <h5>Promotion Management</h5>
+          <div className='d-flex justify-content-between align-items-center'>
+            <b>Manage Promo</b>
+            <Button variant='primary' className='ml-auto' onClick={handleShow}>
+              Create
+            </Button>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <Table hover>
+            <thead className='small text-uppercase'>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Discount</th>
+                <th>Expiry Date</th>
+                <th>Is Expired</th>
+                <th>Movie Affected</th>
+                <th className='text-end'>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading
+                ? null
+                : data?.data.data?.map(promo => (
+                    <PromoRow key={promo.id} promo={promo} refresh={refresh} />
+                  ))}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Promo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className='mb-3'>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type='text'
+                value={promoTitle}
+                onChange={e => setPromoTitle(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type='text'
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Discount</Form.Label>
+              <Form.Control
+                type='number'
+                value={discount}
+                onChange={e => setDiscount(Number(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Expiry Date</Form.Label>
+              <Form.Control
+                type='text'
+                value={expiry}
+                onChange={e => setExpiry(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Is Expired</Form.Label>
+              <Form.Check
+                type='checkbox'
+                checked={isExpired}
+                onChange={e => setIsExpired(e.target.checked)}
+              />
+            </Form.Group>
+            <Form.Group className='mb-3'>
+              <Form.Label>Movie Affected</Form.Label>
+              <Form.Control
+                type='text'
+                value={affected}
+                onChange={e => setAffected(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant='primary'
+            type='button'
+            onClick={(): void => {
+              create()
+            }}
+          >
+            Add Promo
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </PageContainer>
   )
 }
