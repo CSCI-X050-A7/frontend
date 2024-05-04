@@ -24,7 +24,7 @@ const UserRow: React.FC<{
   const [isAdmin, setIsAdmin] = useState(user.is_admin)
   const { run: update } = useRequest(
     async () => {
-      Backend.admin.v1AdminUsersUpdate(user.id, {
+      Backend.admin.v1AdminUsersUpdate(user.id ?? '', {
         username,
         name,
         email,
@@ -166,7 +166,11 @@ const Index: React.FC = () => {
               {loading
                 ? null
                 : data?.data.data?.map(user => (
-                    <UserRow key={user.id} user={user} refresh={refresh} />
+                    <UserRow
+                      key={user.id ?? ''}
+                      user={user}
+                      refresh={refresh}
+                    />
                   ))}
             </tbody>
           </Table>

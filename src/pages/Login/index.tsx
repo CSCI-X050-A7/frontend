@@ -38,7 +38,10 @@ const LoginForm: React.FC = () => {
       onSuccess: res => {
         Backend.user.v1UsersMeList().then(userData => {
           if (remember) {
-            localStorage.setItem('currentUsername', userData.data.username)
+            localStorage.setItem(
+              'currentUsername',
+              userData.data.username ?? ''
+            )
           } else {
             localStorage.setItem('currentUsername', '')
           }
