@@ -64,7 +64,6 @@ const Index: React.FC<CardFormProps> = ({ card, onChange }) => {
     event: React.ChangeEvent<{ name?: string; value: unknown }>
   ) => {
     const { name, value } = event.target as { name?: string; value: unknown }
-    console.log(name, value, card)
     if (typeof name === 'string') {
       onChange({ ...card, [name]: value })
     }
