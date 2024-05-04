@@ -14,22 +14,6 @@ export interface SchemaAdminUpdateUser {
   address?: string
   /** @maxLength 150 */
   address2?: string
-  /** @maxLength 150 */
-  card_address?: string
-  /** @maxLength 150 */
-  card_address2?: string
-  /** @maxLength 100 */
-  card_city?: string
-  /** @maxLength 50 */
-  card_expiration?: string
-  /** @maxLength 50 */
-  card_number?: string
-  /** @maxLength 100 */
-  card_state?: string
-  /** @maxLength 50 */
-  card_type?: string
-  /** @maxLength 20 */
-  card_zip?: string
   /** @maxLength 100 */
   city?: string
   /** @maxLength 150 */
@@ -59,6 +43,26 @@ export interface SchemaAuth {
   remember?: boolean
   /** @default "demo" */
   username?: string
+}
+
+export interface SchemaCard {
+  /** @maxLength 255 */
+  address: string
+  /** @maxLength 255 */
+  address2: string
+  /** @maxLength 255 */
+  city: string
+  /** @maxLength 255 */
+  expiration: string
+  id: string
+  /** @maxLength 255 */
+  number: string
+  /** @maxLength 1023 */
+  state: string
+  /** @maxLength 255 */
+  type: string
+  /** @maxLength 1023 */
+  zip: string
 }
 
 export interface SchemaCreateUser {
@@ -136,26 +140,33 @@ export interface SchemaOrderListResponse {
   offset?: number
 }
 
+export interface SchemaPromoListResponse {
+  count?: number
+  data?: SchemaPromotion[]
+  limit?: number
+  offset?: number
+}
+
+export interface SchemaPromotion {
+  /** @maxLength 255 */
+  description: string
+  discount: number
+  /** @maxLength 255 */
+  expiry_date: string
+  id: string
+  is_expired: boolean
+  /** @maxLength 255 */
+  movie_affected: string
+  /** @maxLength 255 */
+  title: string
+}
+
 export interface SchemaRegisterUser {
   /** @maxLength 150 */
   address: string
   /** @maxLength 150 */
   address2?: string
-  /** @maxLength 150 */
-  card_address?: string
-  /** @maxLength 150 */
-  card_address2?: string
-  /** @maxLength 100 */
-  card_city?: string
-  /** @maxLength 50 */
-  card_expiration?: string
-  /** @maxLength 50 */
-  card_number?: string
-  /** @maxLength 100 */
-  card_state?: string
-  /** @maxLength 50 */
-  card_type?: string
-  card_zip?: string
+  cards: SchemaCard[]
   /** @maxLength 100 */
   city: string
   /** @maxLength 150 */
@@ -179,49 +190,63 @@ export interface SchemaRegisterUser {
   zip: string
 }
 
+export interface SchemaTicket {
+  id?: string
+  price?: number
+  seat?: string
+  show?: string
+  title?: string
+  type?: string
+}
+
 export interface SchemaTokenResponse {
   access_token?: string
   msg?: string
   redirect_url?: string
 }
 
+export interface SchemaUpdateCard {
+  /** @maxLength 255 */
+  address: string
+  /** @maxLength 255 */
+  address2: string
+  /** @maxLength 255 */
+  city: string
+  /** @maxLength 255 */
+  expiration: string
+  /** @maxLength 255 */
+  number: string
+  /** @maxLength 1023 */
+  state: string
+  /** @maxLength 255 */
+  type: string
+  /** @maxLength 1023 */
+  zip: string
+}
+
 export interface SchemaUpdateUser {
   /** @maxLength 150 */
-  address?: string
+  address: string
   /** @maxLength 150 */
   address2?: string
-  /** @maxLength 150 */
-  card_address?: string
-  /** @maxLength 150 */
-  card_address2?: string
+  /** @maxItems 3 */
+  cards: SchemaUpdateCard[]
   /** @maxLength 100 */
-  card_city?: string
-  /** @maxLength 50 */
-  card_expiration?: string
-  /** @maxLength 50 */
-  card_number?: string
+  city: string
   /** @maxLength 100 */
-  card_state?: string
-  /** @maxLength 50 */
-  card_type?: string
-  /** @maxLength 20 */
-  card_zip?: string
-  /** @maxLength 100 */
-  city?: string
-  /** @maxLength 100 */
-  name?: string
+  name: string
   need_promotion?: boolean
   /** @maxLength 20 */
-  phone?: string
+  phone: string
   /** @maxLength 100 */
-  state?: string
+  state: string
   /**
    * @minLength 3
    * @maxLength 50
    */
-  username?: string
+  username: string
   /** @maxLength 20 */
-  zip?: string
+  zip: string
 }
 
 export interface SchemaUpsertMovie {
@@ -248,6 +273,27 @@ export interface SchemaUpsertMovie {
   trailer_video: string
 }
 
+export interface SchemaUpsertPromotion {
+  /** @maxLength 255 */
+  description: string
+  discount: number
+  /** @maxLength 255 */
+  expiry_date: string
+  is_expired: boolean
+  /** @maxLength 255 */
+  movie_affected: string
+  /** @maxLength 255 */
+  title: string
+}
+
+export interface SchemaUpsertTicket {
+  price?: number
+  seat?: string
+  show?: string
+  title?: string
+  type?: string
+}
+
 export interface SchemaUser {
   email?: string
   id: string
@@ -264,27 +310,20 @@ export interface SchemaUserChangePassword {
 }
 
 export interface SchemaUserDetail {
-  address: string
-  address2: string
-  card_address: string
-  card_address2: string
-  card_city: string
-  card_expiration: string
-  card_number: string
-  card_state: string
-  card_type: string
-  card_zip: string
-  city: string
-  email: string
-  id: string
-  is_active: boolean
-  is_admin: boolean
-  name: string
-  need_promotion: boolean
-  phone: string
-  state: string
-  username: string
-  zip: string
+  address?: string
+  address2?: string
+  cards: SchemaCard[]
+  city?: string
+  email?: string
+  id?: string
+  is_active?: boolean
+  is_admin?: boolean
+  name?: string
+  need_promotion?: boolean
+  phone?: string
+  state?: string
+  username?: string
+  zip?: string
 }
 
 export interface SchemaUserDetailListResponse {
@@ -620,7 +659,7 @@ export class Api<
      * @secure
      */
     v1AdminUsersDetail: (id: string, params: RequestParams = {}) =>
-      this.request<SchemaUser, SchemaErrorResponse>({
+      this.request<SchemaUserDetail, SchemaErrorResponse>({
         path: `/api/v1/admin/users/${id}`,
         method: 'GET',
         secure: true,
@@ -860,6 +899,24 @@ export class Api<
         ...params
       })
   }
+  card = {
+    /**
+     * @description a payment card.
+     *
+     * @tags Card
+     * @name V1CardsDetail
+     * @summary get a payment card
+     * @request GET:/api/v1/cards/{id}
+     */
+    v1CardsDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaCard, SchemaErrorResponse>({
+        path: `/api/v1/cards/${id}`,
+        method: 'GET',
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
   movie = {
     /**
      * @description Get all movies.
@@ -969,6 +1026,146 @@ export class Api<
       this.request<object, SchemaErrorResponse>({
         path: `/api/v1/movies/${id}`,
         method: 'DELETE',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  promotion = {
+    /**
+     * @description Get all promotions.
+     *
+     * @tags Promotion
+     * @name V1PromotionsList
+     * @summary get all promotions
+     * @request GET:/api/v1/promotions
+     */
+    v1PromotionsList: (
+      query?: {
+        /** search by title */
+        search?: string
+        /** offset */
+        offset?: number
+        /** limit */
+        limit?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaPromoListResponse, SchemaErrorResponse>({
+        path: `/api/v1/promotions`,
+        method: 'GET',
+        query: query,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Create a new promotion.
+     *
+     * @tags Promotion
+     * @name V1PromotionsCreate
+     * @summary create a new promotion
+     * @request POST:/api/v1/promotions
+     * @secure
+     */
+    v1PromotionsCreate: (
+      promotion: SchemaUpsertPromotion,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaPromotion, SchemaErrorResponse>({
+        path: `/api/v1/promotions`,
+        method: 'POST',
+        body: promotion,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description update promo
+     *
+     * @tags Promotion
+     * @name V1PromotionsUpdate
+     * @summary update a promo
+     * @request PUT:/api/v1/promotions/{id}
+     * @secure
+     */
+    v1PromotionsUpdate: (
+      id: string,
+      updatepromo: SchemaUpsertPromotion,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaPromotion, SchemaErrorResponse>({
+        path: `/api/v1/promotions/${id}`,
+        method: 'PUT',
+        body: updatepromo,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  ticket = {
+    /**
+     * @description Create a new ticket.
+     *
+     * @tags Ticket
+     * @name V1TicketsCreate
+     * @summary create a new ticket
+     * @request POST:/api/v1/tickets
+     * @secure
+     */
+    v1TicketsCreate: (ticket: SchemaUpsertTicket, params: RequestParams = {}) =>
+      this.request<SchemaTicket, SchemaErrorResponse>({
+        path: `/api/v1/tickets`,
+        method: 'POST',
+        body: ticket,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Retrieve a ticket by ID.
+     *
+     * @tags Ticket
+     * @name V1TicketsDetail
+     * @summary retrieve a ticket by ID
+     * @request GET:/api/v1/tickets/{id}
+     * @secure
+     */
+    v1TicketsDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaTicket, SchemaErrorResponse>({
+        path: `/api/v1/tickets/${id}`,
+        method: 'GET',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Update a ticket.
+     *
+     * @tags Ticket
+     * @name V1TicketsUpdate
+     * @summary update a ticket
+     * @request PUT:/api/v1/tickets/{id}
+     * @secure
+     */
+    v1TicketsUpdate: (
+      id: string,
+      ticket: SchemaUpsertTicket,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaTicket, SchemaErrorResponse>({
+        path: `/api/v1/tickets/${id}`,
+        method: 'PUT',
+        body: ticket,
         secure: true,
         type: ContentType.Json,
         format: 'json',

@@ -1,6 +1,8 @@
 import './style.module.css'
 import { useRequest } from 'ahooks'
+import type { SchemaCard, SchemaRegisterUser } from 'client'
 import type { ErrorResponse } from 'client/error'
+import Card from 'components/Card'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
@@ -23,14 +25,18 @@ const RegistrationForm = () => {
     city: '',
     state: '',
     zip: '',
-    card_address: '',
-    card_address2: '',
-    card_city: '',
-    card_state: '',
-    card_zip: '',
-    card_type: '',
-    card_number: '',
-    card_expiration: ''
+    cards: []
+  })
+  const [card1, setCard1] = useState<SchemaCard>({
+    id: '',
+    number: '',
+    expiration: '',
+    address: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    type: ''
   })
   const usStates = [
     'AL',
@@ -101,7 +107,14 @@ const RegistrationForm = () => {
   }
 
   const { run: registerUser } = useRequest(
-    async () => Backend.auth.v1AuthRegisterCreate(form),
+    async () => {
+      const user = { ...form } as SchemaRegisterUser
+      user.cards = []
+      if (card1.type !== '') {
+        user.cards.push(card1)
+      }
+      return Backend.auth.v1AuthRegisterCreate(user)
+    },
     {
       manual: true,
       onSuccess: () => {
@@ -275,106 +288,7 @@ const RegistrationForm = () => {
             <Accordion.Item eventKey='0'>
               <Accordion.Header>Payment Information</Accordion.Header>
               <Accordion.Body>
-                <Row className='mb-3'>
-                  <Form.Group as={Col} md={3} controlId='formGridCardType'>
-                    <Form.Label>Card Type</Form.Label>
-                    <Form.Select
-                      defaultValue='Choose...'
-                      onChange={handleChange}
-                      name='card_type'
-                    >
-                      <option value=''>Select card type</option>
-                      <option value='Visa'>Visa</option>
-                      <option value='MasterCard'>MasterCard</option>
-                      <option value='American Express'>American Express</option>
-                      <option value='Discover'>Discover</option>
-                    </Form.Select>
-                  </Form.Group>
-
-                  <Form.Group as={Col} md={6} controlId='formGridCardNumber'>
-                    <Form.Label>Card Number</Form.Label>
-                    <Form.Control
-                      name='card_number'
-                      type='card_number'
-                      value={form.card_number}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-
-                  <Form.Group as={Col} md={3} controlId='formGridCardExp'>
-                    <Form.Label>Card Expiration</Form.Label>
-                    <Form.Control
-                      name='card_expiration'
-                      type='card_expiration'
-                      placeholder='01/28'
-                      value={form.card_expiration}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                </Row>
-
-                <Form.Group className='mb-3' controlId='formGridCardAddress1'>
-                  <Form.Label>Address</Form.Label>
-                  <Form.Control
-                    name='card_address'
-                    type='card_address'
-                    placeholder='1234 Main St'
-                    value={form.card_address}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-
-                <Form.Group className='mb-3' controlId='formGridCardAddress2'>
-                  <Form.Label>Address 2</Form.Label>
-                  <Form.Control
-                    name='card_address2'
-                    type='card_address2'
-                    placeholder='Apartment, studio, or floor'
-                    value={form.card_address2}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-
-                <Row className='mb-3'>
-                  <Form.Group as={Col} controlId='formGridCardCity'>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                      name='card_city'
-                      type='card_city'
-                      placeholder='City'
-                      value={form.card_city}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId='formGridCardState'>
-                    <Form.Label>State</Form.Label>
-                    <Form.Select
-                      defaultValue='Choose...'
-                      onChange={handleChange}
-                      name='card_state'
-                      value={form.card_state}
-                    >
-                      <option>Choose...</option>
-                      {usStates.map((state, index) => (
-                        <option key={index} value={state}>
-                          {' '}
-                          {state}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Form.Group>
-
-                  <Form.Group as={Col} md={3} controlId='formGridCardZip'>
-                    <Form.Label>Zip</Form.Label>
-                    <Form.Control
-                      name='card_zip'
-                      type='card_zip'
-                      value={form.card_zip}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                </Row>
+                <Card card={card1} onChange={setCard1} />
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>

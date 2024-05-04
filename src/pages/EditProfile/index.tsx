@@ -1,5 +1,6 @@
 import { useRequest } from 'ahooks'
-import type { SchemaUpdateUser, SchemaUserDetail } from 'client'
+import type { SchemaCard, SchemaUpdateUser, SchemaUserDetail } from 'client'
+import Card from 'components/Card'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
@@ -23,16 +24,42 @@ const UserProfileForm: React.FC = () => {
     city: '',
     state: '',
     zip: '',
-    card_address: '',
-    card_address2: '',
-    card_city: '',
-    card_state: '',
-    card_zip: '',
-    card_type: '',
-    card_number: '',
-    card_expiration: '',
     is_active: false,
-    is_admin: false
+    is_admin: false,
+    cards: []
+  })
+  const [card1, setCard1] = useState<SchemaCard>({
+    id: '',
+    number: '',
+    expiration: '',
+    address: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    type: ''
+  })
+  const [card2, setCard2] = useState<SchemaCard>({
+    id: '',
+    number: '',
+    expiration: '',
+    address: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    type: ''
+  })
+  const [card3, setCard3] = useState<SchemaCard>({
+    id: '',
+    number: '',
+    expiration: '',
+    address: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    type: ''
   })
   const usStates = [
     'AL',
@@ -100,13 +127,22 @@ const UserProfileForm: React.FC = () => {
     }
   }
   const { run: submit } = useRequest(
-    async () => Backend.user.v1UsersMeUpdate(form as SchemaUpdateUser),
+    async () => {
+      const user = { ...form } as SchemaUpdateUser
+      user.cards = []
+      if (card1.type !== '') user.cards.push(card1)
+      if (card2.type !== '') user.cards.push(card2)
+      if (card3.type !== '') user.cards.push(card3)
+      return Backend.user.v1UsersMeUpdate(user)
+    },
     {
       manual: true,
       onSuccess: () => {
         setSuccess('Done!')
+        setError('')
       },
       onError: () => {
+        setSuccess('')
         setError('Update profile failed. Please try again.')
       }
     }
@@ -118,6 +154,10 @@ const UserProfileForm: React.FC = () => {
   const { loading } = useRequest(async () => Backend.user.v1UsersMeList(), {
     onSuccess: res => {
       setForm(res.data)
+      const cardCount = res.data.cards.length
+      if (cardCount > 0) setCard1(res.data.cards[0])
+      if (cardCount > 1) setCard2(res.data.cards[1])
+      if (cardCount > 2) setCard3(res.data.cards[2])
     }
   })
 
@@ -238,96 +278,25 @@ const UserProfileForm: React.FC = () => {
           </Row>
           <Accordion>
             <Accordion.Item eventKey='0'>
-              <Accordion.Header>Payment Information</Accordion.Header>
+              <Accordion.Header>Payment Card 1 Information</Accordion.Header>
               <Accordion.Body>
-                <Row className='mb-3'>
-                  <Form.Group as={Col} md={3} controlId='formGridEmail'>
-                    <Form.Label>Card Type</Form.Label>
-                    <Form.Select
-                      name='card_type'
-                      value={form.card_type}
-                      onChange={handleChange}
-                    >
-                      <option value=''>Select card type</option>
-                      <option value='Visa'>Visa</option>
-                      <option value='MasterCard'>MasterCard</option>
-                      <option value='American Express'>American Express</option>
-                      <option value='Discover'>Discover</option>
-                    </Form.Select>
-                  </Form.Group>
-
-                  <Form.Group as={Col} md={6} controlId='formGridCardNumber'>
-                    <Form.Label>Card Number</Form.Label>
-                    <Form.Control
-                      name='card_number'
-                      value={form.card_number}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} md={3} controlId='formGridCardExp'>
-                    <Form.Label>Card Expiration</Form.Label>
-                    <Form.Control
-                      name='card_expiration'
-                      type='text'
-                      placeholder='01/28'
-                      value={form.card_expiration}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                </Row>
-                <Form.Group className='mb-3' controlId='formGridAddress1'>
-                  <Form.Label>Address</Form.Label>
-                  <Form.Control
-                    name='card_address'
-                    placeholder='1234 Main St'
-                    value={form.card_address}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-                <Form.Group className='mb-3' controlId='formGridAddress2'>
-                  <Form.Label>Address 2</Form.Label>
-                  <Form.Control
-                    name='card_address2'
-                    placeholder='Apartment, studio, or floor'
-                    value={form.card_address2}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
-                <Row className='mb-3'>
-                  <Form.Group as={Col} controlId='formGridCity'>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                      name='card_city'
-                      value={form.card_city}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} controlId='formGridState'>
-                    <Form.Label>State</Form.Label>
-                    <Form.Select
-                      name='card_state'
-                      defaultValue='Choose...'
-                      onChange={handleChange}
-                      value={form.card_state}
-                    >
-                      <option>Choose...</option>
-                      {usStates.map((state, index) => (
-                        <option key={index} value={state}>
-                          {' '}
-                          {state}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Form.Group>
-                  <Form.Group as={Col} md={3} controlId='formGridZip'>
-                    <Form.Label>Zip</Form.Label>
-                    <Form.Control
-                      name='card_zip'
-                      value={form.card_zip}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                </Row>
+                <Card card={card1} onChange={setCard1} />
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+          <Accordion>
+            <Accordion.Item eventKey='1'>
+              <Accordion.Header>Payment Card 2 Information</Accordion.Header>
+              <Accordion.Body>
+                <Card card={card2} onChange={setCard2} />
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+          <Accordion>
+            <Accordion.Item eventKey='2'>
+              <Accordion.Header>Payment Card 3 Information</Accordion.Header>
+              <Accordion.Body>
+                <Card card={card3} onChange={setCard3} />
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
