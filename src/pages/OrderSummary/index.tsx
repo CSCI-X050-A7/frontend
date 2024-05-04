@@ -1,84 +1,63 @@
 import PageContainer from 'components/PageContainer'
+import { Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const OrderSummary: React.FC = () => {
-  const userProfile = {
+  // TODO: transfer state to order
+  const location = useLocation()
+  const state = location.state as unknown[]
+  const order = {
     movie: 'The Bee Movie',
     date: '3/3/21',
     time: '3:00pm',
     TotalPrice: '$21.00',
     adultTickets: '12.00',
-    numAdultTickets: '1',
+    numAdultTickets: state.length,
     childTickets: '$4.50',
-    numChildTickets: '2',
+    numChildTickets: state.length,
     seats: 'A1, A2'
   }
 
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
-      <h1 style={{ marginBottom: '30px' }}> Order Summary</h1>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <div>
-          {' '}
-          {/* TICKET DETAILS */}
-          <h4 style={{ marginBottom: '20px' }}> Seat Details</h4>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Seat(s): <strong>{userProfile.seats}</strong>{' '}
+    <div className='d-flex flex-column align-items-center'>
+      <h1 className='mb-3'>Order Summary</h1>
+      <Row className='w-75'>
+        <Col>
+          <h4 className='mb-4'>Seat Details</h4>
+          <p className='mb-2'>
+            Seat(s): <strong>{order.seats}</strong>
           </p>
-          <p style={{ marginBottom: '20px', display: 'block' }}> Ticket(s): </p>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Adult Tickets: <strong>{userProfile.numAdultTickets}</strong>x{' '}
-            <strong>{userProfile.adultTickets}</strong>{' '}
+          <p className='mb-2'>Ticket(s):</p>
+          <ul>
+            <li className='mb-2'>
+              Adult Tickets: <strong>{order.numAdultTickets}</strong>x{' '}
+              <strong>{order.adultTickets}</strong>
+            </li>
+            <li className='mb-2'>
+              Child Tickets: <strong>{order.numChildTickets}</strong>x{' '}
+              <strong>{order.childTickets}</strong>
+            </li>
+          </ul>
+          <p className='mb-2'>
+            Total Cost: <strong>{order.TotalPrice}</strong>
           </p>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Child Tickets: <strong>{userProfile.numChildTickets}</strong>x{' '}
-            <strong>{userProfile.childTickets}</strong>{' '}
+        </Col>
+        <Col>
+          <h4 className='mb-4'>Movie Details</h4>
+          <p className='mb-2'>
+            Movie: <strong>{order.movie}</strong>
           </p>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Total Cost: <strong>{userProfile.TotalPrice}</strong>{' '}
+          <p className='mb-2'>
+            Time: <strong>{order.date}</strong> at <strong>{order.time}</strong>
           </p>
-          <div style={{ width: '600px' }}>
-            {' '}
-            {/* Horizontal spacer */}
-            {/* THIS IS A SPACER */}
-          </div>
-        </div>
-        <div>
-          {' '}
-          {/* MOVIE DETAILS */}
-          <h4 style={{ marginBottom: '40px', display: 'block' }}>
-            {' '}
-            Movie Details
-          </h4>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Movie: <strong>{userProfile.movie}</strong>
+          <p className='mb-2'>
+            Movie: <strong>{order.movie}</strong>
           </p>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Time: <strong>{userProfile.date}</strong> at{' '}
-            <strong>{userProfile.time}</strong>
-          </p>
-          <p style={{ marginBottom: '20px', display: 'block' }}>
-            {' '}
-            Movie: <strong>{userProfile.movie}</strong>
-          </p>
-        </div>
-      </div>
-
-      <Button variant='success' type='submit' style={{ marginBottom: '20px' }}>
-        Edit Details
-      </Button>
-
+        </Col>
+      </Row>
       <Link to='/order/checkout'>
-        <Button variant='primary' type='submit'>
+        <Button variant='primary' type='submit' className='mt-3'>
           Checkout
         </Button>
       </Link>

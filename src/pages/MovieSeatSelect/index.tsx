@@ -3,7 +3,7 @@ import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 interface Seat {
   id: string
@@ -21,10 +21,12 @@ enum TicketType {
 }
 
 const Index: React.FC = () => {
+  const [searchParams] = useSearchParams()
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([])
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>(
     TicketType.Adult
   )
+  const [promotion, setPromotion] = useState<string>('')
 
   const totalSelectedSeats = selectedSeats.length
 
@@ -61,7 +63,7 @@ const Index: React.FC = () => {
     for (let row = 0; row < rows; row += 1) {
       const seatRow = seats.slice(row * seatsPerRow, (row + 1) * seatsPerRow)
       seatRows.push(
-        <div key={row} className='text-center'>
+        <div key={row} className='text-center w-100'>
           {seatRow.map(seat => (
             <Button
               type='button'
@@ -85,28 +87,29 @@ const Index: React.FC = () => {
   return (
     <PageContainer>
       <div className='text-center'>
-        <h1>Select Seat</h1>
+        <h1>Select Seat & Promotion</h1>
+        <h2>Show: {searchParams.get('show')}</h2>
       </div>
       <div className={`${styles.seatContainer} mt-3`}>{renderSeats()}</div>
-      <Form>
-        <Form.Group controlId='ticketType'>
-          <Form.Label>Select Ticket Type:</Form.Label>
-          <Form.Control
-            as='select'
-            onChange={e => {
-              setSelectedTicketType(e.target.value as TicketType)
-            }}
-            value={selectedTicketType}
-          >
-            {Object.values(TicketType).map(type => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
-      </Form>
-      <div>
+      <div className='w-50 mx-auto'>
+        <Form>
+          <Form.Group controlId='ticketType'>
+            <Form.Label>Ticket Type:</Form.Label>
+            <Form.Control
+              as='select'
+              onChange={e => {
+                setSelectedTicketType(e.target.value as TicketType)
+              }}
+              value={selectedTicketType}
+            >
+              {Object.values(TicketType).map(type => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
+        </Form>
         <p className='mt-2'>
           You have selected <strong>{totalSelectedSeats}</strong>{' '}
           {totalSelectedSeats === 1 ? 'seat' : 'seats'}:{' '}
@@ -121,10 +124,24 @@ const Index: React.FC = () => {
             </span>
           ))}
         </p>
+        <hr />
+        <Form>
+          <Form.Group controlId='promoCode'>
+            <Form.Label>Promotion Code:</Form.Label>
+            <Form.Control
+              type='text'
+              placeholder='Enter promotion code'
+              value={promotion}
+              onChange={e => setPromotion(e.target.value)}
+            />
+          </Form.Group>
+        </Form>
+        <Link to='/order/summary' state={selectedSeats}>
+          <Button className='mt-4 w-100' disabled={totalSelectedSeats === 0}>
+            Create Order
+          </Button>
+        </Link>
       </div>
-      <Link to='/order/summary'>
-        <Button>Confirm</Button>
-      </Link>
     </PageContainer>
   )
 }
