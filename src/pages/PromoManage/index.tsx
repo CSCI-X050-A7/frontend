@@ -1,9 +1,10 @@
 import styles from './style.module.css'
 import { useRequest } from 'ahooks'
 import type { SchemaPromotion } from 'client'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
-import { Button, Card, Form, Modal, Table } from 'react-bootstrap'
+import { Alert, Button, Card, Form, Modal, Table } from 'react-bootstrap'
 import Backend from 'utils/service'
 
 const PromoRow: React.FC<{
@@ -16,6 +17,7 @@ const PromoRow: React.FC<{
   const handleShow = () => setShow(true)
   const [code, setCode] = useState(promo.code)
   const [discount, setDiscount] = useState(promo.discount)
+  const [error, setError] = useState('')
   const { run: update } = useRequest(
     async () => {
       Backend.admin.v1AdminPromotionsUpdate(promo.id, {
@@ -28,6 +30,9 @@ const PromoRow: React.FC<{
       onSuccess: () => {
         refresh()
         handleClose()
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -65,6 +70,7 @@ const PromoRow: React.FC<{
               />
             </Form.Group>
           </Form>
+          {error ? <Alert variant='danger'>{error}</Alert> : null}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='primary' onClick={update}>
@@ -82,6 +88,7 @@ const Index: React.FC = () => {
   const handleShow = () => setShow(true)
   const [code, setCode] = useState('')
   const [discount, setDiscount] = useState<number>(0)
+  const [error, setError] = useState('')
   const {
     data,
     loading,
@@ -98,6 +105,9 @@ const Index: React.FC = () => {
       onSuccess: () => {
         refresh()
         handleClose()
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -154,6 +164,7 @@ const Index: React.FC = () => {
               />
             </Form.Group>
           </Form>
+          {error ? <Alert variant='danger'>{error}</Alert> : null}
         </Modal.Body>
         <Modal.Footer>
           <Button

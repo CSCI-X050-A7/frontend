@@ -10,13 +10,16 @@ const OrderRow: React.FC<{
   order: SchemaOrder
 }> = ({ key, order }) => (
   <tr className='align-middle' key={key}>
-    <td className={styles.hideOverflow}>{order.movie_title}</td>
-    <td className={styles.hideOverflow}>{order.created_at}</td>
-    <td className={styles.hideOverflow}>{order.ticket_price}</td>
-    <td className={styles.hideOverflow}>{order.booking_fee_price}</td>
-    <td className={styles.hideOverflow}>{order.promotion_price}</td>
-    <td className={styles.hideOverflow}>{order.sales_tax_price}</td>
-    <td className={styles.hideOverflow}>{order.total_price}</td>
+    <td>{order.id}</td>
+    <td>{order.movie_title}</td>
+    <td>{new Date(order.created_at).toLocaleString()}</td>
+    <td className={styles.hideOverflow}>{order.ticket_price.toFixed(2)}</td>
+    <td className={styles.hideOverflow}>
+      {order.booking_fee_price.toFixed(2)}
+    </td>
+    <td className={styles.hideOverflow}>{order.promotion_price.toFixed(2)}</td>
+    <td className={styles.hideOverflow}>{order.sales_tax_price.toFixed(2)}</td>
+    <td className={styles.hideOverflow}>{order.total_price.toFixed(2)}</td>
   </tr>
 )
 
@@ -36,6 +39,7 @@ const Index: React.FC = () => {
           <Table hover>
             <thead>
               <tr>
+                <th>ID</th>
                 <th>Movie</th>
                 <th>Created At</th>
                 <th>Ticket Price</th>

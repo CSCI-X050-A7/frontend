@@ -1,10 +1,11 @@
 import styles from './style.module.css'
 import { useRequest } from 'ahooks'
 import type { SchemaMovie } from 'client'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
-import { Button, Card, Form, Modal, Table } from 'react-bootstrap'
+import { Alert, Button, Card, Form, Modal, Table } from 'react-bootstrap'
 import Backend from 'utils/service'
 
 const MovieRow: React.FC<{
@@ -26,6 +27,7 @@ const MovieRow: React.FC<{
   const [synopsis, setSynopsis] = useState(movie.synopsis)
   const [trailerPicture, setTrailerPicture] = useState(movie.trailer_picture)
   const [trailerVideo, setTrailerVideo] = useState(movie.trailer_video)
+  const [error, setError] = useState('')
   const { run: update } = useRequest(
     async () => {
       Backend.movie.v1MoviesUpdate(movie.id, {
@@ -47,6 +49,9 @@ const MovieRow: React.FC<{
       onSuccess: () => {
         refresh()
         handleClose()
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -60,7 +65,9 @@ const MovieRow: React.FC<{
         <td className={styles.hideOverflow}>{movie.producer}</td>
         <td className={styles.hideOverflow}>{movie.rating_code}</td>
         <td className={styles.hideOverflow}>{movie.reviews}</td>
-        <td className={styles.hideOverflow}>{movie.show_time}</td>
+        <td className={styles.hideOverflow}>
+          {new Date(movie.show_time).toLocaleString()}
+        </td>
         <td className={styles.hideOverflow}>{movie.synopsis}</td>
         <td className={styles.hideOverflow}>{movie.trailer_picture}</td>
         <td className={styles.hideOverflow}>{movie.trailer_video}</td>
@@ -165,6 +172,7 @@ const MovieRow: React.FC<{
               />
             </Form.Group>
           </Form>
+          {error ? <Alert variant='danger'>{error}</Alert> : null}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='primary' onClick={update}>
@@ -195,6 +203,7 @@ const Index: React.FC = () => {
   const [trailerVideo, setTrailerVideo] = useState(
     'https://www.youtube.com/embed/NpEaa2P7qZI?si=Ev2ybUCHzVxQPIO1&amp;controls=0'
   )
+  const [error, setError] = useState('')
   const {
     data,
     loading,
@@ -220,6 +229,9 @@ const Index: React.FC = () => {
       onSuccess: () => {
         refresh()
         handleClose()
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -390,6 +402,7 @@ const Index: React.FC = () => {
               />
             </Form.Group>
           </Form>
+          {error ? <Alert variant='danger'>{error}</Alert> : null}
         </Modal.Body>
         <Modal.Footer>
           <Button

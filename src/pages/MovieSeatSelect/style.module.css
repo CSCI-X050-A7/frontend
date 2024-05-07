@@ -10,6 +10,7 @@
 }
 
 .selected {
-  background-color: #3498db; /* Example color for selected seats */
+  background-color: #309800; /* Example color for selected seats */
   color: #fff; /* Example text color for selected seats */
+  transition: all 0.3s ease; /* Add a transition effect */
 }

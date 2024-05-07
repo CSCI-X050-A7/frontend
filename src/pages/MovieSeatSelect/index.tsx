@@ -1,9 +1,13 @@
 import styles from './style.module.css'
+import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
+import { Alert } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import Backend from 'utils/service'
 
 interface Seat {
   id: string
@@ -13,21 +17,40 @@ interface Seat {
 }
 
 enum TicketType {
-  Adult = 'Adult',
-  Senior = 'Senior',
-  Children = 'Children',
-  Veteran = 'Veteran',
-  Student = 'Student'
+  Adult = 'adult',
+  Senior = 'senior',
+  Child = 'child'
 }
 
 const Index: React.FC = () => {
   const [searchParams] = useSearchParams()
+  const [error, setError] = useState('')
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([])
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>(
     TicketType.Adult
   )
   const [promotion, setPromotion] = useState<string>('')
-
+  const navigate = useNavigate()
+  const { run: createOrder } = useRequest(
+    async () =>
+      Backend.order.v1OrdersCreate({
+        promotion_code: promotion,
+        show_id: searchParams.get('show') ?? '',
+        tickets: selectedSeats.map(seat => ({
+          seat: seat.id,
+          type: seat.ticketType?.toString() ?? ''
+        }))
+      }),
+    {
+      manual: true,
+      onSuccess: data => {
+        navigate(`/order/summary?order=${data.data.id}`)
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
+      }
+    }
+  )
   const totalSelectedSeats = selectedSeats.length
 
   const handleSeatClick = (seat: Seat) => {
@@ -69,7 +92,7 @@ const Index: React.FC = () => {
               type='button'
               key={seat.id}
               onClick={() => handleSeatClick(seat)}
-              className={`${styles.seat} ${
+              className={`btn-secondary ${styles.seat} ${
                 selectedSeats.some(selectedSeat => selectedSeat.id === seat.id)
                   ? styles.selected
                   : ''
@@ -88,7 +111,6 @@ const Index: React.FC = () => {
     <PageContainer>
       <div className='text-center'>
         <h1>Select Seat & Promotion</h1>
-        <h2>Show: {searchParams.get('show')}</h2>
       </div>
       <div className={`${styles.seatContainer} mt-3`}>{renderSeats()}</div>
       <div className='w-50 mx-auto'>
@@ -136,11 +158,14 @@ const Index: React.FC = () => {
             />
           </Form.Group>
         </Form>
-        <Link to='/order/summary' state={selectedSeats}>
-          <Button className='mt-4 w-100' disabled={totalSelectedSeats === 0}>
-            Create Order
-          </Button>
-        </Link>
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
+        <Button
+          onClick={createOrder}
+          className='mt-4 w-100'
+          disabled={totalSelectedSeats === 0}
+        >
+          Create Order
+        </Button>
       </div>
     </PageContainer>
   )

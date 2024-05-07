@@ -1,62 +1,97 @@
+import { useRequest } from 'ahooks'
+import type { SchemaOrder } from 'client'
 import PageContainer from 'components/PageContainer'
-import { Row, Col } from 'react-bootstrap'
+import { useState } from 'react'
+import { Card, Row, Col } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import Backend from 'utils/service'
 
 const OrderSummary: React.FC = () => {
-  // TODO: transfer state to order
-  const location = useLocation()
-  const state = location.state as unknown[]
-  const order = {
-    movie: 'The Bee Movie',
-    date: '3/3/21',
-    time: '3:00pm',
-    TotalPrice: '$21.00',
-    adultTickets: '12.00',
-    numAdultTickets: state.length,
-    childTickets: '$4.50',
-    numChildTickets: state.length,
-    seats: 'A1, A2'
-  }
-
+  const [searchParams] = useSearchParams()
+  const [order, setOrder] = useState<SchemaOrder>({
+    booking_fee_price: 0,
+    card_id: '',
+    check_out: false,
+    created_at: '',
+    id: '',
+    movie_title: '',
+    promotion_id: '',
+    promotion_price: 0,
+    sales_tax_price: 0,
+    show_id: '',
+    ticket_price: 0,
+    tickets: [],
+    total_price: 0,
+    user_id: ''
+  })
+  const { loading } = useRequest(
+    async () => Backend.order.v1OrdersDetail(searchParams.get('order') ?? ''),
+    {
+      onSuccess: res => {
+        setOrder(res.data)
+      }
+    }
+  )
   return (
     <div className='d-flex flex-column align-items-center'>
       <h1 className='mb-3'>Order Summary</h1>
-      <Row className='w-75'>
-        <Col>
-          <h4 className='mb-4'>Seat Details</h4>
-          <p className='mb-2'>
-            Seat(s): <strong>{order.seats}</strong>
-          </p>
-          <p className='mb-2'>Ticket(s):</p>
-          <ul>
-            <li className='mb-2'>
-              Adult Tickets: <strong>{order.numAdultTickets}</strong>x{' '}
-              <strong>{order.adultTickets}</strong>
-            </li>
-            <li className='mb-2'>
-              Child Tickets: <strong>{order.numChildTickets}</strong>x{' '}
-              <strong>{order.childTickets}</strong>
-            </li>
-          </ul>
-          <p className='mb-2'>
-            Total Cost: <strong>{order.TotalPrice}</strong>
-          </p>
-        </Col>
-        <Col>
-          <h4 className='mb-4'>Movie Details</h4>
-          <p className='mb-2'>
-            Movie: <strong>{order.movie}</strong>
-          </p>
-          <p className='mb-2'>
-            Time: <strong>{order.date}</strong> at <strong>{order.time}</strong>
-          </p>
-          <p className='mb-2'>
-            Movie: <strong>{order.movie}</strong>
-          </p>
-        </Col>
-      </Row>
-      <Link to='/order/checkout'>
+      {loading ? null : (
+        <Card className='w-75 mb-3'>
+          <Card.Body>
+            <Card.Title>Order ID: {order.id}</Card.Title>
+            <Card.Subtitle className='mb-2 text-muted'>
+              Movie: {order.movie_title}
+            </Card.Subtitle>
+            <Card.Text>
+              <Row>
+                <Col>
+                  <h6>Fees:</h6>
+                  <ul className='list-group'>
+                    <li className='list-group-item d-flex justify-content-between align-items-center'>
+                      Booking Fee
+                      <span>{order.booking_fee_price.toFixed(2)}</span>
+                    </li>
+                    <li className='list-group-item d-flex justify-content-between align-items-center'>
+                      Ticket Price
+                      <span>{order.ticket_price.toFixed(2)}</span>
+                    </li>
+                    <li className='list-group-item d-flex justify-content-between align-items-center'>
+                      Sales Tax
+                      <span>{order.sales_tax_price.toFixed(2)}</span>
+                    </li>
+                    <li className='list-group-item d-flex justify-content-between align-items-center'>
+                      Promotion Price
+                      <span>{order.promotion_price.toFixed(2)}</span>
+                    </li>
+                    <li className='list-group-item d-flex justify-content-between align-items-center'>
+                      <b>Total Price</b>
+                      <span>
+                        <b>{order.total_price.toFixed(2)}</b>
+                      </span>
+                    </li>
+                  </ul>
+                </Col>
+                <Col>
+                  <h6>Tickets:</h6>
+                  <ul className='list-group'>
+                    {order.tickets.map((ticket, index) => (
+                      <li
+                        key={index}
+                        className='list-group-item d-flex justify-content-between align-items-center'
+                      >
+                        <div>Seat: {ticket.seat}</div>
+                        <div>Type: {ticket.type}</div>
+                      </li>
+                    ))}
+                  </ul>
+                </Col>
+              </Row>
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      )}
+      <Link to={`/order/checkout?order=${order.id}`}>
         <Button variant='primary' type='submit' className='mt-3'>
           Checkout
         </Button>

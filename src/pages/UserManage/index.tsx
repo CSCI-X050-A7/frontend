@@ -1,10 +1,11 @@
 import styles from './style.module.css'
 import { useRequest } from 'ahooks'
 import type { SchemaUserDetailNoCards } from 'client'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
-import { Button, Card, Form, Modal, Table } from 'react-bootstrap'
+import { Alert, Button, Card, Form, Modal, Table } from 'react-bootstrap'
 import Backend from 'utils/service'
 
 const UserRow: React.FC<{
@@ -22,6 +23,7 @@ const UserRow: React.FC<{
   const [needPromotion, setNeedPromotion] = useState(user.need_promotion)
   const [isActive, setIsActive] = useState(user.is_active)
   const [isAdmin, setIsAdmin] = useState(user.is_admin)
+  const [error, setError] = useState('')
   const { run: update } = useRequest(
     async () => {
       Backend.admin.v1AdminUsersUpdate(user.id ?? '', {
@@ -39,6 +41,9 @@ const UserRow: React.FC<{
       onSuccess: () => {
         refresh()
         handleClose()
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -123,6 +128,7 @@ const UserRow: React.FC<{
               />
             </Form.Group>
           </Form>
+          {error ? <Alert variant='danger'>{error}</Alert> : null}
         </Modal.Body>
         <Modal.Footer>
           <Button variant='primary' onClick={update}>
