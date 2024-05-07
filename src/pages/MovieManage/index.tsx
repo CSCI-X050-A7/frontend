@@ -16,6 +16,9 @@ const MovieRow: React.FC<{
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
+  const [isShowing, setIsShowing] = useState(false)
+  const handleIsClose = () => setIsShowing(false)
+  const handleIsShowing = () => setIsShowing(true)
   const [movieTitle, setMovieTitle] = useState(movie.title)
   const [cast, setCast] = useState(movie.cast)
   const [category, setCategory] = useState(movie.category)
@@ -28,6 +31,35 @@ const MovieRow: React.FC<{
   const [trailerPicture, setTrailerPicture] = useState(movie.trailer_picture)
   const [trailerVideo, setTrailerVideo] = useState(movie.trailer_video)
   const [error, setError] = useState('')
+  const [startTime, setStartTime] = useState('2024-03-14T18:27')
+  const [endTime, setEndTime] = useState('2024-03-14T18:27')
+  const [adultPrice, setAdultPrice] = useState(10)
+  const [childPrice, setChildPrice] = useState(5)
+  const [seniorPrice, setSeniorPrice] = useState(6)
+  const [bookingFee, setBookingFee] = useState(2)
+  const [location, setLocation] = useState('UGA Cinema')
+  const { run: showCreate } = useRequest(
+    async () =>
+      Backend.show.v1ShowsCreate({
+        start_time: new Date(startTime).toISOString(),
+        end_time: new Date(endTime).toISOString(),
+        adult_ticket_price: adultPrice,
+        child_ticket_price: childPrice,
+        senior_ticket_price: seniorPrice,
+        theater_location: location,
+        booking_fee: bookingFee,
+        movie_id: movie.id
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        handleIsClose()
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
+      }
+    }
+  )
   const { run: update } = useRequest(
     async () => {
       Backend.movie.v1MoviesUpdate(movie.id, {
@@ -147,6 +179,103 @@ const MovieRow: React.FC<{
                 onChange={e => setShowTime(e.target.value)}
               />
             </Form.Group>
+
+            <Form.Group className='mb-3'>
+              <Form.Label>Edit Movie Showings</Form.Label>
+              <div>
+                <Button variant='primary' onClick={handleIsShowing}>
+                  Create show
+                </Button>
+              </div>
+              <Modal show={isShowing} onHide={handleIsClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Create Show</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Start Time</Form.Label>
+                    <Form.Control
+                      type='datetime-local'
+                      placeholder='Start Time'
+                      defaultValue='2024-03-14T18:27'
+                      onChange={e => {
+                        setStartTime(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>End Time</Form.Label>
+                    <Form.Control
+                      type='datetime-local'
+                      placeholder='End Time'
+                      defaultValue='2024-03-14T18:27'
+                      onChange={e => {
+                        setEndTime(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Adult Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      defaultValue={10}
+                      onChange={e => {
+                        setAdultPrice(Number.parseFloat(e.target.value))
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Child Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      defaultValue={5}
+                      onChange={e => {
+                        setChildPrice(Number.parseFloat(e.target.value))
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Senior Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      defaultValue={6}
+                      onChange={e => {
+                        setSeniorPrice(Number.parseFloat(e.target.value))
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Booking Fee</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Fee'
+                      defaultValue={2}
+                      onChange={e => {
+                        setBookingFee(Number.parseFloat(e.target.value))
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Theater Location</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder='Location'
+                      defaultValue='UGA Cinema'
+                      onChange={e => {
+                        setLocation(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Button variant='primary' onClick={showCreate}>
+                    Create Show
+                  </Button>
+                </Modal.Body>
+              </Modal>
+            </Form.Group>
+
             <Form.Group className='mb-3'>
               <Form.Label>Synopsis</Form.Label>
               <Form.Control
