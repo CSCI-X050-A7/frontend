@@ -1,5 +1,5 @@
 import { useRequest } from 'ahooks'
-import type { SchemaMovie } from 'client'
+import type { SchemaShow, SchemaMovie } from 'client'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
 import Button from 'react-bootstrap/Button'
@@ -25,7 +25,8 @@ const Index: React.FC = () => {
     trailer_video: '',
     show_time: ''
   })
-  const { loading } = useRequest(
+  const [shows, setShows] = useState<SchemaShow[]>([])
+  const { loading: loadingMovie } = useRequest(
     async () => Backend.movie.v1MoviesDetail(movieId ?? ''),
     {
       onSuccess: res => {
@@ -33,7 +34,14 @@ const Index: React.FC = () => {
       }
     }
   )
-  const showTimes = ['1:30 PM', '6:45 PM', '7:45 PM'] // TODO: load real show times
+  const { loading: loadingShows } = useRequest(
+    async () => Backend.movie.v1MoviesShowsDetail(movieId ?? ''),
+    {
+      onSuccess: res => {
+        setShows(res.data.data ?? [])
+      }
+    }
+  )
   return (
     <PageContainer>
       <div className='text-center'>
@@ -41,7 +49,7 @@ const Index: React.FC = () => {
       </div>
 
       <div className='d-flex flex-wrap justify-content-around'>
-        {loading ? null : (
+        {loadingMovie ? null : (
           <Card style={{ width: '18rem' }}>
             <Card.Img
               variant='top'
@@ -54,18 +62,32 @@ const Index: React.FC = () => {
                 <strong>Director:</strong> {movie.director}
               </Card.Text>
               <div>
-                {showTimes.map((time, timeIndex) => (
-                  <Button
-                    key={timeIndex}
-                    variant='primary'
-                    className='mx-1 my-1'
-                    onClick={() =>
-                      navigate(`/movie/${movieId}/seat?show=${time}`)
-                    }
-                  >
-                    {time}
-                  </Button>
-                ))}
+                {loadingShows
+                  ? null
+                  : shows.map((show, index) => (
+                      <Button
+                        key={index}
+                        variant='primary'
+                        className='mx-1 my-1'
+                        onClick={() =>
+                          navigate(`/movie/${movieId}/seat?show=${show.id}`)
+                        }
+                      >
+                        {`${new Date(show.start_time).toLocaleDateString(
+                          undefined,
+                          {
+                            month: 'short',
+                            day: 'numeric'
+                          }
+                        )}, ${new Date(show.start_time).toLocaleTimeString(
+                          undefined,
+                          {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          }
+                        )} - ${show.theater_location}`}
+                      </Button>
+                    ))}
               </div>
             </Card.Body>
           </Card>

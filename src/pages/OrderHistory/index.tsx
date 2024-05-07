@@ -11,7 +11,9 @@ const OrderRow: React.FC<{
 }> = ({ key, order }) => (
   <tr className='align-middle' key={key}>
     <td className={styles.hideOverflow}>{order.movie_title}</td>
-    <td className={styles.hideOverflow}>{order.created_at}</td>
+    <td className={styles.hideOverflow}>
+      {new Date(order.created_at).toLocaleString()}
+    </td>
     <td className={styles.hideOverflow}>{order.ticket_price}</td>
     <td className={styles.hideOverflow}>{order.booking_fee_price}</td>
     <td className={styles.hideOverflow}>{order.promotion_price}</td>

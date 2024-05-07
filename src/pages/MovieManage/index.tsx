@@ -60,7 +60,9 @@ const MovieRow: React.FC<{
         <td className={styles.hideOverflow}>{movie.producer}</td>
         <td className={styles.hideOverflow}>{movie.rating_code}</td>
         <td className={styles.hideOverflow}>{movie.reviews}</td>
-        <td className={styles.hideOverflow}>{movie.show_time}</td>
+        <td className={styles.hideOverflow}>
+          {new Date(movie.show_time).toLocaleString()}
+        </td>
         <td className={styles.hideOverflow}>{movie.synopsis}</td>
         <td className={styles.hideOverflow}>{movie.trailer_picture}</td>
         <td className={styles.hideOverflow}>{movie.trailer_video}</td>

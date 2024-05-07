@@ -1,29 +1,20 @@
 import './style.module.css'
 import { useRequest } from 'ahooks'
 import type { SchemaCard } from 'client'
+import type { ErrorResponse } from 'client/error'
 import Card from 'components/Card'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
 import { Form, Button, Col, Row, Alert } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Backend from 'utils/service'
 
 const RegistrationForm = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [error, setError] = useState('')
   const [cards, setCards] = useState<SchemaCard[]>([])
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('TODO: Implement Checkout')
-    navigate('/order/confirm')
-  }
-  useRequest(async () => Backend.user.v1UsersMeList(), {
-    onSuccess: res => {
-      setCards(res.data.cards)
-    }
-  })
   const [card, setCard] = useState<SchemaCard>({
     id: '',
     number: '',
@@ -34,6 +25,32 @@ const RegistrationForm = () => {
     state: '',
     zip: '',
     type: ''
+  })
+
+  const { run: checkoutOrder } = useRequest(
+    async () =>
+      Backend.order.v1OrdersCheckoutCreate(
+        searchParams.get('order') ?? '',
+        card
+      ),
+    {
+      manual: true,
+      onSuccess: data => {
+        navigate(`/order/confirm?order=${data.data.id}`)
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
+      }
+    }
+  )
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    checkoutOrder()
+  }
+  useRequest(async () => Backend.user.v1UsersMeList(), {
+    onSuccess: res => {
+      setCards(res.data.cards)
+    }
   })
 
   return (
