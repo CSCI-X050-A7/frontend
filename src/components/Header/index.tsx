@@ -17,7 +17,6 @@ const Index: React.FC = () => {
     <header className='border-bottom'>
       <Navbar expand='lg' className='bg-body-tertiary'>
         <Container fluid>
-          <Navbar.Brand>Navbar</Navbar.Brand>
           <Navbar.Toggle aria-controls='navbarScroll' />
           <Navbar.Collapse id='navbarScroll'>
             <Nav
