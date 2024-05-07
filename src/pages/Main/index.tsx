@@ -107,7 +107,7 @@ const Index: React.FC = () => {
   return (
     <PageContainer>
       <div className='text-center mb-3'>
-        <h1>All movies</h1>
+        <h1>Cinema e-Booking</h1>
         <p>
           Visit backend swagger: <a href='/swagger'>here</a>
         </p>
