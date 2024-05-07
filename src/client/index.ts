@@ -65,6 +65,18 @@ export interface SchemaCard {
   zip: string
 }
 
+export interface SchemaCreateOrder {
+  /** @maxLength 255 */
+  promotion_code?: string
+  show_id: string
+  tickets: SchemaCreateTicket[]
+}
+
+export interface SchemaCreateTicket {
+  seat: string
+  type: string
+}
+
 export interface SchemaCreateUser {
   /** @maxLength 150 */
   email: string
@@ -110,7 +122,6 @@ export interface SchemaMovie {
   rating_code: string
   /** @maxLength 255 */
   reviews: string
-  /** @maxLength 255 */
   show_time: string
   /** @maxLength 255 */
   synopsis: string
@@ -130,14 +141,21 @@ export interface SchemaMovieListResponse {
 }
 
 export interface SchemaOrder {
-  /** @maxLength 255 */
-  card: string
+  booking_fee_price: number
+  card_id: string
+  check_out: boolean
+  created_at: string
   id: string
   /** @maxLength 255 */
-  promotion: string
-  show: SchemaShow
-  /** @maxLength 255 */
-  tickets_array: string
+  movie_title: string
+  promotion_id: string
+  promotion_price: number
+  sales_tax_price: number
+  show_id: string
+  ticket_price: number
+  tickets: SchemaTicket[]
+  total_price: number
+  user_id: string
 }
 
 export interface SchemaOrderListResponse {
@@ -200,24 +218,29 @@ export interface SchemaShow {
   /** @maxLength 255 */
   end_time: string
   id: string
-  movie: SchemaMovie
+  movie_id: string
   /** @max 255 */
   senior_ticket_price: number
   /** @maxLength 255 */
   start_time: string
   /** @maxLength 1023 */
   theater_location: string
-  /** @maxLength 1023 */
-  ticket_type: string
+}
+
+export interface SchemaShowListResponse {
+  count?: number
+  data?: SchemaShow[]
+  limit?: number
+  offset?: number
 }
 
 export interface SchemaTicket {
   id?: string
-  price?: number
-  seat?: string
-  show?: string
-  title?: string
-  type?: string
+  order_id: string
+  price: number
+  seat: string
+  show_id: string
+  type: string
 }
 
 export interface SchemaTokenResponse {
@@ -294,16 +317,6 @@ export interface SchemaUpsertMovie {
   trailer_video: string
 }
 
-export interface SchemaUpsertOrder {
-  /** @maxLength 255 */
-  card: string
-  /** @maxLength 255 */
-  promotion: string
-  show: SchemaShow
-  /** @maxLength 255 */
-  tickets_array: string
-}
-
 export interface SchemaUpsertPromotion {
   /** @maxLength 255 */
   code: string
@@ -319,23 +332,13 @@ export interface SchemaUpsertShow {
   child_ticket_price: number
   /** @maxLength 255 */
   end_time: string
-  movie: SchemaMovie
+  movie_id: string
   /** @max 255 */
   senior_ticket_price: number
   /** @maxLength 255 */
   start_time: string
   /** @maxLength 1023 */
   theater_location: string
-  /** @maxLength 1023 */
-  ticket_type: string
-}
-
-export interface SchemaUpsertTicket {
-  price?: number
-  seat?: string
-  show?: string
-  title?: string
-  type?: string
 }
 
 export interface SchemaUser {
@@ -658,168 +661,6 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<
   SecurityDataType extends unknown
 > extends HttpClient<SecurityDataType> {
-  order = {
-    /**
-     * @description Create a new order.
-     *
-     * @tags Order
-     * @name V1OrdersCreate
-     * @summary create a new order
-     * @request POST:/api/v1/Orders
-     * @secure
-     */
-    v1OrdersCreate: (Order: SchemaUpsertOrder, params: RequestParams = {}) =>
-      this.request<SchemaOrder, SchemaErrorResponse>({
-        path: `/api/v1/Orders`,
-        method: 'POST',
-        body: Order,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description a order.
-     *
-     * @tags Order
-     * @name V1OrdersDetail
-     * @summary get a order
-     * @request GET:/api/v1/Orders/{id}
-     */
-    v1OrdersDetail: (id: string, params: RequestParams = {}) =>
-      this.request<SchemaOrder, SchemaErrorResponse>({
-        path: `/api/v1/Orders/${id}`,
-        method: 'GET',
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description update Order
-     *
-     * @tags Order
-     * @name V1OrdersUpdate
-     * @summary update a Order
-     * @request PUT:/api/v1/Orders/{id}
-     * @secure
-     */
-    v1OrdersUpdate: (
-      id: string,
-      updateOrder: SchemaUpsertOrder,
-      params: RequestParams = {}
-    ) =>
-      this.request<SchemaOrder, SchemaErrorResponse>({
-        path: `/api/v1/Orders/${id}`,
-        method: 'PUT',
-        body: updateOrder,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description delete Order
-     *
-     * @tags Order
-     * @name V1OrdersDelete
-     * @summary delete a Order
-     * @request DELETE:/api/v1/Orders/{id}
-     * @secure
-     */
-    v1OrdersDelete: (id: string, params: RequestParams = {}) =>
-      this.request<object, SchemaErrorResponse>({
-        path: `/api/v1/Orders/${id}`,
-        method: 'DELETE',
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      })
-  }
-  show = {
-    /**
-     * @description Create a new show.
-     *
-     * @tags Show
-     * @name V1ShowsCreate
-     * @summary create a new show
-     * @request POST:/api/v1/Shows
-     * @secure
-     */
-    v1ShowsCreate: (Show: SchemaUpsertShow, params: RequestParams = {}) =>
-      this.request<SchemaShow, SchemaErrorResponse>({
-        path: `/api/v1/Shows`,
-        method: 'POST',
-        body: Show,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description a show.
-     *
-     * @tags Show
-     * @name V1ShowsDetail
-     * @summary get a show
-     * @request GET:/api/v1/Shows/{id}
-     */
-    v1ShowsDetail: (id: string, params: RequestParams = {}) =>
-      this.request<SchemaShow, SchemaErrorResponse>({
-        path: `/api/v1/Shows/${id}`,
-        method: 'GET',
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description update Show
-     *
-     * @tags Show
-     * @name V1ShowsUpdate
-     * @summary update a Show
-     * @request PUT:/api/v1/Shows/{id}
-     * @secure
-     */
-    v1ShowsUpdate: (
-      id: string,
-      updateShow: SchemaUpsertShow,
-      params: RequestParams = {}
-    ) =>
-      this.request<SchemaShow, SchemaErrorResponse>({
-        path: `/api/v1/Shows/${id}`,
-        method: 'PUT',
-        body: updateShow,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description delete Show
-     *
-     * @tags Show
-     * @name V1ShowsDelete
-     * @summary delete a Show
-     * @request DELETE:/api/v1/Shows/{id}
-     * @secure
-     */
-    v1ShowsDelete: (id: string, params: RequestParams = {}) =>
-      this.request<object, SchemaErrorResponse>({
-        path: `/api/v1/Shows/${id}`,
-        method: 'DELETE',
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      })
-  }
   admin = {
     /**
      * @description Get all promotions.
@@ -1328,29 +1169,171 @@ export class Api<
         type: ContentType.Json,
         format: 'json',
         ...params
+      }),
+
+    /**
+     * @description shows of a movie.
+     *
+     * @tags Movie
+     * @name V1MoviesShowsDetail
+     * @summary get shows of a movie
+     * @request GET:/api/v1/movies/{id}/shows
+     */
+    v1MoviesShowsDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaShowListResponse, SchemaErrorResponse>({
+        path: `/api/v1/movies/${id}/shows`,
+        method: 'GET',
+        type: ContentType.Json,
+        format: 'json',
+        ...params
       })
   }
-  ticket = {
+  order = {
     /**
-     * @description Create a new ticket.
+     * @description Create a new order.
      *
-     * @tags Ticket
-     * @name V1TicketsCreate
-     * @summary create a new ticket
-     * @request POST:/api/v1/tickets
+     * @tags Order
+     * @name V1OrdersCreate
+     * @summary create a new order
+     * @request POST:/api/v1/orders
      * @secure
      */
-    v1TicketsCreate: (ticket: SchemaUpsertTicket, params: RequestParams = {}) =>
-      this.request<SchemaTicket, SchemaErrorResponse>({
-        path: `/api/v1/tickets`,
+    v1OrdersCreate: (Order: SchemaCreateOrder, params: RequestParams = {}) =>
+      this.request<SchemaOrder, SchemaErrorResponse>({
+        path: `/api/v1/orders`,
         method: 'POST',
-        body: ticket,
+        body: Order,
         secure: true,
         type: ContentType.Json,
         format: 'json',
         ...params
       }),
 
+    /**
+     * @description a order.
+     *
+     * @tags Order
+     * @name V1OrdersDetail
+     * @summary get a order
+     * @request GET:/api/v1/orders/{id}
+     * @secure
+     */
+    v1OrdersDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaOrder, SchemaErrorResponse>({
+        path: `/api/v1/orders/${id}`,
+        method: 'GET',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Checkout a order.
+     *
+     * @tags Order
+     * @name V1OrdersCheckoutCreate
+     * @summary checkout a order
+     * @request POST:/api/v1/orders/{id}/checkout
+     * @secure
+     */
+    v1OrdersCheckoutCreate: (
+      id: string,
+      Card: SchemaUpdateCard,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaOrder, SchemaErrorResponse>({
+        path: `/api/v1/orders/${id}/checkout`,
+        method: 'POST',
+        body: Card,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  show = {
+    /**
+     * @description Create a new show.
+     *
+     * @tags Show
+     * @name V1ShowsCreate
+     * @summary create a new show
+     * @request POST:/api/v1/shows
+     * @secure
+     */
+    v1ShowsCreate: (Show: SchemaUpsertShow, params: RequestParams = {}) =>
+      this.request<SchemaShow, SchemaErrorResponse>({
+        path: `/api/v1/shows`,
+        method: 'POST',
+        body: Show,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description a show.
+     *
+     * @tags Show
+     * @name V1ShowsDetail
+     * @summary get a show
+     * @request GET:/api/v1/shows/{id}
+     */
+    v1ShowsDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaShow, SchemaErrorResponse>({
+        path: `/api/v1/shows/${id}`,
+        method: 'GET',
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description update show
+     *
+     * @tags Show
+     * @name V1ShowsUpdate
+     * @summary update a show
+     * @request PUT:/api/v1/shows/{id}
+     * @secure
+     */
+    v1ShowsUpdate: (
+      id: string,
+      updateShow: SchemaUpsertShow,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaShow, SchemaErrorResponse>({
+        path: `/api/v1/shows/${id}`,
+        method: 'PUT',
+        body: updateShow,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description delete show
+     *
+     * @tags Show
+     * @name V1ShowsDelete
+     * @summary delete a show
+     * @request DELETE:/api/v1/shows/{id}
+     * @secure
+     */
+    v1ShowsDelete: (id: string, params: RequestParams = {}) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/shows/${id}`,
+        method: 'DELETE',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  ticket = {
     /**
      * @description Retrieve a ticket by ID.
      *
@@ -1364,30 +1347,6 @@ export class Api<
       this.request<SchemaTicket, SchemaErrorResponse>({
         path: `/api/v1/tickets/${id}`,
         method: 'GET',
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description Update a ticket.
-     *
-     * @tags Ticket
-     * @name V1TicketsUpdate
-     * @summary update a ticket
-     * @request PUT:/api/v1/tickets/{id}
-     * @secure
-     */
-    v1TicketsUpdate: (
-      id: string,
-      ticket: SchemaUpsertTicket,
-      params: RequestParams = {}
-    ) =>
-      this.request<SchemaTicket, SchemaErrorResponse>({
-        path: `/api/v1/tickets/${id}`,
-        method: 'PUT',
-        body: ticket,
         secure: true,
         type: ContentType.Json,
         format: 'json',
@@ -1435,18 +1394,27 @@ export class Api<
       }),
 
     /**
-     * @description a user's orders.
+     * @description get all orders history from the current user.
      *
      * @tags User
-     * @name V1UsersOrdersList
-     * @summary get a user's orders
-     * @request GET:/api/v1/users/orders
+     * @name V1UsersMeOrdersList
+     * @summary get all orders history
+     * @request GET:/api/v1/users/me/orders
      * @secure
      */
-    v1UsersOrdersList: (params: RequestParams = {}) =>
+    v1UsersMeOrdersList: (
+      query?: {
+        /** offset */
+        offset?: number
+        /** limit */
+        limit?: number
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<SchemaOrderListResponse, SchemaErrorResponse>({
-        path: `/api/v1/users/orders`,
+        path: `/api/v1/users/me/orders`,
         method: 'GET',
+        query: query,
         secure: true,
         type: ContentType.Json,
         format: 'json',

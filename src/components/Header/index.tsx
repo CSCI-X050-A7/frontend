@@ -58,14 +58,15 @@ const Index: React.FC = () => {
               ) : null}
               {user ? (
                 <>
-                  <Link to='/profile/edit'>
-                    <Button
-                      type='button'
-                      className='btn btn-link my-1 mx-0 mx-lg-1'
-                    >
-                      Profile
-                    </Button>
-                  </Link>
+                  <NavDropdown title='My Account' className='my-1'>
+                    <Link to='/profile/edit' className='dropdown-item'>
+                      Edit Profile
+                    </Link>
+                    <Link to='/profile/orders' className='dropdown-item'>
+                      Order History
+                    </Link>
+                  </NavDropdown>
+
                   <Link to='/logout'>
                     <Button
                       type='button'

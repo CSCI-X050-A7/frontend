@@ -13,6 +13,7 @@ import MovieSeatSelect from 'pages/MovieSeatSelect'
 import MovieSelect from 'pages/MovieSelect'
 import NotFound from 'pages/NotFound'
 import OrderConfirmation from 'pages/OrderConfirmation'
+import OrderHistory from 'pages/OrderHistory'
 import OrderSummary from 'pages/OrderSummary'
 import PromoManage from 'pages/PromoManage'
 import Register from 'pages/Register'
@@ -76,6 +77,10 @@ const children: RouteObject[] = [
       {
         path: '/profile/edit',
         element: <EditProfile />
+      },
+      {
+        path: '/profile/orders',
+        element: <OrderHistory />
       },
       {
         path: '/changePassword',
