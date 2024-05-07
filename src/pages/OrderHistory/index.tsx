@@ -1,7 +1,6 @@
 import styles from './style.module.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import PageContainer from 'components/PageContainer'
-import { useState } from 'react'
 import { Card, Table } from 'react-bootstrap'
 
 const OrderRow: React.FC<{
@@ -21,8 +20,7 @@ const OrderRow: React.FC<{
 )
 
 const Index: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [key, setKey] = useState('')
+  const key = 'order-row' // TODO: add key, setKey back
   return (
     <PageContainer>
       <Card>
