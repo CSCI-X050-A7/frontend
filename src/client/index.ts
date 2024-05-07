@@ -300,10 +300,8 @@ export interface SchemaUpsertMovie {
   producer: string
   /** @maxLength 255 */
   rating_code: string
-  /** @maxLength 255 */
   reviews: string
   show_time: string
-  /** @maxLength 255 */
   synopsis: string
   /** @maxLength 255 */
   title: string

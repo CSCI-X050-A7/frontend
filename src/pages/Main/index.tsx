@@ -21,6 +21,14 @@ const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
         <Card.Title>{movie.title}</Card.Title>
         <Card.Text>
           <p>Rating: {movie.rating_code}</p>
+          <p>
+            Date:{' '}
+            {new Date(movie.show_time).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            })}
+          </p>
           <Card.Link href='#' onClick={handleShow}>
             Watch Trailer
           </Card.Link>
@@ -73,7 +81,7 @@ const RunningMovieList: React.FC<{
   const { data, loading } = useRequest(
     async () =>
       Backend.movie.v1MoviesList({ running: true, search, category, showTime }),
-    { refreshDeps: [search, category], debounceWait: 200 }
+    { refreshDeps: [search, category, showTime], debounceWait: 200 }
   )
   return (
     !loading && (data?.data.data ? <MovieList movies={data.data.data} /> : null)
