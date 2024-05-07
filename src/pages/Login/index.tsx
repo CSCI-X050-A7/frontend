@@ -17,7 +17,7 @@ const LoginForm: React.FC = () => {
   const defUsername = localStorage.getItem('currentUsername')
   const [username, setUsername] = useState(defUsername ?? '')
   const [password, setPassword] = useState('')
-  const [remember, setRemember] = useState(false)
+  const [remember, setRemember] = useState(true)
   const navigate = useNavigate()
   const { run: login } = useRequest(
     async () => {
@@ -25,8 +25,8 @@ const LoginForm: React.FC = () => {
       return Backend.auth.v1AuthLoginCreate(
         {
           username,
-          password
-          // remember
+          password,
+          remember
         },
         {
           redirect_url: `${DOMAIN_HOST}${from}`
@@ -115,6 +115,7 @@ const LoginForm: React.FC = () => {
               <Form.Check
                 type='checkbox'
                 label='Remember me'
+                checked
                 onChange={() => {
                   setRemember(!remember)
                 }}
