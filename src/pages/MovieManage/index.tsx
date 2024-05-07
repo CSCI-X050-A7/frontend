@@ -16,6 +16,9 @@ const MovieRow: React.FC<{
   const [show, setShow] = useState(false)
   const handleClose = () => setShow(false)
   const handleShow = () => setShow(true)
+  const [isShowing, setIsShowing] = useState(false)
+  const handleIsClose = () => setIsShowing(false)
+  const handleIsShowing = () => setIsShowing(true)
   const [movieTitle, setMovieTitle] = useState(movie.title)
   const [cast, setCast] = useState(movie.cast)
   const [category, setCategory] = useState(movie.category)
@@ -147,6 +150,89 @@ const MovieRow: React.FC<{
                 onChange={e => setShowTime(e.target.value)}
               />
             </Form.Group>
+
+            <Form.Group className='mb-3'>
+              <Form.Label>Edit Movie Showings</Form.Label>
+              <div>
+                <Button variant='primary' onClick={handleIsShowing}>
+                  Create show
+                </Button>
+              </div>
+              <Modal show={isShowing} onHide={handleIsClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Create Show</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Start Time</Form.Label>
+                    <Form.Control
+                      type='datetime-local'
+                      placeholder='Show Time'
+                      // defaultValue={showTime}
+                      // onChange={e => {
+                      // setShowTime(e.target.value)
+                      // }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>End Time</Form.Label>
+                    <Form.Control
+                      type='datetime-local'
+                      placeholder='End Time'
+                      // defaultValue={showTime}
+                      // onChange={e => {
+                      // setShowTime(e.target.value)
+                      // }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Adult Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      // defaultValue={showTime}
+                      // onChange={e => {
+                      // setShowTime(e.target.value)
+                      // }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Child Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      // defaultValue={showTime}
+                      // onChange={e => {
+                      // setShowTime(e.target.value)
+                      // }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Senior Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      // defaultValue={showTime}
+                      // onChange={e => {
+                      // setShowTime(e.target.value)
+                      // }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Theater Location</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder='Location'
+                      // defaultValue={showTime}
+                      // onChange={e => {
+                      // setShowTime(e.target.value)
+                      // }}
+                    />
+                  </Form.Group>
+                </Modal.Body>
+              </Modal>
+            </Form.Group>
+
             <Form.Group className='mb-3'>
               <Form.Label>Synopsis</Form.Label>
               <Form.Control
@@ -186,7 +272,10 @@ const MovieRow: React.FC<{
 
 const Index: React.FC = () => {
   const [show, setShow] = useState(false)
+  const [isShowing, setIsShowing] = useState(false)
   const handleClose = () => setShow(false)
+  const handleIsClose = () => setIsShowing(false)
+  const handleIsShowing = () => setIsShowing(true)
   const handleShow = () => setShow(true)
   const [movieTitle, setMovieTitle] = useState('my movie')
   const [cast, setCast] = useState('cast')
@@ -204,11 +293,28 @@ const Index: React.FC = () => {
     'https://www.youtube.com/embed/NpEaa2P7qZI?si=Ev2ybUCHzVxQPIO1&amp;controls=0'
   )
   const [error, setError] = useState('')
+  const [startTime, setStartTime] = useState('2024-03-14T18:27')
+  const [endTime, setEndTime] = useState('2024-03-14T18:27')
+  const [adultPrice, setAdultPrice] = useState('Adult Price')
+  const [childPrice, setChildPrice] = useState('Child Price')
+  const [seniorPrice, setSeniorPrice] = useState('Senior Price')
+  const [location, setLocation] = useState('Location')
   const {
     data,
     loading,
     run: refresh
   } = useRequest(async () => Backend.movie.v1MoviesList())
+  const { run: showCreate } = useRequest(async () =>
+    // eslint-disable-next-line no-console
+    console.log(
+      startTime,
+      endTime,
+      adultPrice,
+      childPrice,
+      seniorPrice,
+      location
+    )
+  )
   const { run: create } = useRequest(
     async () =>
       Backend.movie.v1MoviesCreate({
@@ -368,6 +474,92 @@ const Index: React.FC = () => {
                 }}
               />
             </Form.Group>
+
+            <Form.Group className='mb-3'>
+              <Form.Label>Create Movie Showings</Form.Label>
+              <div>
+                <Button variant='primary' onClick={handleIsShowing}>
+                  Create show
+                </Button>
+              </div>
+              <Modal show={isShowing} onHide={handleIsClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Create Show</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Start Time</Form.Label>
+                    <Form.Control
+                      type='datetime-local'
+                      placeholder='Start Time'
+                      // defaultValue={showTime}
+                      onChange={e => {
+                        setStartTime(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>End Time</Form.Label>
+                    <Form.Control
+                      type='datetime-local'
+                      placeholder='End Time'
+                      // defaultValue={showTime}
+                      onChange={e => {
+                        setEndTime(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Adult Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      // defaultValue={showTime}
+                      onChange={e => {
+                        setAdultPrice(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Child Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      // defaultValue={showTime}
+                      onChange={e => {
+                        setChildPrice(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Senior Ticket Price</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Price'
+                      // defaultValue={showTime}
+                      onChange={e => {
+                        setSeniorPrice(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Theater Location</Form.Label>
+                    <Form.Control
+                      type='text'
+                      placeholder='Location'
+                      // defaultValue={showTime}
+                      onChange={e => {
+                        setLocation(e.target.value)
+                      }}
+                    />
+                  </Form.Group>
+                  <Button variant='primary' onClick={showCreate}>
+                    Create Show
+                  </Button>
+                </Modal.Body>
+              </Modal>
+            </Form.Group>
+
             <Form.Group className='mb-3'>
               <Form.Label>Synopsis</Form.Label>
               <Form.Control
