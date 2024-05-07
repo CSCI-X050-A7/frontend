@@ -1,7 +1,9 @@
 import styles from './style.module.css'
 import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
+import { Alert } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -22,6 +24,7 @@ enum TicketType {
 
 const Index: React.FC = () => {
   const [searchParams] = useSearchParams()
+  const [error, setError] = useState('')
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([])
   const [selectedTicketType, setSelectedTicketType] = useState<TicketType>(
     TicketType.Adult
@@ -42,6 +45,9 @@ const Index: React.FC = () => {
       manual: true,
       onSuccess: data => {
         navigate(`/order/summary?order=${data.data.id}`)
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -86,7 +92,7 @@ const Index: React.FC = () => {
               type='button'
               key={seat.id}
               onClick={() => handleSeatClick(seat)}
-              className={`${styles.seat} ${
+              className={`btn-secondary ${styles.seat} ${
                 selectedSeats.some(selectedSeat => selectedSeat.id === seat.id)
                   ? styles.selected
                   : ''
@@ -105,7 +111,6 @@ const Index: React.FC = () => {
     <PageContainer>
       <div className='text-center'>
         <h1>Select Seat & Promotion</h1>
-        <h2>Show: {searchParams.get('show')}</h2>
       </div>
       <div className={`${styles.seatContainer} mt-3`}>{renderSeats()}</div>
       <div className='w-50 mx-auto'>
@@ -153,8 +158,7 @@ const Index: React.FC = () => {
             />
           </Form.Group>
         </Form>
-        {/* <Link to='/order/summary' state={selectedSeats}>
-        </Link> */}
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
         <Button
           onClick={createOrder}
           className='mt-4 w-100'

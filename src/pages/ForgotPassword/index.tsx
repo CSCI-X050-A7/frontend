@@ -1,4 +1,5 @@
 import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
 import { Col, Row, Form, Button, Alert } from 'react-bootstrap'
@@ -7,12 +8,16 @@ import Backend from 'utils/service'
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('')
   const [info, setInfo] = useState('')
+  const [error, setError] = useState('')
   const { run } = useRequest(
     async () => Backend.auth.v1AuthForgotpasswordCreate({ email }),
     {
       manual: true,
       onSuccess: () => {
         setInfo('Done! Check you email!')
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -50,6 +55,7 @@ const ForgotPassword: React.FC = () => {
             </Col>
           </Form.Group>
         </Form>
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
       </Col>
     </PageContainer>
   )

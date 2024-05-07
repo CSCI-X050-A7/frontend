@@ -1,8 +1,9 @@
 import { useRequest } from 'ahooks'
+import type { ErrorResponse } from 'client/error'
 import PageContainer from 'components/PageContainer'
 import { useAuth } from 'hooks/useAuth'
 import { useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { Alert, Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
@@ -15,6 +16,7 @@ const ChangeForm: React.FC = () => {
   const [username, setUsername] = useState('')
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate()
   const { run: changePasssword } = useRequest(
     async () => {
@@ -34,6 +36,9 @@ const ChangeForm: React.FC = () => {
       manual: true,
       onSuccess: () => {
         navigate('/logout') // Navigate to the login page
+      },
+      onError: err => {
+        setError((err as ErrorResponse).error.msg)
       }
     }
   )
@@ -106,6 +111,7 @@ const ChangeForm: React.FC = () => {
             </Col>
           </Form.Group>
         </Form>
+        {error ? <Alert variant='danger'>{error}</Alert> : null}
       </Col>
     </>
   ) : (

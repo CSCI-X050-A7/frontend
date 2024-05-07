@@ -66,7 +66,9 @@ const OrderSummary: React.FC = () => {
                     </li>
                     <li className='list-group-item d-flex justify-content-between align-items-center'>
                       <b>Total Price</b>
-                      <span>{order.total_price.toFixed(2)}</span>
+                      <span>
+                        <b>{order.total_price.toFixed(2)}</b>
+                      </span>
                     </li>
                   </ul>
                 </Col>
