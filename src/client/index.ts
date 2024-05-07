@@ -215,13 +215,11 @@ export interface SchemaShow {
   booking_fee: number
   /** @max 255 */
   child_ticket_price: number
-  /** @maxLength 255 */
   end_time: string
   id: string
   movie_id: string
   /** @max 255 */
   senior_ticket_price: number
-  /** @maxLength 255 */
   start_time: string
   /** @maxLength 1023 */
   theater_location: string
@@ -330,12 +328,10 @@ export interface SchemaUpsertShow {
   booking_fee: number
   /** @max 255 */
   child_ticket_price: number
-  /** @maxLength 255 */
   end_time: string
   movie_id: string
   /** @max 255 */
   senior_ticket_price: number
-  /** @maxLength 255 */
   start_time: string
   /** @maxLength 1023 */
   theater_location: string
