@@ -1,6 +1,6 @@
 import styles from './style.module.css'
 import { useRequest } from 'ahooks'
-import type { SchemaUserDetail } from 'client'
+import type { SchemaUserDetailNoCards } from 'client'
 import PageContainer from 'components/PageContainer'
 import type React from 'react'
 import { useState } from 'react'
@@ -9,7 +9,7 @@ import Backend from 'utils/service'
 
 const UserRow: React.FC<{
   key: string
-  user: SchemaUserDetail
+  user: SchemaUserDetailNoCards
   refresh: () => void
 }> = ({ key, user, refresh }) => {
   const [show, setShow] = useState(false)

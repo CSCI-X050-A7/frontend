@@ -111,6 +111,7 @@
     "react/state-in-constructor": "off",
     "react/static-property-placement": "off",
     "react/no-array-index-key": "off",
+    "react/prop-types": "off",
 
     "react/boolean-prop-naming": [
       "error",

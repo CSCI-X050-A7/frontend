@@ -117,3 +117,4 @@ $RECYCLE.BIN/
 
 .eslintcache
 .stylelintcache
+dist/

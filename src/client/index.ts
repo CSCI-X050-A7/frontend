@@ -130,7 +130,14 @@ export interface SchemaMovieListResponse {
 }
 
 export interface SchemaOrder {
+  /** @maxLength 255 */
+  card: string
   id: string
+  /** @maxLength 255 */
+  promotion: string
+  show: SchemaShow
+  /** @maxLength 255 */
+  tickets_array: string
 }
 
 export interface SchemaOrderListResponse {
@@ -149,16 +156,9 @@ export interface SchemaPromoListResponse {
 
 export interface SchemaPromotion {
   /** @maxLength 255 */
-  description: string
+  code: string
   discount: number
-  /** @maxLength 255 */
-  expiry_date: string
   id: string
-  is_expired: boolean
-  /** @maxLength 255 */
-  movie_affected: string
-  /** @maxLength 255 */
-  title: string
 }
 
 export interface SchemaRegisterUser {
@@ -166,7 +166,7 @@ export interface SchemaRegisterUser {
   address: string
   /** @maxLength 150 */
   address2?: string
-  cards: SchemaCard[]
+  cards: SchemaUpdateCard[]
   /** @maxLength 100 */
   city: string
   /** @maxLength 150 */
@@ -188,6 +188,27 @@ export interface SchemaRegisterUser {
    */
   username: string
   zip: string
+}
+
+export interface SchemaShow {
+  /** @max 255 */
+  adult_ticket_price: number
+  /** @max 255 */
+  booking_fee: number
+  /** @max 255 */
+  child_ticket_price: number
+  /** @maxLength 255 */
+  end_time: string
+  id: string
+  movie: SchemaMovie
+  /** @max 255 */
+  senior_ticket_price: number
+  /** @maxLength 255 */
+  start_time: string
+  /** @maxLength 1023 */
+  theater_location: string
+  /** @maxLength 1023 */
+  ticket_type: string
 }
 
 export interface SchemaTicket {
@@ -273,17 +294,40 @@ export interface SchemaUpsertMovie {
   trailer_video: string
 }
 
+export interface SchemaUpsertOrder {
+  /** @maxLength 255 */
+  card: string
+  /** @maxLength 255 */
+  promotion: string
+  show: SchemaShow
+  /** @maxLength 255 */
+  tickets_array: string
+}
+
 export interface SchemaUpsertPromotion {
   /** @maxLength 255 */
-  description: string
+  code: string
   discount: number
+}
+
+export interface SchemaUpsertShow {
+  /** @max 255 */
+  adult_ticket_price: number
+  /** @max 255 */
+  booking_fee: number
+  /** @max 255 */
+  child_ticket_price: number
   /** @maxLength 255 */
-  expiry_date: string
-  is_expired: boolean
+  end_time: string
+  movie: SchemaMovie
+  /** @max 255 */
+  senior_ticket_price: number
   /** @maxLength 255 */
-  movie_affected: string
-  /** @maxLength 255 */
-  title: string
+  start_time: string
+  /** @maxLength 1023 */
+  theater_location: string
+  /** @maxLength 1023 */
+  ticket_type: string
 }
 
 export interface SchemaUpsertTicket {
@@ -312,6 +356,7 @@ export interface SchemaUserChangePassword {
 export interface SchemaUserDetail {
   address?: string
   address2?: string
+  /** @maxItems 3 */
   cards: SchemaCard[]
   city?: string
   email?: string
@@ -326,9 +371,25 @@ export interface SchemaUserDetail {
   zip?: string
 }
 
-export interface SchemaUserDetailListResponse {
+export interface SchemaUserDetailNoCards {
+  address?: string
+  address2?: string
+  city?: string
+  email?: string
+  id?: string
+  is_active?: boolean
+  is_admin?: boolean
+  name?: string
+  need_promotion?: boolean
+  phone?: string
+  state?: string
+  username?: string
+  zip?: string
+}
+
+export interface SchemaUserDetailNoCardsListResponse {
   count?: number
-  data?: SchemaUserDetail[]
+  data?: SchemaUserDetailNoCards[]
   limit?: number
   offset?: number
 }
@@ -597,7 +658,244 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<
   SecurityDataType extends unknown
 > extends HttpClient<SecurityDataType> {
+  order = {
+    /**
+     * @description Create a new order.
+     *
+     * @tags Order
+     * @name V1OrdersCreate
+     * @summary create a new order
+     * @request POST:/api/v1/Orders
+     * @secure
+     */
+    v1OrdersCreate: (Order: SchemaUpsertOrder, params: RequestParams = {}) =>
+      this.request<SchemaOrder, SchemaErrorResponse>({
+        path: `/api/v1/Orders`,
+        method: 'POST',
+        body: Order,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description a order.
+     *
+     * @tags Order
+     * @name V1OrdersDetail
+     * @summary get a order
+     * @request GET:/api/v1/Orders/{id}
+     */
+    v1OrdersDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaOrder, SchemaErrorResponse>({
+        path: `/api/v1/Orders/${id}`,
+        method: 'GET',
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description update Order
+     *
+     * @tags Order
+     * @name V1OrdersUpdate
+     * @summary update a Order
+     * @request PUT:/api/v1/Orders/{id}
+     * @secure
+     */
+    v1OrdersUpdate: (
+      id: string,
+      updateOrder: SchemaUpsertOrder,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaOrder, SchemaErrorResponse>({
+        path: `/api/v1/Orders/${id}`,
+        method: 'PUT',
+        body: updateOrder,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description delete Order
+     *
+     * @tags Order
+     * @name V1OrdersDelete
+     * @summary delete a Order
+     * @request DELETE:/api/v1/Orders/{id}
+     * @secure
+     */
+    v1OrdersDelete: (id: string, params: RequestParams = {}) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/Orders/${id}`,
+        method: 'DELETE',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
+  show = {
+    /**
+     * @description Create a new show.
+     *
+     * @tags Show
+     * @name V1ShowsCreate
+     * @summary create a new show
+     * @request POST:/api/v1/Shows
+     * @secure
+     */
+    v1ShowsCreate: (Show: SchemaUpsertShow, params: RequestParams = {}) =>
+      this.request<SchemaShow, SchemaErrorResponse>({
+        path: `/api/v1/Shows`,
+        method: 'POST',
+        body: Show,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description a show.
+     *
+     * @tags Show
+     * @name V1ShowsDetail
+     * @summary get a show
+     * @request GET:/api/v1/Shows/{id}
+     */
+    v1ShowsDetail: (id: string, params: RequestParams = {}) =>
+      this.request<SchemaShow, SchemaErrorResponse>({
+        path: `/api/v1/Shows/${id}`,
+        method: 'GET',
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description update Show
+     *
+     * @tags Show
+     * @name V1ShowsUpdate
+     * @summary update a Show
+     * @request PUT:/api/v1/Shows/{id}
+     * @secure
+     */
+    v1ShowsUpdate: (
+      id: string,
+      updateShow: SchemaUpsertShow,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaShow, SchemaErrorResponse>({
+        path: `/api/v1/Shows/${id}`,
+        method: 'PUT',
+        body: updateShow,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description delete Show
+     *
+     * @tags Show
+     * @name V1ShowsDelete
+     * @summary delete a Show
+     * @request DELETE:/api/v1/Shows/{id}
+     * @secure
+     */
+    v1ShowsDelete: (id: string, params: RequestParams = {}) =>
+      this.request<object, SchemaErrorResponse>({
+        path: `/api/v1/Shows/${id}`,
+        method: 'DELETE',
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      })
+  }
   admin = {
+    /**
+     * @description Get all promotions.
+     *
+     * @tags Admin
+     * @name V1AdminPromotionsList
+     * @summary get all promotions
+     * @request GET:/api/v1/admin/promotions
+     */
+    v1AdminPromotionsList: (
+      query?: {
+        /** search by code */
+        search?: string
+        /** offset */
+        offset?: number
+        /** limit */
+        limit?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaPromoListResponse, SchemaErrorResponse>({
+        path: `/api/v1/admin/promotions`,
+        method: 'GET',
+        query: query,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Create a new promotion.
+     *
+     * @tags Admin
+     * @name V1AdminPromotionsCreate
+     * @summary create a new promotion
+     * @request POST:/api/v1/admin/promotions
+     * @secure
+     */
+    v1AdminPromotionsCreate: (
+      promotion: SchemaUpsertPromotion,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaPromotion, SchemaErrorResponse>({
+        path: `/api/v1/admin/promotions`,
+        method: 'POST',
+        body: promotion,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description update promo
+     *
+     * @tags Admin
+     * @name V1AdminPromotionsUpdate
+     * @summary update a promo
+     * @request PUT:/api/v1/admin/promotions/{id}
+     * @secure
+     */
+    v1AdminPromotionsUpdate: (
+      id: string,
+      updatepromo: SchemaUpsertPromotion,
+      params: RequestParams = {}
+    ) =>
+      this.request<SchemaPromotion, SchemaErrorResponse>({
+        path: `/api/v1/admin/promotions/${id}`,
+        method: 'PUT',
+        body: updatepromo,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params
+      }),
+
     /**
      * @description Get all users.
      *
@@ -616,7 +914,7 @@ export class Api<
       },
       params: RequestParams = {}
     ) =>
-      this.request<SchemaUserDetailListResponse, SchemaErrorResponse>({
+      this.request<SchemaUserDetailNoCardsListResponse, SchemaErrorResponse>({
         path: `/api/v1/admin/users`,
         method: 'GET',
         query: query,
@@ -1026,82 +1324,6 @@ export class Api<
       this.request<object, SchemaErrorResponse>({
         path: `/api/v1/movies/${id}`,
         method: 'DELETE',
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      })
-  }
-  promotion = {
-    /**
-     * @description Get all promotions.
-     *
-     * @tags Promotion
-     * @name V1PromotionsList
-     * @summary get all promotions
-     * @request GET:/api/v1/promotions
-     */
-    v1PromotionsList: (
-      query?: {
-        /** search by title */
-        search?: string
-        /** offset */
-        offset?: number
-        /** limit */
-        limit?: number
-      },
-      params: RequestParams = {}
-    ) =>
-      this.request<SchemaPromoListResponse, SchemaErrorResponse>({
-        path: `/api/v1/promotions`,
-        method: 'GET',
-        query: query,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description Create a new promotion.
-     *
-     * @tags Promotion
-     * @name V1PromotionsCreate
-     * @summary create a new promotion
-     * @request POST:/api/v1/promotions
-     * @secure
-     */
-    v1PromotionsCreate: (
-      promotion: SchemaUpsertPromotion,
-      params: RequestParams = {}
-    ) =>
-      this.request<SchemaPromotion, SchemaErrorResponse>({
-        path: `/api/v1/promotions`,
-        method: 'POST',
-        body: promotion,
-        secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * @description update promo
-     *
-     * @tags Promotion
-     * @name V1PromotionsUpdate
-     * @summary update a promo
-     * @request PUT:/api/v1/promotions/{id}
-     * @secure
-     */
-    v1PromotionsUpdate: (
-      id: string,
-      updatepromo: SchemaUpsertPromotion,
-      params: RequestParams = {}
-    ) =>
-      this.request<SchemaPromotion, SchemaErrorResponse>({
-        path: `/api/v1/promotions/${id}`,
-        method: 'PUT',
-        body: updatepromo,
         secure: true,
         type: ContentType.Json,
         format: 'json',
