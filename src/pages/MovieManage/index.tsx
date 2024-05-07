@@ -31,6 +31,32 @@ const MovieRow: React.FC<{
   const [trailerPicture, setTrailerPicture] = useState(movie.trailer_picture)
   const [trailerVideo, setTrailerVideo] = useState(movie.trailer_video)
   const [error, setError] = useState('')
+  const [startTime, setStartTime] = useState('2024-03-14T18:27')
+  const [endTime, setEndTime] = useState('2024-03-14T18:27')
+  const [adultPrice, setAdultPrice] = useState(5)
+  const [childPrice, setChildPrice] = useState(5)
+  const [seniorPrice, setSeniorPrice] = useState(5)
+  const [location, setLocation] = useState('Location')
+  const { run: showCreate } = useRequest(
+    async () =>
+      Backend.show.v1ShowsCreate({
+        start_time: new Date(startTime).toISOString(),
+        end_time: new Date(endTime).toISOString(),
+        adult_ticket_price: adultPrice,
+        child_ticket_price: childPrice,
+        senior_ticket_price: seniorPrice,
+        theater_location: location,
+        booking_fee: 5, // TODO: is booking fee global?
+        movie_id: movie.id
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        refresh()
+        handleIsClose()
+      }
+    }
+  )
   const { run: update } = useRequest(
     async () => {
       Backend.movie.v1MoviesUpdate(movie.id, {
@@ -169,9 +195,9 @@ const MovieRow: React.FC<{
                       type='datetime-local'
                       placeholder='Show Time'
                       // defaultValue={showTime}
-                      // onChange={e => {
-                      // setShowTime(e.target.value)
-                      // }}
+                      onChange={e => {
+                        setStartTime(e.target.value)
+                      }}
                     />
                   </Form.Group>
                   <Form.Group className='mb-3'>
@@ -180,9 +206,9 @@ const MovieRow: React.FC<{
                       type='datetime-local'
                       placeholder='End Time'
                       // defaultValue={showTime}
-                      // onChange={e => {
-                      // setShowTime(e.target.value)
-                      // }}
+                      onChange={e => {
+                        setEndTime(e.target.value)
+                      }}
                     />
                   </Form.Group>
                   <Form.Group className='mb-3'>
@@ -191,9 +217,9 @@ const MovieRow: React.FC<{
                       type='number'
                       placeholder='Price'
                       // defaultValue={showTime}
-                      // onChange={e => {
-                      // setShowTime(e.target.value)
-                      // }}
+                      onChange={e => {
+                        setAdultPrice(Number.parseFloat(e.target.value))
+                      }}
                     />
                   </Form.Group>
                   <Form.Group className='mb-3'>
@@ -202,9 +228,9 @@ const MovieRow: React.FC<{
                       type='number'
                       placeholder='Price'
                       // defaultValue={showTime}
-                      // onChange={e => {
-                      // setShowTime(e.target.value)
-                      // }}
+                      onChange={e => {
+                        setChildPrice(Number.parseFloat(e.target.value))
+                      }}
                     />
                   </Form.Group>
                   <Form.Group className='mb-3'>
@@ -213,9 +239,9 @@ const MovieRow: React.FC<{
                       type='number'
                       placeholder='Price'
                       // defaultValue={showTime}
-                      // onChange={e => {
-                      // setShowTime(e.target.value)
-                      // }}
+                      onChange={e => {
+                        setSeniorPrice(Number.parseFloat(e.target.value))
+                      }}
                     />
                   </Form.Group>
                   <Form.Group className='mb-3'>
@@ -224,11 +250,14 @@ const MovieRow: React.FC<{
                       type='text'
                       placeholder='Location'
                       // defaultValue={showTime}
-                      // onChange={e => {
-                      // setShowTime(e.target.value)
-                      // }}
+                      onChange={e => {
+                        setLocation(e.target.value)
+                      }}
                     />
                   </Form.Group>
+                  <Button variant='primary' onClick={showCreate}>
+                    Create Show
+                  </Button>
                 </Modal.Body>
               </Modal>
             </Form.Group>
@@ -313,8 +342,8 @@ const Index: React.FC = () => {
         child_ticket_price: childPrice,
         senior_ticket_price: seniorPrice,
         theater_location: location,
-        booking_fee: 0, // TODO: is booking fee global?
-        movie_id: '' // TODO: update movie id after creating movie
+        booking_fee: 5, // TODO: is booking fee global?
+        movie_id: '00000000-0000-0000-0000-000000000000' // TODO: update movie id after creating movie
       }),
     {
       manual: true,
