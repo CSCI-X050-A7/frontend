@@ -127,9 +127,7 @@ export interface SchemaMovie {
   synopsis: string
   /** @maxLength 255 */
   title: string
-  /** @maxLength 1023 */
   trailer_picture: string
-  /** @maxLength 1023 */
   trailer_video: string
 }
 
@@ -311,9 +309,7 @@ export interface SchemaUpsertMovie {
   synopsis: string
   /** @maxLength 255 */
   title: string
-  /** @maxLength 1023 */
   trailer_picture: string
-  /** @maxLength 1023 */
   trailer_video: string
 }
 
