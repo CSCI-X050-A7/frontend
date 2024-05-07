@@ -1,48 +1,56 @@
 import styles from './style.module.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { useRequest } from 'ahooks'
+import type { SchemaOrder } from 'client'
 import PageContainer from 'components/PageContainer'
 import { Card, Table } from 'react-bootstrap'
+import Backend from 'utils/service'
 
 const OrderRow: React.FC<{
   key: string
-}> = (
-  { key } // TODO: add refresh back
-) => (
+  order: SchemaOrder
+}> = ({ key, order }) => (
   <tr className='align-middle' key={key}>
-    <td className={styles.hideOverflow}>(Some movie)</td>
-    <td className={styles.hideOverflow}>(01-01-2024)</td>
-    <td className={styles.hideOverflow}>(Some seats)</td>
-    <td className={styles.hideOverflow}>(Some tickets)</td>
-    <td className={styles.hideOverflow}>(A promo used)</td>
-    <td className={styles.hideOverflow}>(The card used)</td>
-    <td className='text-end'>end</td>
+    <td className={styles.hideOverflow}>{order.movie_title}</td>
+    <td className={styles.hideOverflow}>{order.created_at}</td>
+    <td className={styles.hideOverflow}>{order.ticket_price}</td>
+    <td className={styles.hideOverflow}>{order.booking_fee_price}</td>
+    <td className={styles.hideOverflow}>{order.promotion_price}</td>
+    <td className={styles.hideOverflow}>{order.sales_tax_price}</td>
+    <td className={styles.hideOverflow}>{order.total_price}</td>
   </tr>
 )
 
 const Index: React.FC = () => {
-  const key = 'order-row' // TODO: add key, setKey back
+  const { data, loading } = useRequest(async () =>
+    Backend.user.v1UsersMeOrdersList()
+  )
   return (
     <PageContainer>
       <Card>
         <Card.Header>
           <div className='d-flex justify-content-between align-items-center'>
-            <h2>Your Order History</h2>
+            <b>Order history</b>
           </div>
         </Card.Header>
         <Card.Body>
           <Table hover>
             <thead>
               <tr>
-                <th>MOVIE</th>
-                <th>DATE</th>
-                <th>SEATS</th>
-                <th>TICKETS</th>
-                <th>PROMOTION USED</th>
-                <th>CARD USED</th>
+                <th>Movie</th>
+                <th>Created At</th>
+                <th>Ticket Price</th>
+                <th>Booking Fee Price</th>
+                <th>Promotion Price</th>
+                <th>Sales Tax Price</th>
+                <th>Total Price</th>
               </tr>
             </thead>
             <tbody>
-              <OrderRow key={key} />
+              {loading
+                ? null
+                : data?.data.data?.map(order => (
+                    <OrderRow key={order.id} order={order} />
+                  ))}
             </tbody>
           </Table>
         </Card.Body>

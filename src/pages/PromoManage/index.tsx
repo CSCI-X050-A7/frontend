@@ -1,6 +1,5 @@
 import styles from './style.module.css'
 import { useRequest } from 'ahooks'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import type { SchemaPromotion } from 'client'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
