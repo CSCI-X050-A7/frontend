@@ -53,7 +53,6 @@ const MovieRow: React.FC<{
     {
       manual: true,
       onSuccess: () => {
-        refresh()
         handleIsClose()
       }
     }
