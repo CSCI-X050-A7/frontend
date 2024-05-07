@@ -2,7 +2,7 @@ import { useRequest } from 'ahooks'
 import type { SchemaShow, SchemaMovie } from 'client'
 import PageContainer from 'components/PageContainer'
 import { useState } from 'react'
-import { Button, Card, Table, Row, Col } from 'react-bootstrap'
+import { Button, Card, Table, Row, Col, Form } from 'react-bootstrap'
 import { useNavigate, useParams } from 'react-router-dom'
 import Backend from 'utils/service'
 
@@ -25,6 +25,7 @@ const Index: React.FC = () => {
     show_time: ''
   })
   const [shows, setShows] = useState<SchemaShow[]>([])
+  const [selectedDate, setSelectedDate] = useState('')
   const { loading: loadingMovie } = useRequest(
     async () => Backend.movie.v1MoviesDetail(movieId ?? ''),
     {
@@ -61,12 +62,44 @@ const Index: React.FC = () => {
                   <Card.Title>{movie.title}</Card.Title>
                   <Card.Text>
                     <strong>Director:</strong> {movie.director}
+                    <br />
+                    <strong>Producer:</strong> {movie.producer}
+                    <br />
+                    <strong>Cast:</strong> {movie.cast}
+                    <br />
+                    <strong>Category:</strong> {movie.category}
+                    <br />
+                    <strong>Rating Code:</strong> {movie.rating_code}
+                    <br />
+                    <strong>Reviews:</strong> {movie.reviews}
+                    <br />
+                    <strong>Synopsis:</strong> {movie.synopsis}
+                    <br />
+                    <strong>Premiere Date:</strong>{' '}
+                    {new Date(movie.show_time).toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric'
+                    })}
+                    <br />
                   </Card.Text>
                 </Card.Body>
               </Card>
             )}
           </Col>
           <Col>
+            <Form.Group as={Row} controlId='datePicker'>
+              <Form.Label column sm='2'>
+                Date
+              </Form.Label>
+              <Col sm='10'>
+                <Form.Control
+                  type='date'
+                  value={selectedDate}
+                  onChange={e => setSelectedDate(e.target.value)}
+                />
+              </Col>
+            </Form.Group>
             {loadingShows ? null : (
               <Table hover>
                 <thead>
@@ -78,41 +111,75 @@ const Index: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {shows.map((show, index) => (
-                    <tr key={index}>
-                      <td>
-                        {new Date(show.start_time).toLocaleDateString(
+                  {shows
+                    .filter(show => {
+                      if (selectedDate === '') return true
+                      console.log(
+                        new Date(show.start_time).toLocaleDateString(
                           undefined,
                           {
                             year: 'numeric',
-                            month: 'short',
+                            month: 'numeric',
                             day: 'numeric'
                           }
-                        )}
-                      </td>
-                      <td>
-                        {new Date(show.start_time).toLocaleTimeString(
+                        ),
+                        new Date(selectedDate).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric'
+                        })
+                      )
+                      return (
+                        new Date(show.start_time).toLocaleDateString(
                           undefined,
                           {
-                            hour: '2-digit',
-                            minute: '2-digit'
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric'
                           }
-                        )}
-                      </td>
-                      <td>{show.theater_location}</td>
-                      <td>
-                        <Button
-                          variant='primary'
-                          disabled={new Date(show.start_time) < new Date()}
-                          onClick={() =>
-                            navigate(`/movie/${movieId}/seat?show=${show.id}`)
-                          }
-                        >
-                          Book
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                        ) ===
+                        new Date(selectedDate).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'numeric',
+                          day: 'numeric'
+                        })
+                      )
+                    })
+                    .map((show, index) => (
+                      <tr key={index}>
+                        <td>
+                          {new Date(show.start_time).toLocaleDateString(
+                            undefined,
+                            {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric'
+                            }
+                          )}
+                        </td>
+                        <td>
+                          {new Date(show.start_time).toLocaleTimeString(
+                            undefined,
+                            {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            }
+                          )}
+                        </td>
+                        <td>{show.theater_location}</td>
+                        <td>
+                          <Button
+                            variant='primary'
+                            disabled={new Date(show.start_time) < new Date()}
+                            onClick={() =>
+                              navigate(`/movie/${movieId}/seat?show=${show.id}`)
+                            }
+                          >
+                            Book
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
             )}

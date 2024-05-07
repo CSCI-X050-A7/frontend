@@ -22,7 +22,7 @@ const Movie: React.FC<{ movie: SchemaMovie }> = ({ movie }) => {
         <Card.Text>
           <p>Rating: {movie.rating_code}</p>
           <p>
-            Date:{' '}
+            Premiere Date:{' '}
             {new Date(movie.show_time).toLocaleDateString(undefined, {
               year: 'numeric',
               month: 'short',
