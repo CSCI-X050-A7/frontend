@@ -356,7 +356,8 @@ export interface SchemaUserChangePassword {
 export interface SchemaUserDetail {
   address?: string
   address2?: string
-  cards?: SchemaCard[]
+  /** @maxItems 3 */
+  cards: SchemaCard[]
   city?: string
   email?: string
   id?: string

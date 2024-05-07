@@ -13,18 +13,21 @@ const Confirmation = () => {
         <div className='d-flex justify-content-end'>
           <Button
             variant='outline-success'
+            className='mx-2'
             onClick={() => navigate('/admin/movie', { replace: true })}
           >
             Manage movies
           </Button>
           <Button
             variant='outline-success'
+            className='mx-2'
             onClick={() => navigate('/admin/user', { replace: true })}
           >
             Manage users
           </Button>
           <Button
             variant='outline-success'
+            className='mx-2'
             onClick={() => navigate('/admin/promo', { replace: true })}
           >
             Manage promos
