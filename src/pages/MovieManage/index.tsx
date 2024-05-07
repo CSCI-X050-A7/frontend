@@ -36,6 +36,7 @@ const MovieRow: React.FC<{
   const [adultPrice, setAdultPrice] = useState(5)
   const [childPrice, setChildPrice] = useState(5)
   const [seniorPrice, setSeniorPrice] = useState(5)
+  const [bookingFee, setBookingFee] = useState(2)
   const [location, setLocation] = useState('Location')
   const { run: showCreate } = useRequest(
     async () =>
@@ -46,7 +47,7 @@ const MovieRow: React.FC<{
         child_ticket_price: childPrice,
         senior_ticket_price: seniorPrice,
         theater_location: location,
-        booking_fee: 5, // TODO: is booking fee global?
+        booking_fee: bookingFee, // TODO: is booking fee global?
         movie_id: movie.id
       }),
     {
@@ -241,6 +242,16 @@ const MovieRow: React.FC<{
                       // defaultValue={showTime}
                       onChange={e => {
                         setSeniorPrice(Number.parseFloat(e.target.value))
+                      }}
+                    />
+                  </Form.Group>
+                  <Form.Group className='mb-3'>
+                    <Form.Label>Booking Fee</Form.Label>
+                    <Form.Control
+                      type='number'
+                      placeholder='Fee'
+                      onChange={e => {
+                        setBookingFee(Number.parseFloat(e.target.value))
                       }}
                     />
                   </Form.Group>
