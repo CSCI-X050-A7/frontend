@@ -37,13 +37,13 @@ const OrderConfirmation: React.FC = () => {
     start_time: '',
     theater_location: ''
   })
-  const { loading: loadingShow, run: loadShow } = useRequest(
+  const { loading: loadingShow } = useRequest(
     async () => Backend.show.v1ShowsDetail(order.show_id),
     {
       onSuccess: res => {
         setShow(res.data)
       },
-      manual: true
+      refreshDeps: [order]
     }
   )
   const { loading: loadingOrder } = useRequest(
@@ -51,7 +51,6 @@ const OrderConfirmation: React.FC = () => {
     {
       onSuccess: res => {
         setOrder(res.data)
-        loadShow()
       }
     }
   )
@@ -67,14 +66,19 @@ const OrderConfirmation: React.FC = () => {
             <strong>{user?.email}</strong>
           </p>
           <h1 className='mb-3'>🖼️</h1>
-          {loadingOrder ? null : <h6 className='mb-3'>Order ID:{order.id}</h6>}
           {loadingShow || loadingOrder ? null : (
-            <h6 className='mb-3'>
-              We can&apos;t wait to see you at{' '}
-              <strong>{show.theater_location}</strong> for{' '}
-              <strong>{order.movie_title}</strong> on{' '}
-              <strong>{new Date(show.start_time).toLocaleString()}</strong>!
-            </h6>
+            <>
+              <h6 className='mb-3'>
+                Order ID: {order.id}, with total price paid:{' '}
+                {order.total_price.toFixed(2)}.
+              </h6>
+              <h6 className='mb-3'>
+                We can&apos;t wait to see you at{' '}
+                <strong>{show.theater_location}</strong> for{' '}
+                <strong>{order.movie_title}</strong> on{' '}
+                <strong>{new Date(show.start_time).toLocaleString()}</strong>!
+              </h6>
+            </>
           )}
           <p>
             View all orders history <Link to='/profile/orders'>here</Link>!
