@@ -295,25 +295,34 @@ const Index: React.FC = () => {
   const [error, setError] = useState('')
   const [startTime, setStartTime] = useState('2024-03-14T18:27')
   const [endTime, setEndTime] = useState('2024-03-14T18:27')
-  const [adultPrice, setAdultPrice] = useState('Adult Price')
-  const [childPrice, setChildPrice] = useState('Child Price')
-  const [seniorPrice, setSeniorPrice] = useState('Senior Price')
+  const [adultPrice, setAdultPrice] = useState(0)
+  const [childPrice, setChildPrice] = useState(0)
+  const [seniorPrice, setSeniorPrice] = useState(0)
   const [location, setLocation] = useState('Location')
   const {
     data,
     loading,
     run: refresh
   } = useRequest(async () => Backend.movie.v1MoviesList())
-  const { run: showCreate } = useRequest(async () =>
-    // eslint-disable-next-line no-console
-    console.log(
-      startTime,
-      endTime,
-      adultPrice,
-      childPrice,
-      seniorPrice,
-      location
-    )
+  const { run: showCreate } = useRequest(
+    async () =>
+      Backend.show.v1ShowsCreate({
+        start_time: new Date(startTime).toISOString(),
+        end_time: new Date(endTime).toISOString(),
+        adult_ticket_price: adultPrice,
+        child_ticket_price: childPrice,
+        senior_ticket_price: seniorPrice,
+        theater_location: location,
+        booking_fee: 0, // TODO: is booking fee global?
+        movie_id: '' // TODO: update movie id after creating movie
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        refresh()
+        handleIsClose()
+      }
+    }
   )
   const { run: create } = useRequest(
     async () =>
@@ -516,7 +525,7 @@ const Index: React.FC = () => {
                       placeholder='Price'
                       // defaultValue={showTime}
                       onChange={e => {
-                        setAdultPrice(e.target.value)
+                        setAdultPrice(Number.parseFloat(e.target.value))
                       }}
                     />
                   </Form.Group>
@@ -527,7 +536,7 @@ const Index: React.FC = () => {
                       placeholder='Price'
                       // defaultValue={showTime}
                       onChange={e => {
-                        setChildPrice(e.target.value)
+                        setChildPrice(Number.parseFloat(e.target.value))
                       }}
                     />
                   </Form.Group>
@@ -538,7 +547,7 @@ const Index: React.FC = () => {
                       placeholder='Price'
                       // defaultValue={showTime}
                       onChange={e => {
-                        setSeniorPrice(e.target.value)
+                        setSeniorPrice(Number.parseFloat(e.target.value))
                       }}
                     />
                   </Form.Group>
